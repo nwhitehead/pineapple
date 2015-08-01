@@ -47,6 +47,8 @@ coll = COLLECT(
     [('README.md', './README.md', 'DATA')],
     Tree('notebook/notebook/static', prefix='notebook/static'),
     Tree('notebook/notebook/templates', prefix='notebook/templates'),
+    Tree('venv/lib/python2.7/site-packages/nbformat/v3', prefix='nbformat/v3'),
+    Tree('venv/lib/python2.7/site-packages/nbformat/v4', prefix='nbformat/v4'),
     strip=None,
     upx=True,
     name='server')
