@@ -8,6 +8,13 @@ This project uses git submodules for referencing other components:
     jupyter
     pyinstaller
 
+## Building
+
+* Setup virtualenv (`virtualenv venv`)
+* Active virtual env (`source venv/bin/active`)
+* Install packages using pip (`pip install -r requirements.txt`)
+
+
 ## Notes
 
 get jupyter from git

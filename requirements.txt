@@ -1,0 +1,11 @@
+Jinja2
+tornado
+ipython_genutils
+traitlets
+jupyter_core
+jupyter_client
+nbconvert
+nbformat
+ipykernel
+pyzmq
+terminado
