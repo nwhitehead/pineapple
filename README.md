@@ -4,6 +4,10 @@ This project is a standalone Jupyter environment for doing data science
 using Python and Lua. It aims to include as many useful working libraries
 and packages as possible, while remaining super easy to install and use.
 
+This project uses git submodules for referencing other components:
+    jupyter
+    pyinstaller
+
 ## Notes
 
 get jupyter from git
