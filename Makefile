@@ -1,10 +1,10 @@
 all: dist/server/server
 .PHONY:all
 
-dist/server/server: venv
+dist/server/server: venv server.spec
 	rm -fr build/ dist/
 	venv/bin/pyinstaller server.spec -y
-	mkdir dist/server/tcl dist/server/tk dist/server/notebook
+	mkdir dist/server/tcl dist/server/tk
 
 venv: venv/bin/activate
 venv/bin/activate: requirements.txt
