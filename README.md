@@ -13,7 +13,7 @@ This project uses git submodules for referencing other components:
 * Setup virtualenv (`virtualenv venv`)
 * Active virtual env (`source venv/bin/active`)
 * Install packages using pip (`pip install -r requirements.txt`)
-
+* Install pyinstaller (`cd pyinstaller && python setup.py install`)
 
 ## Notes
 
