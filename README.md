@@ -18,8 +18,8 @@ To build everything:
 * Setup virtualenv (`virtualenv venv`)
 * Active virtual env (`source venv/bin/active`)
 * Install packages using pip (`pip install -r requirements.txt`)
-* Install pyinstaller (`cd pyinstaller && pip install -e .`)
-* Install jupyter (`cd notebook && pip install -e .`)
+* Install pyinstaller (`pip install -e pyinstaller`)
+* Install jupyter (`pip install -e notebook`)
 
 Now test it out locally to make sure it works.
 * `python server.py`
