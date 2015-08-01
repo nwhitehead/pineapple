@@ -10,10 +10,20 @@ This project uses git submodules for referencing other components:
 
 ## Building
 
+Some requirements:
+* NodeJS installed and working
+* NPM installed and working properly (not as root)
+
+To build everything:
 * Setup virtualenv (`virtualenv venv`)
 * Active virtual env (`source venv/bin/active`)
 * Install packages using pip (`pip install -r requirements.txt`)
-* Install pyinstaller (`cd pyinstaller && python setup.py install`)
+* Install pyinstaller (`cd pyinstaller && pip install -e .`)
+* Install jupyter (`cd notebook && pip install -e .`)
+
+Now test it out locally to make sure it works.
+* `python server.py`
+
 
 ## Notes
 
