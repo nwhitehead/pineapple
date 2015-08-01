@@ -9,3 +9,5 @@ nbformat
 ipykernel
 pyzmq
 terminado
+-e pyinstaller/
+-e notebook/

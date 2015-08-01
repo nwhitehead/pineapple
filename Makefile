@@ -1,14 +1,25 @@
-all:
+all: dist/server/server
+.PHONY:all
+
+dist/server/server: venv
 	rm -fr build/ dist/
 	venv/bin/pyinstaller server.spec -y
 	mkdir dist/server/tcl dist/server/tk dist/server/notebook
 
-reset:
-	rm -fr venv/
-	virtualenv venv
+venv: venv/bin/activate
+venv/bin/activate: requirements.txt
+	test -d venv || virtualenv venv
 	venv/bin/pip install -r requirements.txt
-	venv/bin/pip install -e pyinstaller
-	venv/bin/pip install -e notebook
+	touch venv/bin/activate
 
-test:
+test: dist/server/server
 	./dist/server/server
+.PHONY:test
+
+clean:
+	rm -fr build/ dist/
+.PHONY:clean
+
+distclean: clean
+	rm -fr venv/
+.PHONY:distclean
