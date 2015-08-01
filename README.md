@@ -31,10 +31,10 @@ pyinstaller -y jupyter-notebook.spec  && ./dist/jupyter-notebook/jupyter-noteboo
 
 Works with latest PyInstaller:
     PyInstaller (2.1.1dev-9d0e0ad)
+    https://github.com/pyinstaller/pyinstaller.git
  
 Remove PIL ubuntu packages, pip install Pillow in venv, Removed Pillow (no image support now?)
 Remove python-zmq ubuntu package, pip install zmq, pip install cython
-
 
 rm -fr build/ dist/ && pyinstaller jupyter-notebook.spec -y && mkdir dist/jupyter-notebook/tcl dist/jupyter-notebook/tk dist/jupyter-notebook/notebook && ./dist/jupyter-notebook/jupyter-notebook 
 
