@@ -53,11 +53,14 @@ def start_server():
 if __name__ == '__main__':
     print('Hello from server.py')
     print('I was called with arguments {}'.format(sys.argv))
+    if len(sys.argv) >=1 and sys.argv[1] == 'server.py':
+        del sys.argv[1]
+    print('FIXED: I was called with arguments {}'.format(sys.argv))
     if len(sys.argv) >= 2 and sys.argv[1] == '-m' and sys.argv[2] == 'ipykernel':
         print('I should make myself a Python kernel')
         print('Launching')
         kernelapp.launch_new_instance()
-    if len(sys.argv) >= 2 and sys.argv[1] == 'viewurl':
+    elif len(sys.argv) >= 2 and sys.argv[1] == 'viewurl':
         url = sys.argv[2]
         print('I should view a URL {}'.format(url))
         print('Launching')
