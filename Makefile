@@ -13,7 +13,7 @@ venv/bin/activate: requirements.txt
 	touch venv/bin/activate
 
 test: dist/server/server
-	./dist/server/server
+	./dist/server/server TestNotebook.ipynb
 .PHONY:test
 
 clean:
