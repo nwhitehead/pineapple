@@ -14,3 +14,5 @@ update branding/logos
 automate builds for releases
 add more packages following pyzo
 write a few demo notebooks
+include variation with python 3.4
+include variation with python 3.5 (demo @ operator!!!)
