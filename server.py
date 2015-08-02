@@ -17,53 +17,26 @@ from PySide.QtGui import *
 from PySide.QtWebKit import *
 from PySide.QtNetwork import *
 
-class Browser(object):
+class Browser(QApplication):
 
     def __init__(self, url):
         print('open_url_mp PROCESS STARTING')
-        self.network_manager = QNetworkAccessManager()
-        self.network_manager.createRequest = self._my_create_request
-        self.network_manager.finished.connect(self._request_finished)
+        QApplication.__init__(self, [])
+        self.url = url
+        # HACK to test websockets
+        #self.url = "https://www.websocket.org/echo.html"
+        self.initUI()
 
-        self.app = QApplication([])
-
-        self.page = QWebPage()
-        self.page.setNetworkAccessManager(self.network_manager)
-        self.page.mainFrame().setUrl(url)
-
-        self.view = QWebView()
-        self.view.setPage(self.page)
-        self.view.show()
+    def initUI(self):
+        self.web = QWebView()
+        self.web.settings().setAttribute(
+            QWebSettings.WebAttribute.DeveloperExtrasEnabled, True)
+        self.web.load(QUrl(self.url))
+        self.web.show()
 
         self.inspector = QWebInspector()
-        self.inspector.setPage(self.page)
-
-    def start(self):
-        return self.app.exec_()
-
-    def _request_finished(self, reply):
-        print('LOADED {}'.format(reply.url()))
-
-    def _my_make_request(self, url):
-        print('REQUEST {}'.format(url))
-        request = QNetworkRequest()
-        request.setUrl(QUrl(url))
-        return request
-
-    def _my_create_request(self, operation, request, data):
-        print('REQUEST {}'.format(request.url()))
-        if data:
-            print(data.readAll())
-        reply = QNetworkAccessManager.createRequest(self.network_manager,
-            operation, request, data)
-        return reply
-
-    def _urlencode_post_data(self, data):
-        print('ENCODING')
-        params = QUrl()
-        for (key, value) in data.items():
-            params.addQueryItem(key, unicode(value))
-        return params.encodedQuery()
+        self.inspector.setPage(self.web.page())
+        self.inspector.show()
 
 
 class BrowserShim():
@@ -104,6 +77,7 @@ if __name__ == '__main__':
         url = sys.argv[2]
         print('I should view a URL {}'.format(url))
         print('Launching')
-        sys.exit(Browser(url).start())
+        app = Browser(url)
+        sys.exit(app.exec_())
     else:
         start_server()
