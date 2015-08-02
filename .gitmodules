@@ -1,6 +1,6 @@
 [submodule "notebook"]
 	path = notebook
-	url = https://github.com/jupyter/notebook
+	url = https://github.com/nwhitehead/notebook
 [submodule "pyinstaller"]
 	path = pyinstaller
-	url = https://github.com/pyinstaller/pyinstaller.git
+	url = https://github.com/nwhitehead/pyinstaller.git
