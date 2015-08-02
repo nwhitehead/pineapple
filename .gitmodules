@@ -4,3 +4,6 @@
 [submodule "pyinstaller"]
 	path = pyinstaller
 	url = https://github.com/pyinstaller/pyinstaller.git
+[submodule "surf"]
+	path = surf
+	url = http://git.suckless.org/surf
