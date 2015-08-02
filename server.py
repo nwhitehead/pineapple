@@ -15,12 +15,26 @@ import subprocess
 from PySide.QtCore import *
 from PySide.QtGui import *
 from PySide.QtWebKit import *
+from PySide.QtNetwork import *
 
 def open_url(url):
     print('open_url_mp PROCESS STARTING')
+
+    def _request_finished(reply):
+        print reply
+        print reply.error()
+        print reply.errorString()
+    network_manager = QNetworkAccessManager()
+    network_manager.finished.connect(_request_finished)
+
     app = QApplication([])
+
+    page = QWebPage()
+    page.setNetworkAccessManager(network_manager)
+    page.mainFrame().setUrl(url)
+
     browser = QWebView()
-    browser.setUrl(url)
+    browser.setPage(page)
     browser.show()
     retval = app.exec_()
     print('RETURNED {}'.format(retval))
