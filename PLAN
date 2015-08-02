@@ -1,0 +1,16 @@
+To-do lists.
+
+get working on Linux
+standalone program, runs one notebook
+quit program works cleanly
+standard packages available easily in python
+kernel starts automatically
+save works
+open file works
+get working on Windows same way as linux
+program icon
+windows installer
+update branding/logos
+automate builds for releases
+add more packages following pyzo
+write a few demo notebooks

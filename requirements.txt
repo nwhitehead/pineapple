@@ -9,6 +9,7 @@ nbformat
 ipykernel
 pyzmq
 terminado
+PySide
 -e pyinstaller/
 -e notebook/
 numpy
