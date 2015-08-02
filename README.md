@@ -24,15 +24,28 @@ To build everything:
 This sets up virtualenv, installs requirements with pip, and calls
 pyinstaller to build the application. Do `make test` to try it.
 
+BUG: The PySide installation process sometimes does not do the postinstall,
+you need to run `venv/bin/python venv/bin/pyside_postinstall.py -install`
+manually to finish installation.
+
 ## Mac OS X
 
-Use Homebrew for tools (http://brew.sh/). Follow instructions on website to
+Use Homebrew for python versions ([http://brew.sh/]). Follow instructions on website to
 get get brew setup, then do:
-* `brew install python python3 virtualenv`
 
-I had trouble with the brew version of nodejs and npm. Instead go to nodejs.org
+* `brew install python python3 qt`
+
+Next get virtualenv using pip:
+
+* `pip install virtualenv`
+
+I had trouble with the brew version of nodejs and npm. Instead go to [http://nodejs.org]
 and directly install node, which also installs npm.
 
+During the build, the "Running setup.py develop for notebook" takes a long time, it
+is actually running npm and installing many packages with no output.
+
+Alternative for Qt: Get Qt directly from [http://www.qt.io/download-open-source/#section-2]
 
 ## Notes
 
