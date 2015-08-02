@@ -10,29 +10,30 @@ import numpy
 # Browser
 ##################################
 
-import multiprocessing
+import subprocess
 
 from PySide.QtCore import *
 from PySide.QtGui import *
 from PySide.QtWebKit import *
 
-def open_url_mp(url):
+def open_url(url):
     print('open_url_mp PROCESS STARTING')
     app = QApplication([])
     browser = QWebView()
-    browser.setUrl('http://localhost:8888')
+    browser.setUrl(url)
     browser.show()
     retval = app.exec_()
     print('RETURNED {}'.format(retval))
-    return retval
+    sys.exit(retval)
 
 class BrowserShim():
-    def __init__(self):
-        pass
+    def __init__(self, app):
+        self.app = app
     def open(self, url, **kwargs):
         print('BROWSER OPENING URL {}'.format(url))
-        b = lambda : open_url_mp(url)
-        multiprocessing.Process(target=b).start()
+        subprocess.call([sys.executable, 'server.py', 'viewurl', url])
+        print('BROWSER RETURNED')
+        self.app.stop()
 
 ##################################
 # Main
@@ -47,7 +48,7 @@ from ipykernel import kernelapp
 def start_server():
     app = NotebookApp()
     app.initialize()
-    app.start(BrowserShim())
+    app.start(BrowserShim(app))
 
 if __name__ == '__main__':
     print('Hello from server.py')
@@ -56,5 +57,10 @@ if __name__ == '__main__':
         print('I should make myself a Python kernel')
         print('Launching')
         kernelapp.launch_new_instance()
+    if len(sys.argv) >= 2 and sys.argv[1] == 'viewurl':
+        url = sys.argv[2]
+        print('I should view a URL {}'.format(url))
+        print('Launching')
+        open_url(url)
     else:
         start_server()
