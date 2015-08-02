@@ -11,3 +11,4 @@ pyzmq
 terminado
 -e pyinstaller/
 -e notebook/
+numpy

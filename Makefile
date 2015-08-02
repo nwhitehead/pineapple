@@ -1,7 +1,7 @@
 all: dist/server/server
 .PHONY:all
 
-dist/server/server: venv server.spec
+dist/server/server: venv server.spec server.py
 	rm -fr build/ dist/
 	venv/bin/pyinstaller server.spec -y
 	mkdir dist/server/tcl dist/server/tk
