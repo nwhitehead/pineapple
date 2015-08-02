@@ -8,6 +8,7 @@ import numpy
 
 ##################################
 import sys
+import threading
 
 from notebook.notebookapp import main
 from ipykernel import kernelapp
@@ -20,4 +21,4 @@ if __name__ == '__main__':
         print('Launching')
         kernelapp.launch_new_instance()
     else:
-        main()
+        main(open_browser=False)
