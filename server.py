@@ -21,9 +21,7 @@ def open_url(url):
     print('open_url_mp PROCESS STARTING')
 
     def _request_finished(reply):
-        print reply
-        print reply.error()
-        print reply.errorString()
+        print('LOADED {}'.format(reply.url()))
     network_manager = QNetworkAccessManager()
     network_manager.finished.connect(_request_finished)
 
