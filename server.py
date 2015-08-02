@@ -1,17 +1,53 @@
 #!/usr/bin/env python
 
 ##################################
-# Kernel imports
+# Kernel imports (for client)
 ##################################
 
 import numpy
 
 ##################################
+# Browser
+##################################
+
+import multiprocessing
+
+from PySide.QtCore import *
+from PySide.QtGui import *
+from PySide.QtWebKit import *
+
+def open_url_mp(url):
+    print('open_url_mp PROCESS STARTING')
+    app = QApplication([])
+    browser = QWebView()
+    browser.setUrl('http://localhost:8888')
+    browser.show()
+    retval = app.exec_()
+    print('RETURNED {}'.format(retval))
+    return retval
+
+class BrowserShim():
+    def __init__(self):
+        pass
+    def open(self, url, **kwargs):
+        print('BROWSER OPENING URL {}'.format(url))
+        b = lambda : open_url_mp(url)
+        multiprocessing.Process(target=b).start()
+
+##################################
+# Main
+##################################
+
 import sys
 import threading
 
-from notebook.notebookapp import main
+from notebook.notebookapp import NotebookApp
 from ipykernel import kernelapp
+
+def start_server():
+    app = NotebookApp()
+    app.initialize()
+    app.start(BrowserShim())
 
 if __name__ == '__main__':
     print('Hello from server.py')
@@ -21,4 +57,4 @@ if __name__ == '__main__':
         print('Launching')
         kernelapp.launch_new_instance()
     else:
-        main(open_browser=False)
+        start_server()
