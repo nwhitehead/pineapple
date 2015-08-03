@@ -16,3 +16,18 @@ add more packages following pyzo
 write a few demo notebooks
 include variation with python 3.4
 include variation with python 3.5 (demo @ operator!!!)
+
+Competitors:
+
+DIY using Portable Python
+    http://www.walkingrandomly.com/?p=5734
+
+Some alternatives from http://portablepython.com/
+    Anaconda
+        https://store.continuum.io/cshop/anaconda/
+    PythonXY
+        https://code.google.com/p/pythonxy/
+    WinPython
+        https://winpython.github.io/
+    Python Anywhere
+        https://www.pythonanywhere.com/
