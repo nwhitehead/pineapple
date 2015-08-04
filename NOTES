@@ -1,0 +1,6 @@
+NOTE
+when doing
+    jupyter-kernelspec install PATH --user
+it matters whether PATH ends with / or not, changes directory
+structure at install point
+
