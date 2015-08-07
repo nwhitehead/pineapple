@@ -72,6 +72,7 @@ class BrowserShim():
 # Main
 ##################################
 
+import os
 import sys
 import threading
 
@@ -84,6 +85,8 @@ def start_server():
     app.start(BrowserShim(app))
 
 if __name__ == '__main__':
+    # Allow hixie 76 protocol for WebSockets to account for Qt 4 (which PySide needs)
+    os.environ['IPYTHON_ALLOW_DRAFT_WEBSOCKETS_FOR_PHANTOMJS'] = '1'
     print('Hello from server.py')
     print('I was called with arguments {}'.format(sys.argv))
     if len(sys.argv) >=1 and sys.argv[1] == 'server.py':
