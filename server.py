@@ -17,6 +17,17 @@ from PySide.QtGui import *
 from PySide.QtWebKit import *
 from PySide.QtNetwork import *
 
+class CustomWebView(QWebView):
+    def __init__(self, parent=None):
+        super(CustomWebView, self).__init__(parent)
+    def createWindow(self, typ):
+        print('createWindow {}'.format(typ))
+        self.window = QWebView()
+        self.webpage = QWebPage(self.window)
+        self.window.setPage(self.webpage)
+        self.window.show()
+        return self.window
+
 class Browser(QApplication):
 
     def __init__(self, url):
@@ -27,16 +38,25 @@ class Browser(QApplication):
         #self.url = "https://www.websocket.org/echo.html"
         self.initUI()
 
+    def about(self):
+        QMessageBox.about(self, "About app", "MESSAGE")
+
     def initUI(self):
-        self.web = QWebView()
+        self.view = QWidget()
+
+        self.layout = QVBoxLayout()
+
+        self.locationBar = QLineEdit()
+        self.layout.addWidget(self.locationBar)
+
+        self.web = CustomWebView()
         self.web.settings().setAttribute(
             QWebSettings.WebAttribute.DeveloperExtrasEnabled, True)
         self.web.load(QUrl(self.url))
-        self.web.show()
+        self.layout.addWidget(self.web)
 
-        self.inspector = QWebInspector()
-        self.inspector.setPage(self.web.page())
-        self.inspector.show()
+        self.view.setLayout(self.layout)
+        self.view.show()
 
 
 class BrowserShim():
