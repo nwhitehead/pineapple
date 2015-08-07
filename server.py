@@ -18,44 +18,47 @@ from PySide.QtWebKit import *
 from PySide.QtNetwork import *
 
 class CustomWebView(QWebView):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, url=None):
         super(CustomWebView, self).__init__(parent)
+        self.children = []
+        self.setZoomFactor(1.1)
+        self.settings().setAttribute(
+            QWebSettings.WebAttribute.DeveloperExtrasEnabled, True)
+        if url is not None:
+            self.load(QUrl(url))
+
     def createWindow(self, typ):
         print('createWindow {}'.format(typ))
-        self.window = QWebView()
-        self.webpage = QWebPage(self.window)
-        self.window.setPage(self.webpage)
-        self.window.show()
-        return self.window
+        child = Browser()
+        webpage = QWebPage(child)
+        child.view.setPage(webpage)
+        child.show()
+        self.children.append(child)
+        return child.view
 
-class Browser(QApplication):
+class Browser(QWidget):
 
-    def __init__(self, url):
-        print('open_url_mp PROCESS STARTING')
-        QApplication.__init__(self, [])
-        self.url = url
-        # HACK to test websockets
-        #self.url = "https://www.websocket.org/echo.html"
-        self.initUI()
-
-    def about(self):
-        QMessageBox.about(self, "About app", "MESSAGE")
-
-    def initUI(self):
-        self.view = QWidget()
-
-        self.layout = QVBoxLayout()
+    def __init__(self, parent=None, url=None):
+        super(Browser, self).__init__(parent)
+        self.resize(600, 600)
+        self.layout = QVBoxLayout(self)
+        self.setLayout(self.layout)
 
         self.locationBar = QLineEdit()
         self.layout.addWidget(self.locationBar)
 
-        self.web = CustomWebView()
-        self.web.settings().setAttribute(
-            QWebSettings.WebAttribute.DeveloperExtrasEnabled, True)
-        self.web.load(QUrl(self.url))
-        self.layout.addWidget(self.web)
+        self.view = CustomWebView(parent=self, url=url)
+        self.layout.addWidget(self.view)
 
-        self.view.setLayout(self.layout)
+
+class BrowserApp(QApplication):
+
+    def __init__(self, url=None):
+        print('open_url_mp PROCESS STARTING')
+        QApplication.__init__(self, [])
+        self.url = url
+        ## Set self.url manually here for testing if you want
+        self.view = Browser(url=self.url)
         self.view.show()
 
 
@@ -100,7 +103,7 @@ if __name__ == '__main__':
         url = sys.argv[2]
         print('I should view a URL {}'.format(url))
         print('Launching')
-        app = Browser(url)
+        app = BrowserApp(url)
         sys.exit(app.exec_())
     else:
         start_server()
