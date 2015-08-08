@@ -29,6 +29,3 @@ def main():
         app = NotebookApp()
         app.initialize()
         app.start(BrowserShim(app))
-
-if __name__ == '__main__':
-    main()
