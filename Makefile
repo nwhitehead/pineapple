@@ -25,7 +25,7 @@ $(DIST)/server/server: venv server.spec server.py
 	$(VENV)/bin/pyinstaller server.spec -y
 	mkdir $(DIST)/server/tcl $(DIST)/server/tk
 
-venv: $(VENV)/bin/activate
+venv: $(VENV)/bin/activate $(VENV)/bin/fwpython
 .PHONE:venv
 
 $(VENV)/bin/activate: requirements.txt
@@ -34,7 +34,11 @@ $(VENV)/bin/activate: requirements.txt
 	touch $(VENV)/bin/activate
 
 $(VENV)/bin/fwpython: tools/fwpython
+ifeq ($(PLATFORM),Darwin)
 	cp -f tools/fwpython $(VENV)/bin/fwpython
+else
+	cp -f $(VENV)/bin/python $(VENV)/bin/fwpython
+endif
 
 $(VENV)/wxwidgets:
 	# Link in distribution python-wxwidgets into virtualenv space
