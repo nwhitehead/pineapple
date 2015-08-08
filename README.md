@@ -18,23 +18,26 @@ Some misc. requirements:
 * Python, virtualenv (use brew on Mac OS X)
 * NodeJS installed and working
 * NPM installed and working properly (not as root)
-* wxpython 2.9 or later (use brew on Mac OS X, binary wheel install on Windows)
+* wxpython 2.9 or later (use brew on Mac OS X, binary wheel install on Windows, source compile on Linux)
 
-To build everything:
+WxPython should be system installed and working.
+Test in python with "import wx; import wx.html2; wx.App()"
+
+Once requirements are met, to build everything:
 * `make all`
 This sets up virtualenv, installs requirements with pip, and calls
 pyinstaller to build the application. Do `make test` to try it.
 
 ## Linux
 
-I am building wxpython from the git repo: https://github.com/nwhitehead/Phoenix
+I am building wxpython from the git repo:
+`git clone --recursive https://github.com/nwhitehead/Phoenix`
 
 Unbuntu packages needed:
 `sudo apt-get install dpkg-dev build-essential python2.7-dev libjpeg-dev libtiff-dev libgtk2.0-dev libsdl1.2-dev libgstreamer-plugins-base0.10-dev`
 
-Note that you cannot do a regular `python setup.py install` on wxwidgets
-from within a virtualenv. Easiest way is to do it systemwide first, then
-allow the system distribution to be picked up by virtualenv.
+Build:
+`python build.py dox etg --nodoc sip build install`
 
 ## Mac OS X
 
@@ -55,12 +58,7 @@ is actually running npm and installing many packages with no output.
 
 ## Notes
 
-I had some trouble with PIL libraries at one point, resolved by removing
-the Ubuntu PIL packages. PyInstaller from pip is not enough up to date,
-had to use the latest source and the latest zmq to get those working
-properly.
-
-## JS
+### JS
 
 To rebuilt JavaScript/CSS static sources, from notebook directory do:
 `python setup.py css js install`
