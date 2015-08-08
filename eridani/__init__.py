@@ -17,7 +17,7 @@ import wx.html2
 
 class CustomBrowser(wx.Frame):
     def __init__(self, *args, **kwargs):
-        wx.Dialog.__init__(self, *args, **kwargs)
+        wx.Frame.__init__(self, *args, **kwargs)
         self.children = []
         sizer = wx.BoxSizer(wx.VERTICAL)
         self.view = wx.html2.WebView.New(self)
