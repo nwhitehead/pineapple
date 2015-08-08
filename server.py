@@ -14,7 +14,7 @@ import subprocess
 import wx
 import wx.html2
 
-class CustomBrowser(wx.Dialog):
+class CustomBrowser(wx.Frame):
     def __init__(self, *args, **kwargs):
         wx.Dialog.__init__(self, *args, **kwargs)
         self.children = []
