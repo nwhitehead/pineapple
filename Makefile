@@ -19,10 +19,10 @@ $(VENV)/bin/activate: requirements.txt
 	$(VENV)/bin/pip install -r requirements.txt
 	touch $(VENV)/bin/activate
 
-localtest:
-	$(VENV)/bin/$(PYTHON) eridani/server.py eridani/TestNotebook.ipynb
-localtestdebug:
-	$(VENV)/bin/$(PYTHON) eridani/server.py eridani/TestNotebook.ipynb --debug
+localtest: venv
+	$(VENV)/bin/$(PYTHON) -m eridani eridani/TestNotebook.ipynb
+localtestdebug: venv
+	$(VENV)/bin/$(PYTHON) -m eridani eridani/TestNotebook.ipynb --debug
 test: $(DIST)/server/server
 	$(DIST)/server/server eridani/TestNotebook.ipynb
 .PHONY:test localtest localtestdebug
