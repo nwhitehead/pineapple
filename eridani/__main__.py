@@ -9,13 +9,8 @@ import wx
 
 from notebook.notebookapp import NotebookApp
 from ipykernel import kernelapp
-from . import BrowserShim
-from . import CustomBrowser
-
-def start_server():
-    app = NotebookApp()
-    app.initialize()
-    app.start(BrowserShim(app))
+from .shim import BrowserShim
+from .browser import CustomBrowser
 
 if __name__ == '__main__':
     # Allow hixie 76 protocol for WebSockets to account for Qt 4 (which PySide needs)
@@ -40,4 +35,6 @@ if __name__ == '__main__':
         browser.Show()
         sys.exit(app.MainLoop())
     else:
-        start_server()
+        app = NotebookApp()
+        app.initialize()
+        app.start(BrowserShim(app))
