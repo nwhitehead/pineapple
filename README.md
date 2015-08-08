@@ -42,9 +42,6 @@ manually to finish installation.
 For Ubuntu building:
 `sudo apt-get install dpkg-dev build-essential python2.7-dev libjpeg-dev libtiff-dev libgtk2.0-dev libsdl1.2-dev libgstreamer-plugins-base0.10-dev`
 
-CEFPython3 needs to be downloaded from:
-https://www.dropbox.com/sh/zar95p27yznuiv1/AAAL7G5cwnGTeS9nFmFZO21Va/31.2?dl=0
-
 ## Mac OS X
 
 Use Homebrew for python versions ([http://brew.sh/]). Follow instructions on website to
@@ -62,10 +59,6 @@ and directly install node, which also installs npm.
 During the build, the "Running setup.py develop for notebook" takes a long time, it
 is actually running npm and installing many packages with no output.
 
-Alternative for Qt: Get Qt directly from [http://www.qt.io/download-open-source/#section-2]
-
-NEW: CEF Python 3 requires "pip install cefpython3" on Mac.
-
 ## Notes
 
 I had some trouble with PIL libraries at one point, resolved by removing
@@ -73,3 +66,7 @@ the Ubuntu PIL packages. PyInstaller from pip is not enough up to date,
 had to use the latest source and the latest zmq to get those working
 properly.
 
+## JS
+
+To rebuilt JavaScript/CSS static sources, from notebook directory do:
+`python setup.py css js install`

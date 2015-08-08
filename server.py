@@ -27,14 +27,16 @@ class CustomBrowser(wx.Dialog):
         self.Bind(wx.html2.EVT_WEBVIEW_LOADED, self.OnLoaded, self.view)
         self.Bind(wx.html2.EVT_WEBVIEW_NAVIGATING, self.OnNavigate, self.view)
         self.Bind(wx.html2.EVT_WEBVIEW_NEWWINDOW, self.OnNewWindow)
-#        self.Bind(wx.html2.wxEVT_COMMAND_WEBVIEW_NEWWINDOW, self.OnNewWindow, self.view)
         self.Bind(wx.html2.EVT_WEBVIEW_TITLE_CHANGED, self.OnTitleChanged, self.view)
 
     def OnCloseWindow(self, event):
         self.Destroy()
 
     def OnNavigate(self, event):
-        print('Navigate {}{}'.format(event.GetTarget(), event.GetURL()))
+        print('Navigate [{}][{}]'.format(event.GetTarget(), event.GetURL()))
+        
+        if event.GetTarget() != '':
+            event.Veto()
 
     def OnLoaded(self, event):
         print('Loaded {}{}'.format(event.GetTarget(), event.GetURL()))
@@ -43,9 +45,13 @@ class CustomBrowser(wx.Dialog):
         print('WebView error')
 
     def OnNewWindow(self, event):
-        print('New window requested')
-    
+        print('New window requested [{}]'.format(event.GetURL()))
+
     def OnTitleChanged(self, event):
+        txt = event.GetString()
+        if txt[:3] == 'LOG':
+            print('CONSOLE LOG: {}'.format(txt))
+            return
         print('Title changed to {}'.format(event.GetString()))
     
     def LoadURL(self, url):
