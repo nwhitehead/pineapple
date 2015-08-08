@@ -14,10 +14,16 @@ didn't do that when you cloned, you can get them afterwards with
 
 ## Building
 
-Some requirements:
+Some misc. requirements:
 * Python, virtualenv (use brew on Mac OS X)
 * NodeJS installed and working
 * NPM installed and working properly (not as root)
+
+To get newest version of wxWidgets, need new versions of pip
+and distutils:
+`pip install --upgrade pip distutils`
+
+* wxWidgets
 
 To build everything:
 * `make all`
@@ -29,6 +35,9 @@ you need to run `venv/bin/python venv/bin/pyside_postinstall.py -install`
 manually to finish installation.
 
 ## Linux
+
+For Ubuntu building:
+`sudo apt-get install dpkg-dev build-essential python2.7-dev libjpeg-dev libtiff-dev libgtk2.0-dev libsdl1.2-dev libgstreamer-plugins-base0.10-dev`
 
 CEFPython3 needs to be downloaded from:
 https://www.dropbox.com/sh/zar95p27yznuiv1/AAAL7G5cwnGTeS9nFmFZO21Va/31.2?dl=0
