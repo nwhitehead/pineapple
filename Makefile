@@ -25,7 +25,7 @@ $(VENV)/bin/activate: requirements.txt
 $(VENV)/wxwidgets:
 	# Link in distribution python-wxwidgets into virtualenv space
 	rm -f $(LOCAL_PACKAGES)/wx.pth
-	ln -s $(DIST_PACKAGES)/wx $(LOCAL_PACKAGES)/wx.pth
+	ln -s $(DIST_PACKAGES)/wx.pth $(LOCAL_PACKAGES)/wx.pth
 	rm -f $(LOCAL_PACKAGES)/wxversion.py
 	ln -s $(DIST_PACKAGES)/wxversion.py $(LOCAL_PACKAGES)/wxversion.py
 	rm -f $(LOCAL_PACKAGES)/$(WX_PACKAGE)
