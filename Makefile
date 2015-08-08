@@ -32,9 +32,13 @@ $(VENV)/wxwidgets:
 	ln -s $(DIST_PACKAGES)/$(WX_PACKAGE) $(LOCAL_PACKAGES)/$(WX_PACKAGE)
 	touch $(VENV)/wxwidgets
 
+localtest:
+	$(VENV)/bin/$(PYTHON) server.py TestNotebook.ipynb
+localtestdebug:
+	$(VENV)/bin/$(PYTHON) server.py TestNotebook.ipynb --debug
 test: $(DIST)/server/server
 	$(DIST)/server/server TestNotebook.ipynb
-.PHONY:test
+.PHONY:test localtest localtestdebug
 
 clean:
 	rm -fr $(BUILD) $(DIST)
