@@ -20,11 +20,11 @@ $(VENV)/bin/activate: requirements.txt
 	touch $(VENV)/bin/activate
 
 localtest:
-	$(VENV)/bin/$(PYTHON) server.py TestNotebook.ipynb
+	$(VENV)/bin/$(PYTHON) eridani/server.py eridani/TestNotebook.ipynb
 localtestdebug:
-	$(VENV)/bin/$(PYTHON) server.py TestNotebook.ipynb --debug
+	$(VENV)/bin/$(PYTHON) eridani/server.py eridani/TestNotebook.ipynb --debug
 test: $(DIST)/server/server
-	$(DIST)/server/server TestNotebook.ipynb
+	$(DIST)/server/server eridani/TestNotebook.ipynb
 .PHONY:test localtest localtestdebug
 
 clean:
