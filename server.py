@@ -11,59 +11,49 @@ import numpy
 ##################################
 
 import subprocess
+import wx
+import wx.html2
 
-from PySide.QtCore import *
-from PySide.QtGui import *
-from PySide.QtWebKit import *
-from PySide.QtNetwork import *
+class CustomBrowser(wx.Dialog):
+    def __init__(self, *args, **kwargs):
+        wx.Dialog.__init__(self, *args, **kwargs)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        self.view = wx.html2.WebView.New(self)
+        sizer.Add(self.view, 1, wx.EXPAND, 10)
+        self.SetSizer(sizer)
+        self.SetSize((700, 700))
+        self.Bind(wx.EVT_CLOSE, self.OnCloseWindow)
+        self.Bind(wx.html2.EVT_WEBVIEW_ERROR, self.OnError)
+        self.Bind(wx.html2.EVT_WEBVIEW_LOADED, self.OnLoaded, self.view)
+        self.Bind(wx.html2.EVT_WEBVIEW_NAVIGATING, self.OnNavigate, self.view)
+        self.Bind(wx.html2.EVT_WEBVIEW_NEWWINDOW, self.OnNewWindow)
+#        self.Bind(wx.html2.wxEVT_COMMAND_WEBVIEW_NEWWINDOW, self.OnNewWindow, self.view)
+        self.Bind(wx.html2.EVT_WEBVIEW_TITLE_CHANGED, self.OnTitleChanged, self.view)
 
-class CustomWebView(QWebView):
-    def __init__(self, parent=None, url=None):
-        super(CustomWebView, self).__init__(parent)
-        self.children = []
-        self.setZoomFactor(1.1)
-        self.settings().setAttribute(
-            QWebSettings.WebAttribute.DeveloperExtrasEnabled, True)
-        if url is not None:
-            self.load(QUrl(url))
+    def OnCloseWindow(self, event):
+        self.Destroy()
 
-    def createWindow(self, typ):
-        print('createWindow {}'.format(typ))
-        child = Browser()
-        webpage = QWebPage(child)
-        child.view.setPage(webpage)
-        child.show()
-        self.children.append(child)
-        return child.view
+    def OnNavigate(self, event):
+        print('Navigate {}{}'.format(event.GetTarget(), event.GetURL()))
 
-class Browser(QWidget):
+    def OnLoaded(self, event):
+        print('Loaded {}{}'.format(event.GetTarget(), event.GetURL()))
 
-    def __init__(self, parent=None, url=None):
-        super(Browser, self).__init__(parent)
-        self.resize(600, 600)
-        self.layout = QVBoxLayout(self)
-        self.setLayout(self.layout)
+    def OnError(self, event):
+        print('WebView error')
 
-        self.locationBar = QLineEdit()
-        self.layout.addWidget(self.locationBar)
-
-        self.view = CustomWebView(parent=self, url=url)
-        self.layout.addWidget(self.view)
-
-
-class BrowserApp(QApplication):
-
-    def __init__(self, url=None):
-        print('open_url_mp PROCESS STARTING')
-        QApplication.__init__(self, [])
-        self.url = url
-        ## Set self.url manually here for testing if you want
-        self.view = Browser(url=self.url)
-        self.view.show()
-
+    def OnNewWindow(self, event):
+        print('New window requested')
+    
+    def OnTitleChanged(self, event):
+        print('Title changed to {}'.format(event.GetString()))
+    
+    def LoadURL(self, url):
+        self.view.LoadURL(url)
 
 class BrowserShim():
     def __init__(self, app):
+        # Needs app so we can stop server when last browser window closes
         self.app = app
     def open(self, url, **kwargs):
         print('BROWSER OPENING URL {}'.format(url))
@@ -103,7 +93,10 @@ if __name__ == '__main__':
         url = sys.argv[2]
         print('I should view a URL {}'.format(url))
         print('Launching')
-        app = BrowserApp(url)
-        sys.exit(app.exec_())
+        app = wx.App(False)
+        browser = CustomBrowser(None, -1)
+        browser.LoadURL(url)
+        browser.Show()
+        sys.exit(app.MainLoop())
     else:
         start_server()
