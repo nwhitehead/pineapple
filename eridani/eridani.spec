@@ -3,7 +3,7 @@
 block_cipher = None
 
 a = Analysis(
-    ['server.py'],
+    ['.py'],
     pathex=['.'],
     hiddenimports=[
         'notebook.tree.handlers',

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# From http://wiki.wxpython.org/wxPythonVirtualenvOnMac
 PYTHON=/usr/local/bin/python2.7
 
 ENV=`$PYTHON -c "import os; print os.path.abspath(os.path.join(os.path.dirname(\"$0\"), '..'))"`
