@@ -1,37 +1,45 @@
-all: dist/server/server
+PYTHON := python2.7
+VENV := venv
+DIST_PACKAGES := /usr/lib/$(PYTHON)/dist-packages
+LOCAL_PACKAGES := $(VENV)/lib/$(PYTHON)/site-packages
+WX_PACKAGE := wx-2.8-gtk2-unicode
+BUILD := build
+DIST := dist
+
+all: $(DIST)/server/server
 .PHONY:all
 
-dist/server/server: venv server.spec server.py
-	rm -fr build/ dist/
-	venv/bin/pyinstaller server.spec -y
-	mkdir dist/server/tcl dist/server/tk
+$(DIST)/server/server: venv server.spec server.py
+	rm -fr $(BUILD) $(DIST)
+	$(VENV)/bin/pyinstaller server.spec -y
+	mkdir $(DIST)/server/tcl $(DIST)/server/tk
 
-venv: venv/bin/activate venv/wxwidgets
+venv: $(VENV)/bin/activate $(VENV)/wxwidgets
 .PHONE:venv
 
-venv/bin/activate: requirements.txt
-	test -d venv || virtualenv venv
-	venv/bin/pip install -r requirements.txt
-	touch venv/bin/activate
+$(VENV)/bin/activate: requirements.txt
+	test -d $(VENV) || virtualenv $(VENV)
+	$(VENV)/bin/pip install -r requirements.txt
+	touch $(VENV)/bin/activate
 
-venv/wxwidgets:
+$(VENV)/wxwidgets:
 	# Link in distribution python-wxwidgets into virtualenv space
-	rm -f venv/lib/python2.7/site-packages/wx.pth
-	ln -s /usr/lib/python2.7/dist-packages/wx venv/lib/python2.7/site-packages/wx.pth
-	rm -f venv/lib/python2.7/site-packages/wxversion.py
-	ln -s /usr/lib/python2.7/dist-packages/wxversion.py venv/lib/python2.7/site-packages/wxversion.py
-	rm -f venv/lib/python2.7/site-packages/wx-2.8-gtk2-unicode
-	ln -s /usr/lib/python2.7/dist-packages/wx-2.8-gtk2-unicode venv/lib/python2.7/site-packages/wx-2.8-gtk2-unicode
-	touch venv/wxwidgets
+	rm -f $(LOCAL_PACKAGES)/wx.pth
+	ln -s $(DIST_PACKAGES)/wx $(LOCAL_PACKAGES)/wx.pth
+	rm -f $(LOCAL_PACKAGES)/wxversion.py
+	ln -s $(DIST_PACKAGES)/wxversion.py $(LOCAL_PACKAGES)/wxversion.py
+	rm -f $(LOCAL_PACKAGES)/$(WX_PACKAGE)
+	ln -s $(DIST_PACKAGES)/$(WX_PACKAGE) $(LOCAL_PACKAGES)/$(WX_PACKAGE)
+	touch $(VENV)/wxwidgets
 
-test: dist/server/server
-	./dist/server/server TestNotebook.ipynb
+test: $(DIST)/server/server
+	$(DIST)/server/server TestNotebook.ipynb
 .PHONY:test
 
 clean:
-	rm -fr build/ dist/
+	rm -fr $(BUILD) $(DIST)
 .PHONY:clean
 
 distclean: clean
-	rm -fr venv/
+	rm -fr $(VENV)
 .PHONY:distclean
