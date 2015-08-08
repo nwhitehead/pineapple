@@ -4,6 +4,3 @@
 [submodule "pyinstaller"]
 	path = pyinstaller
 	url = https://github.com/nwhitehead/pyinstaller.git
-[submodule "Phoenix"]
-	path = Phoenix
-	url = https://github.com/nwhitehead/Phoenix.git
