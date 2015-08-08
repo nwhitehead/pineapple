@@ -27,16 +27,21 @@ pyinstaller to build the application. Do `make test` to try it.
 
 ## Linux
 
+I am building wxpython from the git repo: https://github.com/nwhitehead/Phoenix
 
-For Ubuntu,  building:
+Unbuntu packages needed:
 `sudo apt-get install dpkg-dev build-essential python2.7-dev libjpeg-dev libtiff-dev libgtk2.0-dev libsdl1.2-dev libgstreamer-plugins-base0.10-dev`
+
+Note that you cannot do a regular `python setup.py install` on wxwidgets
+from within a virtualenv. Easiest way is to do it systemwide first, then
+allow the system distribution to be picked up by virtualenv.
 
 ## Mac OS X
 
 Use Homebrew for python versions ([http://brew.sh/]). Follow instructions on website to
 get get brew setup, then do:
 
-* `brew install python python3 qt`
+* `brew install python python3 wxpython wxmac`
 
 Next get virtualenv using pip:
 
@@ -45,7 +50,7 @@ Next get virtualenv using pip:
 I had trouble with the brew version of nodejs and npm. Instead go to [http://nodejs.org]
 and directly install node, which also installs npm.
 
-During the build, the "Running setup.py develop for notebook" takes a long time, it
+During the notebook build, the "Running setup.py develop for notebook" takes a long time, it
 is actually running npm and installing many packages with no output.
 
 ## Notes
