@@ -28,6 +28,11 @@ BUG: The PySide installation process sometimes does not do the postinstall,
 you need to run `venv/bin/python venv/bin/pyside_postinstall.py -install`
 manually to finish installation.
 
+## Linux
+
+CEFPython3 needs to be downloaded from:
+https://www.dropbox.com/sh/zar95p27yznuiv1/AAAL7G5cwnGTeS9nFmFZO21Va/31.2?dl=0
+
 ## Mac OS X
 
 Use Homebrew for python versions ([http://brew.sh/]). Follow instructions on website to
@@ -46,6 +51,8 @@ During the build, the "Running setup.py develop for notebook" takes a long time,
 is actually running npm and installing many packages with no output.
 
 Alternative for Qt: Get Qt directly from [http://www.qt.io/download-open-source/#section-2]
+
+NEW: CEF Python 3 requires "pip install cefpython3" on Mac.
 
 ## Notes
 

@@ -58,7 +58,6 @@ class BrowserApp(QApplication):
         QApplication.__init__(self, [])
         self.url = url
         ## Set self.url manually here for testing if you want
-        self.url = "file:///home/nwhitehead/projects/eridani/test_font.html"
         self.view = Browser(url=self.url)
         self.view.show()
 
