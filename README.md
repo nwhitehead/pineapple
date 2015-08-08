@@ -7,6 +7,7 @@ and packages as possible, while remaining super easy to install and use.
 This project uses git submodules for referencing other components:
     jupyter
     pyinstaller
+    Phoenix (wxwidgets 3.x)
 
 You can get them when you clone with `git clone --recursive ...`. If you
 didn't do that when you cloned, you can get them afterwards with
@@ -19,9 +20,11 @@ Some misc. requirements:
 * NodeJS installed and working
 * NPM installed and working properly (not as root)
 
-To get newest version of wxWidgets, need new versions of pip
-and distutils:
-`pip install --upgrade pip distutils`
+To build wxWidgets, go into Phoenix directory and do:
+`python build.py dox etg --nodoc sip build`
+
+Install in the virtualenv with:
+`venv/bin/python2.7 build.py install`
 
 * wxWidgets
 
