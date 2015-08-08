@@ -24,7 +24,7 @@ To build wxWidgets, go into Phoenix directory and do:
 `python build.py dox etg --nodoc sip build`
 
 Install in the virtualenv with:
-`venv/bin/python2.7 build.py install`
+`../venv/bin/python2.7 build.py install`
 
 * wxWidgets
 
@@ -32,10 +32,6 @@ To build everything:
 * `make all`
 This sets up virtualenv, installs requirements with pip, and calls
 pyinstaller to build the application. Do `make test` to try it.
-
-BUG: The PySide installation process sometimes does not do the postinstall,
-you need to run `venv/bin/python venv/bin/pyside_postinstall.py -install`
-manually to finish installation.
 
 ## Linux
 
