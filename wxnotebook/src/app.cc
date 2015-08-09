@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 
 #include <wx/wxprec.h>
 
@@ -44,6 +45,11 @@ bool MyApp::OnInit()
     frame->Show();
     wxVersionInfo vi = wxGetLibraryVersionInfo();
     std::cout << "OnInit() vi=" << vi.ToString() << std::endl;
+    std::vector<int> v = { 1, 2, 3};
+    for(auto i : v) {
+        std::cout << i << " ";
+    }
+    std::cout << std::endl;
     return true;
 }
 
