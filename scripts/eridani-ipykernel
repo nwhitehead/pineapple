@@ -1,0 +1,6 @@
+#!/usr/bin/env python
+
+from ipykernel import kernelapp
+
+if __name__ == '__main__':
+    kernelapp.launch_new_instance()

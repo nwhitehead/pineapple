@@ -5,26 +5,13 @@ DIST := dist
 PLATFORM := $(shell uname)
 DEMO_NOTEBOOK := demo/TestNotebook.ipynb
 
-LOCAL_PACKAGES := $(VENV)/lib/$(PYTHON)/site-packages
-ifeq ($(PLATFORM),Linux)
-	## Linux
-	DIST_PACKAGES := /usr/local/lib/$(PYTHON)/dist-packages
-	WX_PACKAGE := wx
-else
-	ifeq ($(PLATFORM),Darwin)
-		## Mac
-		DIST_PACKAGES := /usr/local/Cellar/wxpython/3.0.2.0/lib/$(PYTHON)/site-packages
-		WX_PACKAGE := wx-3.0-osx_cocoa
-	endif
-endif
-
-all: $(DIST)/eridani/eridani
+all: $(DIST)/eridani/eridani-ipykernel
 .PHONY:all
 
-$(DIST)/eridani/eridani: venv eridani/eridani.spec
+$(DIST)/eridani/eridani-ipykernel: venv scripts/eridani-ipykernel scripts/eridani-ipykernel.spec
 	rm -fr $(BUILD) $(DIST)
-	$(VENV)/bin/pyinstaller eridani/eridani.spec -y --windowed
-	mkdir $(DIST)/eridani/tcl $(DIST)/eridani/tk
+	$(VENV)/bin/pyinstaller scripts/eridani-ipykernel.spec -y
+	mkdir -p $(DIST)/eridani-ipykernel/tcl $(DIST)/eridani-ipykernel/tk
 
 venv: $(VENV)/bin/activate $(VENV)/bin/fwpython
 .PHONE:venv
