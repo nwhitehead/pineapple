@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <vector>
 
 #include <wx/wxprec.h>
@@ -6,6 +7,12 @@
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
+
+#include <wx/process.h>
+#include <wx/stream.h>
+#include <wx/txtstrm.h>
+
+constexpr char server_script_location[] = "../../scripts/eridani-main serve";
 
 class MyApp: public wxApp
 {
@@ -18,11 +25,14 @@ class MyFrame: public wxFrame
 public:
     MyFrame(const wxString &title, const wxPoint &pos, const wxSize &size);
 
-private:
+    wxProcess *server;
+
     void OnHello(wxCommandEvent &event);
     void OnExit(wxCommandEvent &event);
     void OnAbout(wxCommandEvent &event);
-    
+    void OnSubprocessTerminate(wxCommandEvent &event);
+
+private:
     wxDECLARE_EVENT_TABLE();
 };
 
@@ -43,13 +53,26 @@ bool MyApp::OnInit()
 {
     MyFrame *frame = new MyFrame("Hello world", wxPoint(50, 50), wxSize(400, 400));
     frame->Show();
-    wxVersionInfo vi = wxGetLibraryVersionInfo();
-    std::cout << "OnInit() vi=" << vi.ToString() << std::endl;
-    std::vector<int> v = { 1, 2, 3};
-    for(auto i : v) {
-        std::cout << i << " ";
+    std::cout << "wxWidget versioninfo = " << wxGetLibraryVersionInfo().ToString() << std::endl;
+
+    Connect(wxEVT_END_PROCESS, wxCommandEventHandler(MyFrame::OnSubprocessTerminate));
+
+    frame->server = new wxProcess(frame);
+    wxExecute(server_script_location, wxEXEC_ASYNC | wxEXEC_HIDE_CONSOLE, frame->server);
+
+/*
+    if (process) {
+        process->Redirect();
+        std::cout << "Redirected" << std::endl;
+        wxString log;
+        wxInputStream *msg = process->GetInputStream();
+        wxTextInputStream tStream(*msg);
+        while(msg && !(msg->Eof())) {
+            log = tStream.ReadLine();
+            std::cout << "REDIRECT: " << log << std::endl;
+        }
     }
-    std::cout << std::endl;
+*/
     return true;
 }
 
@@ -61,6 +84,7 @@ MyFrame::MyFrame(const wxString &title, const wxPoint &pos, const wxSize &size)
 
 void MyFrame::OnExit(wxCommandEvent &event)
 {
+    std::cout << "EXIT" << std::endl;
     Close(true);
 }
 
@@ -73,4 +97,10 @@ void MyFrame::OnAbout(wxCommandEvent &event)
 void MyFrame::OnHello(wxCommandEvent &event)
 {
     wxLogMessage("Hello world");
+}
+
+void MyFrame::OnSubprocessTerminate(wxCommandEvent &event)
+{
+    wxLogMessage("TERMINATE");
+    event.Skip();
 }
