@@ -9,6 +9,9 @@ nbformat
 ipykernel
 pyzmq
 terminado
+alabaster
+sphinx
+sphinx_rtd_theme
 -e pyinstaller/
 -e notebook/
 -e eridani/

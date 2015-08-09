@@ -3,7 +3,7 @@
 block_cipher = None
 
 a = Analysis(
-    ['.py'],
+    ['scripts/eridani-main'],
     pathex=['.'],
     hiddenimports=[
         'notebook.tree.handlers',
@@ -23,7 +23,7 @@ a = Analysis(
     ],
     hookspath=None,
     runtime_hooks=None,
-    excludes=None,
+    excludes=['docutils', 'alabaster', 'sphinx', 'sphinx_rtd_theme'],
     cipher=block_cipher)
 
 pyz = PYZ(a.pure,
