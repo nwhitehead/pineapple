@@ -28,24 +28,22 @@ public:
     wxProcess *server;
 
     void OnHello(wxCommandEvent &event);
+    void OnClose(wxCloseEvent &event);
     void OnExit(wxCommandEvent &event);
     void OnAbout(wxCommandEvent &event);
     void OnSubprocessTerminate(wxCommandEvent &event);
-
 private:
     wxDECLARE_EVENT_TABLE();
 };
+
+wxBEGIN_EVENT_TABLE(MyFrame, wxFrame)
+    EVT_CLOSE(MyFrame::OnClose)
+wxEND_EVENT_TABLE()
 
 enum
 {
     ID_Hello = 1
 };
-
-wxBEGIN_EVENT_TABLE(MyFrame, wxFrame)
-    EVT_MENU(ID_Hello, MyFrame::OnHello)
-    EVT_MENU(wxID_EXIT, MyFrame::OnExit)
-    EVT_MENU(wxID_ABOUT, MyFrame::OnAbout)
-wxEND_EVENT_TABLE()
 
 wxIMPLEMENT_APP(MyApp);
 
@@ -58,7 +56,9 @@ bool MyApp::OnInit()
     Connect(wxEVT_END_PROCESS, wxCommandEventHandler(MyFrame::OnSubprocessTerminate));
 
     frame->server = new wxProcess(frame);
-    wxExecute(server_script_location, wxEXEC_ASYNC | wxEXEC_HIDE_CONSOLE, frame->server);
+    wxExecute(server_script_location,
+        wxEXEC_ASYNC | wxEXEC_HIDE_CONSOLE | wxEXEC_MAKE_GROUP_LEADER,
+        frame->server);
 
 /*
     if (process) {
@@ -103,4 +103,13 @@ void MyFrame::OnSubprocessTerminate(wxCommandEvent &event)
 {
     wxLogMessage("TERMINATE");
     event.Skip();
+}
+
+void MyFrame::OnClose(wxCloseEvent &event)
+{
+    std::cout << "CLOSE" << std::endl;
+    if (server) {
+        server->Kill(server->GetPid(), wxSIGTERM, wxKILL_CHILDREN);
+    }
+    Destroy();
 }
