@@ -18,12 +18,12 @@ else
 	endif
 endif
 
-all: $(DIST)/server/server
+all: $(DIST)/eridani/eridani
 .PHONY:all
 
 $(DIST)/eridani/eridani: venv eridani/eridani.spec
 	rm -fr $(BUILD) $(DIST)
-	$(VENV)/bin/pyinstaller eridani/eridani.spec -y
+	$(VENV)/bin/pyinstaller eridani/eridani.spec -y --windowed
 	mkdir $(DIST)/eridani/tcl $(DIST)/eridani/tk
 
 venv: $(VENV)/bin/activate $(VENV)/bin/fwpython
