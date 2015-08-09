@@ -12,9 +12,10 @@
 #include <wx/stream.h>
 #include <wx/txtstrm.h>
 
+/// Relative path to main server script
 constexpr char server_script_location[] = "../../scripts/eridani-main serve";
 
-class MyApp: public wxApp
+class MainApp: public wxApp
 {
 public:
     virtual bool OnInit();
@@ -45,9 +46,9 @@ enum
     ID_Hello = 1
 };
 
-wxIMPLEMENT_APP(MyApp);
+wxIMPLEMENT_APP(MainApp);
 
-bool MyApp::OnInit()
+bool MainApp::OnInit()
 {
     MyFrame *frame = new MyFrame("Hello world", wxPoint(50, 50), wxSize(400, 400));
     frame->Show();
@@ -60,19 +61,6 @@ bool MyApp::OnInit()
         wxEXEC_ASYNC | wxEXEC_HIDE_CONSOLE | wxEXEC_MAKE_GROUP_LEADER,
         frame->server);
 
-/*
-    if (process) {
-        process->Redirect();
-        std::cout << "Redirected" << std::endl;
-        wxString log;
-        wxInputStream *msg = process->GetInputStream();
-        wxTextInputStream tStream(*msg);
-        while(msg && !(msg->Eof())) {
-            log = tStream.ReadLine();
-            std::cout << "REDIRECT: " << log << std::endl;
-        }
-    }
-*/
     return true;
 }
 
