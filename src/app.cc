@@ -11,9 +11,10 @@
 #include <wx/process.h>
 #include <wx/stream.h>
 #include <wx/txtstrm.h>
+#include <wx/utils.h>
 
-/// Relative path to main server script
-constexpr char server_script_location[] = "../../scripts/eridani-main serve";
+/// Environment variable to pass server path
+constexpr char server_script_env[] = "PINEAPPLE_SERVER";
 
 class MainApp: public wxApp
 {
@@ -56,10 +57,16 @@ bool MainApp::OnInit()
 
     Connect(wxEVT_END_PROCESS, wxCommandEventHandler(MyFrame::OnSubprocessTerminate));
 
-    frame->server = new wxProcess(frame);
-    wxExecute(server_script_location,
-        wxEXEC_ASYNC | wxEXEC_HIDE_CONSOLE | wxEXEC_MAKE_GROUP_LEADER,
-        frame->server);
+    wxString server_script;
+    frame->server = nullptr;
+    if (wxGetEnv(server_script_env, &server_script)) {
+        frame->server = new wxProcess(frame);
+        wxExecute(server_script,
+            wxEXEC_ASYNC | wxEXEC_HIDE_CONSOLE | wxEXEC_MAKE_GROUP_LEADER,
+            frame->server);
+    } else {
+        std::cerr << "No server script location specified in " << server_script_env << std::endl;
+    }
 
     return true;
 }

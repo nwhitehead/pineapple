@@ -5,12 +5,12 @@ DIST := dist
 PLATFORM := $(shell uname)
 DEMO_NOTEBOOK := demo/TestNotebook.ipynb
 
-all: $(DIST)/eridani/eridani-ipykernel
+all: $(DIST)/eridani/eridani-main
 .PHONY:all
 
 $(DIST)/eridani-main/eridani-main: venv scripts/eridani-main scripts/eridani-main.spec
 	rm -fr $(BUILD) $(DIST)
-	$(VENV)/bin/pyinstaller scripts/eridani-main.spec -y
+	$(VENV)/bin/pyinstaller --distpath=$(DIST) --workpath=$(BUILD) scripts/eridani-main.spec -y
 	mkdir -p $(DIST)/eridani-main/tcl $(DIST)/eridani-main/tk
 
 venv: $(VENV)/bin/activate $(VENV)/bin/fwpython
