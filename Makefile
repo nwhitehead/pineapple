@@ -5,16 +5,10 @@ DIST := dist
 PLATFORM := $(shell uname)
 
 LOCAL_PACKAGES := $(VENV)/lib/$(PYTHON)/site-packages
-ifeq ($(PLATFORM),Linux)
-	## Linux
-	DIST_PACKAGES := /usr/lib/$(PYTHON)/dist-packages
-	WX_PACKAGE := wx-3.0-gtk2-unicode
-else
-	ifeq ($(PLATFORM),Darwin)
-		## Mac
-		DIST_PACKAGES := /usr/local/Cellar/wxpython/3.0.2.0/lib/$(PYTHON)/site-packages
-		WX_PACKAGE := wx-3.0-osx_cocoa
-	endif
+ifeq ($(PLATFORM),Darwin)
+	## Mac
+	DIST_PACKAGES := /usr/local/Cellar/wxpython/3.0.2.0/lib/$(PYTHON)/site-packages
+	WX_PACKAGE := wx-3.0-osx_cocoa
 endif
 
 all: $(DIST)/server/server
@@ -42,12 +36,14 @@ endif
 
 $(VENV)/wxwidgets:
 	# Link in distribution python-wxwidgets into virtualenv space
-	rm -f $(LOCAL_PACKAGES)/wx.pth
-	ln -s $(DIST_PACKAGES)/wx.pth $(LOCAL_PACKAGES)/wx.pth
-	rm -f $(LOCAL_PACKAGES)/wxversion.py
-	ln -s $(DIST_PACKAGES)/wxversion.py $(LOCAL_PACKAGES)/wxversion.py
-	rm -f $(LOCAL_PACKAGES)/$(WX_PACKAGE)
-	ln -s $(DIST_PACKAGES)/$(WX_PACKAGE) $(LOCAL_PACKAGES)/$(WX_PACKAGE)
+	ifeq ($(PLATFORM),Darwin)
+		rm -f $(LOCAL_PACKAGES)/wx.pth
+		ln -s $(DIST_PACKAGES)/wx.pth $(LOCAL_PACKAGES)/wx.pth
+		rm -f $(LOCAL_PACKAGES)/wxversion.py
+		ln -s $(DIST_PACKAGES)/wxversion.py $(LOCAL_PACKAGES)/wxversion.py
+		rm -f $(LOCAL_PACKAGES)/$(WX_PACKAGE)
+		ln -s $(DIST_PACKAGES)/$(WX_PACKAGE) $(LOCAL_PACKAGES)/$(WX_PACKAGE)
+	endif
 	touch $(VENV)/wxwidgets
 
 localtest: venv
