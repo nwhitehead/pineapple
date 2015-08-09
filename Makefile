@@ -42,14 +42,13 @@ else
 endif
 
 # Link in distribution python-wxwidgets into virtualenv space
-ifeq ($(PLATFORM),Linux)
 $(VENV)/wxwidgets:
+ifeq ($(PLATFORM),Linux)
 		rm -fr $(LOCAL_PACKAGES)/wx
 		ln -s $(DIST_PACKAGES)/wx $(LOCAL_PACKAGES)/wx
 		touch $(VENV)/wxwidgets
 else
-	ifeq ($(PLATFORM),Darwin)
-$(VENV)/wxwidgets:
+ifeq ($(PLATFORM),Darwin)
 		rm -f $(LOCAL_PACKAGES)/wx.pth
 		ln -s $(DIST_PACKAGES)/wx.pth $(LOCAL_PACKAGES)/wx.pth
 		rm -f $(LOCAL_PACKAGES)/wxversion.py
@@ -57,7 +56,7 @@ $(VENV)/wxwidgets:
 		rm -f $(LOCAL_PACKAGES)/$(WX_PACKAGE)
 		ln -s $(DIST_PACKAGES)/$(WX_PACKAGE) $(LOCAL_PACKAGES)/$(WX_PACKAGE)
 		touch $(VENV)/wxwidgets
-	endif
+endif
 endif
 
 localtest: venv
