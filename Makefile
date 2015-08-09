@@ -3,6 +3,7 @@ VENV := venv
 BUILD := build
 DIST := dist
 PLATFORM := $(shell uname)
+DEMO_NOTEBOOK := demo/TestNotebook.ipynb
 
 LOCAL_PACKAGES := $(VENV)/lib/$(PYTHON)/site-packages
 ifeq ($(PLATFORM),Darwin)
@@ -47,11 +48,11 @@ $(VENV)/wxwidgets:
 	touch $(VENV)/wxwidgets
 
 localtest: venv
-	$(VENV)/bin/fwpython -m eridani eridani/TestNotebook.ipynb
+	$(VENV)/bin/fwpython -m eridani $(DEMO_NOTEBOOK)
 localtestdebug: venv
-	$(VENV)/bin/fwpython -m eridani eridani/TestNotebook.ipynb --debug
-test: $(DIST)/server/server
-	$(DIST)/server/server eridani/TestNotebook.ipynb
+	$(VENV)/bin/fwpython -m eridani $(DEMO_NOTEBOOK) --debug
+test: $(DIST)/eridani/eridani
+	$(DIST)/eridani/eridani $(DEMO_NOTEBOOK)
 .PHONY:test localtest localtestdebug
 
 clean:
