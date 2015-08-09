@@ -23,7 +23,7 @@ a = Analysis(
     ],
     hookspath=None,
     runtime_hooks=None,
-    excludes=['docutils', 'alabaster', 'sphinx', 'sphinx_rtd_theme'],
+    excludes=[],
     cipher=block_cipher)
 
 pyz = PYZ(a.pure,
@@ -33,7 +33,7 @@ exe = EXE(
     pyz,
     a.scripts,
     exclude_binaries=True,
-    name='server',
+    name='eridani',
     debug=False,
     strip=None,
     upx=True,
@@ -51,4 +51,4 @@ coll = COLLECT(
     Tree('venv/lib/python2.7/site-packages/nbformat/v4', prefix='nbformat/v4'),
     strip=None,
     upx=True,
-    name='server')
+    name='eridani')

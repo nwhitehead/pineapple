@@ -24,7 +24,7 @@ all: $(DIST)/server/server
 $(DIST)/eridani/eridani: venv eridani/eridani.spec
 	rm -fr $(BUILD) $(DIST)
 	$(VENV)/bin/pyinstaller eridani/eridani.spec -y
-	mkdir $(DIST)/server/tcl $(DIST)/server/tk
+	mkdir $(DIST)/eridani/tcl $(DIST)/eridani/tk
 
 venv: $(VENV)/bin/activate $(VENV)/bin/fwpython
 .PHONE:venv
