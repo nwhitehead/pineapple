@@ -24,7 +24,7 @@ set(VENV_DIR ${PROJECT_BINARY_DIR}/venv)
 add_custom_command(
     OUTPUT "${VENV_DIR}/bin/activate"
     COMMAND virtualenv "${VENV_DIR}"
-    COMMAND pip install -r "${PROJECT_SOURCE_DIR}/requirements.txt"
+    COMMAND "${VENV_DIR}/bin/pip" install -r "${PROJECT_SOURCE_DIR}/requirements.txt"
     COMMENT "Setting up virtualenv"
 )
 add_custom_target(venv DEPENDS "${VENV_DIR}/bin/activate")
