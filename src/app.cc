@@ -8,10 +8,19 @@
     #include <wx/wx.h>
 #endif
 
+#if !wxUSE_WEBVIEW
+#error "WebView not enabled"
+#endif
+
+#if !wxUSE_WEBVIEW_WEBKIT && !wxUSE_WEBVIEW_IE
+#error "A wxWebView backend is required by this sample"
+#endif
+
 #include <wx/process.h>
 #include <wx/stream.h>
 #include <wx/txtstrm.h>
 #include <wx/utils.h>
+#include <wx/webview.h>
 
 /// Environment variable to pass server path
 constexpr char server_script_env[] = "PINEAPPLE_SERVER";
@@ -28,6 +37,7 @@ public:
     MyFrame(const wxString &title, const wxPoint &pos, const wxSize &size);
 
     wxProcess *server;
+    wxWebView *webview;
 
     void OnHello(wxCommandEvent &event);
     void OnClose(wxCloseEvent &event);
@@ -59,14 +69,15 @@ bool MainApp::OnInit()
 
     wxString server_script;
     frame->server = nullptr;
-    if (wxGetEnv(server_script_env, &server_script)) {
-        frame->server = new wxProcess(frame);
-        wxExecute(server_script,
-            wxEXEC_ASYNC | wxEXEC_HIDE_CONSOLE | wxEXEC_MAKE_GROUP_LEADER,
-            frame->server);
-    } else {
-        std::cerr << "No server script location specified in " << server_script_env << std::endl;
+    if (!wxGetEnv(server_script_env, &server_script)) {
+        server_script = "venv/bin/python scripts/eridani-main serve";
     }
+    frame->server = new wxProcess(frame);
+    wxExecute(server_script,
+        wxEXEC_ASYNC | wxEXEC_HIDE_CONSOLE | wxEXEC_MAKE_GROUP_LEADER,
+        frame->server);
+
+    webview = new wxWebView();
 
     return true;
 }
@@ -105,6 +116,10 @@ void MyFrame::OnClose(wxCloseEvent &event)
     std::cout << "CLOSE" << std::endl;
     if (server) {
         server->Kill(server->GetPid(), wxSIGTERM, wxKILL_CHILDREN);
+        delete server;
+    }
+    if (webview) {
+        webview->Destroy();
     }
     Destroy();
 }

@@ -30,8 +30,8 @@ pyinstaller to build the application. Do `make test` to try it.
 
 ## Linux
 
-I am building wxpython from the git repo:
-`git clone --recursive https://github.com/nwhitehead/Phoenix`
+I am building wxpython from my fork of the git repo (no changes needed yet):
+`git clone https://github.com/nwhitehead/wxWidgets.git`
 
 Unbuntu packages needed:
 `sudo apt-get install dpkg-dev build-essential python2.7-dev libjpeg-dev libtiff-dev libgtk2.0-dev libsdl1.2-dev libgstreamer-plugins-base0.10-dev`

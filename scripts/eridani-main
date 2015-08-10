@@ -1,3 +1,5 @@
+#!${PROJECT_BINARY_DIR}/venv/bin/python
+
 import sys
 
 from ipykernel import kernelapp
