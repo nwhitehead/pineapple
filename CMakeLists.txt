@@ -39,7 +39,11 @@ configure_file(scripts/eridani-main ${PROJECT_BINARY_DIR}/scripts/eridani-main)
 set (ENV{PINEAPPLE_SERVER}
     "${PROJECT_BINARY_DIR}/venv/bin/python ${PROJECT_BINARY_DIR}/scripts/eridani-main serve")
 
-add_custom_target(test
+add_custom_target(localtest
     DEPENDS ${PROJECT_NAME} venv
     COMMAND "${PROJECT_NAME}"
 )
+
+### Demo files
+
+configure_file(demo/TestNotebook.ipynb ${PROJECT_BINARY_DIR}/demo/TestNotebook.ipynb COPY)

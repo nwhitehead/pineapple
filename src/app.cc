@@ -12,18 +12,22 @@
 #error "WebView not enabled"
 #endif
 
-#if !wxUSE_WEBVIEW_WEBKIT && !wxUSE_WEBVIEW_IE
-#error "A wxWebView backend is required by this sample"
-#endif
-
 #include <wx/process.h>
 #include <wx/stream.h>
 #include <wx/txtstrm.h>
 #include <wx/utils.h>
 #include <wx/webview.h>
 
+namespace config {
+
 /// Environment variable to pass server path
 constexpr char server_script_env[] = "PINEAPPLE_SERVER";
+constexpr char server_script_default[] = "venv/bin/python scripts/eridani-main serve";
+constexpr int initial_width = 900;
+constexpr int initial_height = 700;
+constexpr char start_url[] = "http://localhost:8888/tree/demo/TestNotebook.ipynb";
+
+} /// namespace config
 
 class MainApp: public wxApp
 {
@@ -62,7 +66,7 @@ wxIMPLEMENT_APP(MainApp);
 
 bool MainApp::OnInit()
 {
-    MyFrame *frame = new MyFrame("Hello world", wxPoint(50, 50), wxSize(400, 400));
+    MyFrame *frame = new MyFrame("Pineapple Editor", wxPoint(50, 50), wxSize(400, 400));
     frame->Show();
     std::cout << "wxWidget versioninfo = " << wxGetLibraryVersionInfo().ToString() << std::endl;
 
@@ -70,15 +74,13 @@ bool MainApp::OnInit()
 
     wxString server_script;
     frame->server = nullptr;
-    if (!wxGetEnv(server_script_env, &server_script)) {
-        server_script = "venv/bin/python scripts/eridani-main serve";
+    if (!wxGetEnv(config::server_script_env, &server_script)) {
+        server_script = config::server_script_default;
     }
     frame->server = new wxProcess(frame);
     wxExecute(server_script,
         wxEXEC_ASYNC | wxEXEC_HIDE_CONSOLE | wxEXEC_MAKE_GROUP_LEADER,
         frame->server);
-
-    std::cout << "Process execute started" << std::endl;
 
     return true;
 }
@@ -86,23 +88,20 @@ bool MainApp::OnInit()
 MyFrame::MyFrame(const wxString &title, const wxPoint &pos, const wxSize &size)
     : wxFrame(nullptr, wxID_ANY, title, pos, size)
 {
-    std::cout << "Creating MyFrame" << std::endl;
     // Create sizer for panel.
-    wxStaticBoxSizer* frame_sizer = new wxStaticBoxSizer(wxVERTICAL, this, "WebView");
+    wxBoxSizer* frame_sizer = new wxBoxSizer(wxVERTICAL);
 
-    wxString url = "http://www.google.com";
+    wxString url = config::start_url;
     webview = wxWebView::New(this, wxID_ANY);
     frame_sizer->Add(webview, 1, wxEXPAND, 10);
-//    webview = wxWebView::New(this, wxID_ANY);
     webview->LoadURL(url);
     webview->Show();
-//    std::cout << "Title = " << webview->GetCurrentTitle() << std::endl;
 
     Connect(webview->GetId(), wxEVT_WEBVIEW_ERROR,
             wxWebViewEventHandler(MyFrame::OnError), NULL, this);
 
     SetSizerAndFit(frame_sizer);
-    SetSize(wxDefaultCoord, wxDefaultCoord, 700, 700);
+    SetSize(wxDefaultCoord, wxDefaultCoord, config::initial_width, config::initial_height);
 }
 
 void MyFrame::OnError(wxWebViewEvent &event)
