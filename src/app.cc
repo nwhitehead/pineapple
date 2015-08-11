@@ -1,18 +1,14 @@
+
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <sstream>
 #include <vector>
 
 #include <wx/wxprec.h>
-
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
-
-#if !wxUSE_WEBVIEW
-#error "WebView not enabled"
-#endif
-
 #include <wx/menu.h>
 #include <wx/process.h>
 #include <wx/stream.h>
@@ -31,27 +27,26 @@ constexpr char server_script_default[] = "venv/bin/python scripts/eridani-main s
 /// Default size of main window on startup
 constexpr int initial_width = 900;
 constexpr int initial_height = 700;
+/// Local baseurl
+constexpr char base_url[] = "http://localhost:8888";
 /// Initial url to open
-constexpr char start_url[] = "http://localhost:8888/tree/demo/TestNotebook.ipynb";
+constexpr char start_url[] = "/tree/demo/TestNotebook.ipynb";
 /// Title prefix
 constexpr char title[] = "Pineapple";
+/// Special protocol prefix
+constexpr char protocol_prefix[] = "$$$$";
 
 } /// namespace config
-
-class MainApp: public wxApp
-{
-public:
-    virtual bool OnInit();
-};
 
 class MainFrame: public wxFrame
 {
 public:
-    MainFrame(const wxString &title, const wxPoint &pos, const wxSize &size);
+    MainFrame(std::string url0, const wxString &title, const wxPoint &pos, const wxSize &size);
+    static MainFrame *Spawn(std::string url);
 
     wxProcess *server;
     wxWebView *webview;
-    wxString url;
+    std::string url;
     wxMenuBar *menubar;
     wxMenu *menu_file;
     wxMenu *menu_help;
@@ -63,40 +58,81 @@ public:
     void OnAbout(wxCommandEvent &event);
     void OnSubprocessTerminate(wxProcessEvent &event);
     void OnTitleChanged(wxWebViewEvent &event);
+
 private:
     wxDECLARE_EVENT_TABLE();
 };
 
 wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_CLOSE(MainFrame::OnClose)
-    EVT_END_PROCESS(wxID_ANY, MainFrame::OnSubprocessTerminate)
     EVT_MENU(wxID_EXIT, MainFrame::OnQuit)
     EVT_MENU(wxID_ABOUT, MainFrame::OnAbout)
     EVT_WEBVIEW_ERROR(wxID_ANY, MainFrame::OnError)
+    EVT_WEBVIEW_TITLE_CHANGED(wxID_ANY, MainFrame::OnTitleChanged)
+wxEND_EVENT_TABLE()
+
+class MainApp: public wxApp
+{
+public:
+    virtual bool OnInit();
+    virtual int OnExit();
+    void OnSubprocessTerminate(wxProcessEvent &event);
+
+    wxProcess *server;
+    MainFrame *frame;
+private:
+    wxDECLARE_EVENT_TABLE();
+
+};
+
+wxBEGIN_EVENT_TABLE(MainApp, wxApp)
+    EVT_END_PROCESS(wxID_ANY, MainApp::OnSubprocessTerminate)
 wxEND_EVENT_TABLE()
 
 wxIMPLEMENT_APP(MainApp);
 
 bool MainApp::OnInit()
 {
-    MainFrame *frame = new MainFrame(config::title, wxPoint(50, 50), wxSize(400, 400));
+    frame = MainFrame::Spawn(std::string(config::base_url) + std::string(config::start_url));
+/*
+    frame = new MainFrame(config::start_url, "Default Title",
+        wxPoint(wxDefaultCoord, wxDefaultCoord),
+        wxSize(config::initial_width, config::initial_height));
     frame->Show();
-
+*/
     wxString server_script;
-    frame->server = nullptr;
+    server = nullptr;
     if (!wxGetEnv(config::server_script_env, &server_script)) {
         server_script = config::server_script_default;
     }
-    frame->server = new wxProcess(frame);
+    server = new wxProcess(frame);
     wxExecute(server_script,
         wxEXEC_ASYNC | wxEXEC_HIDE_CONSOLE | wxEXEC_MAKE_GROUP_LEADER,
-        frame->server);
+        server);
 
     return true;
 }
 
-MainFrame::MainFrame(const wxString &title, const wxPoint &pos, const wxSize &size)
-    : wxFrame(nullptr, wxID_ANY, title, pos, size)
+int MainApp::OnExit()
+{
+    std::cout << "APP OnExit()" << std::endl;
+    if (server) {
+        std::cout << "CLOSING SERVER" << std::endl;
+        server->Kill(server->GetPid(), wxSIGTERM, wxKILL_CHILDREN);
+    }
+}
+
+void MainApp::OnSubprocessTerminate(wxProcessEvent &event)
+{
+    std::cout << "SUBPROCESS TERMINATED" << std::endl;
+}
+
+
+
+
+MainFrame::MainFrame(std::string url0, const wxString &title,
+    const wxPoint &pos, const wxSize &size)
+    : wxFrame(nullptr, wxID_ANY, title, pos, size), url(url0)
 {
     menubar = new wxMenuBar();
     menu_file = new wxMenu();
@@ -107,10 +143,8 @@ MainFrame::MainFrame(const wxString &title, const wxPoint &pos, const wxSize &si
     menubar->Append(menu_help, wxT("&Help"));
     SetMenuBar(menubar);
 
-    // Create sizer for panel.
     wxBoxSizer* frame_sizer = new wxBoxSizer(wxVERTICAL);
 
-    url = config::start_url;
     webview = wxWebView::New(this, wxID_ANY);
     frame_sizer->Add(webview, 1, wxEXPAND, 10);
 
@@ -118,7 +152,7 @@ MainFrame::MainFrame(const wxString &title, const wxPoint &pos, const wxSize &si
     webview->Show();
 
     SetSizerAndFit(frame_sizer);
-    SetSize(wxDefaultCoord, wxDefaultCoord, config::initial_width, config::initial_height);
+    SetSize(wxDefaultCoord, wxDefaultCoord, size.GetWidth(), size.GetHeight());
 }
 
 void MainFrame::OnError(wxWebViewEvent &event)
@@ -147,21 +181,37 @@ void MainFrame::OnHello(wxCommandEvent &event)
     wxLogMessage("Hello world");
 }
 
-void MainFrame::OnSubprocessTerminate(wxProcessEvent &event)
-{
-    wxLogMessage("TERMINATE");
-    event.Skip();
-}
-
 void MainFrame::OnClose(wxCloseEvent &event)
 {
     std::cout << "CLOSE" << std::endl;
-    if (server) {
-        server->Kill(server->GetPid(), wxSIGTERM, wxKILL_CHILDREN);
-        delete server;
-    }
+    std::cout << "CLOSING WEBVIEW" << std::endl;
     if (webview) {
         webview->Destroy();
     }
+    std::cout << "DESTROY SELF" << std::endl;
     Destroy();
 }
+
+void MainFrame::OnTitleChanged(wxWebViewEvent &event)
+{
+    std::string title = event.GetString().ToStdString();
+    std::cout << "TITLE CHANGED - " << title << std::endl;
+    // Check if starts with $$$$
+    std::string prefix = config::protocol_prefix;
+    if (std::equal(prefix.begin(), prefix.end(), title.begin())) {
+        // Prefix present
+        std::string theUrl = title.substr(prefix.size());
+        std::cout << "SPECIAL " << theUrl << std::endl;
+        Spawn(config::base_url + theUrl);
+    }
+}
+
+MainFrame *MainFrame::Spawn(std::string url)
+{
+    MainFrame *child = new MainFrame(url, url,
+        wxPoint(wxDefaultCoord, wxDefaultCoord),
+        wxSize(config::initial_width, config::initial_height));
+    child->Show();
+    return child;
+}
+
