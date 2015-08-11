@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Loading...</title>
+    <script>
+var LOCATION = "{{url}}";
+
+function load(url, success, failure) {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        console.log('statechange ' + xmlhttp.readyState + ' ' + xmlhttp.status);
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            return success(xmlhttp.responseText);
+        }
+        if (xmlhttp.readyState == 4 && xmlhttp.status != 200) {
+            return failure(xmlhttp.status);
+        }
+    };
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+}
+
+window.onload = function() {
+    var navto = function(testurl, finalurl) {
+        var success = function(resp) {
+            window.location.href = finalurl;
+        };
+        var failure = function(status) {
+            navto(testurl, finalurl);
+        };
+        load(testurl, success, failure);
+    };
+    navto(LOCATION, LOCATION);
+};
+    </script>
+<!--
+Nice colors:
+bg 222222
+3498db
+e74c3c
+f9c922
+-->
+    <style>
+
+body {
+    background: #222222;
+}
+#loader-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+}
+#loader {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 150px;
+    height: 150px;
+    margin: -75px 0 0 -75px;
+    border: 3px solid transparent;
+    border-top-color: #f9c922;
+    z-index: 1500;
+    border-radius: 50%;
+    -webkit-animation: spin 1.0s linear infinite;
+    animation: spin 1.0s linear infinite;
+}
+#loader:before {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    border: 3px solid transparent;
+    border-top-color: #f9c922;
+    border-radius: 50%;
+    -webkit-animation: spin 4.0s linear infinite;
+    animation: spin 4.0s linear infinite;
+}
+#loader:after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+    border: 3px solid transparent;
+    border-top-color: #f9c922;
+    border-radius: 50%;
+    -webkit-animation: spin 2.0s linear infinite;
+    animation: spin 2.0s linear infinite;
+}
+#loader2 {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 98px;
+    height: 98px;
+    margin: -49px 0 0 -49px;
+    border: 3px solid transparent;
+    border-top-color: #f9c922;
+    z-index: 1500;
+    border-radius: 50%;
+    -webkit-animation: spin 0.5s linear infinite;
+    animation: spin 0.5s linear infinite;
+}
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+@keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+    </style>
+</head>
+<body>
+
+<div id="loader-wrapper">
+    <div id="loader"></div>
+    <div id="loader2"></div>
+</div>
+
+</body>
+</html>

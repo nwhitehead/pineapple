@@ -56,3 +56,4 @@ add_custom_target(localtest
 ### Demo files
 
 configure_file(demo/TestNotebook.ipynb ${PROJECT_BINARY_DIR}/demo/TestNotebook.ipynb COPY)
+configure_file(src/loading.html ${PROJECT_BINARY_DIR}/html/loading.html COPY)

@@ -1,5 +1,6 @@
 
 #include <algorithm>
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -35,14 +36,19 @@ constexpr char start_url[] = "/tree/demo/TestNotebook.ipynb";
 constexpr char title[] = "Pineapple";
 /// Special protocol prefix
 constexpr char protocol_prefix[] = "$$$$";
+/// Page that shows loading animation and loads actual page
+constexpr char loading_html_filename[] = "html/loading.html";
 
 } /// namespace config
+
+std::string load_page;
+bool load_page_loaded = false;
 
 class MainFrame: public wxFrame
 {
 public:
-    MainFrame(std::string url0, const wxString &title, const wxPoint &pos, const wxSize &size);
-    static MainFrame *Spawn(std::string url);
+    MainFrame(std::string url0, const wxString &title, const wxPoint &pos, const wxSize &size, bool indirect_load);
+    static MainFrame *Spawn(std::string url, bool indirect_load);
 
     wxProcess *server;
     wxWebView *webview;
@@ -91,9 +97,15 @@ wxEND_EVENT_TABLE()
 
 wxIMPLEMENT_APP(MainApp);
 
+std::string replace_one(std::string &s, std::string mud, std::string gold)
+{
+    std::cout << s.length() << ", " << mud.length() << ", " << gold.length() << std::endl;
+    return s.replace(s.find(mud), mud.length(), gold);
+}
+
 bool MainApp::OnInit()
 {
-    frame = MainFrame::Spawn(std::string(config::base_url) + std::string(config::start_url));
+    frame = MainFrame::Spawn(std::string(config::base_url) + std::string(config::start_url), true);
 
     wxString server_script;
     server = nullptr;
@@ -126,7 +138,7 @@ void MainApp::OnSubprocessTerminate(wxProcessEvent &event)
 
 
 MainFrame::MainFrame(std::string url0, const wxString &title,
-    const wxPoint &pos, const wxSize &size)
+    const wxPoint &pos, const wxSize &size, bool indirect_load)
     : wxFrame(nullptr, wxID_ANY, title, pos, size), url(url0)
 {
     menubar = new wxMenuBar();
@@ -143,7 +155,23 @@ MainFrame::MainFrame(std::string url0, const wxString &title,
     webview = wxWebView::New(this, wxID_ANY);
     frame_sizer->Add(webview, 1, wxEXPAND, 10);
 
-    webview->LoadURL(url);
+    
+    if (indirect_load) {
+        if (!load_page_loaded) {
+            // Read loading page
+            std::ifstream ifs(config::loading_html_filename);
+            load_page = std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
+            load_page_loaded = true;
+        }
+        // Do template replacement for url
+        std::string contents{load_page};
+        replace_one(contents, "{{url}}", url);
+        std::cout << contents << std::endl;
+        webview->SetPage(wxString(contents), "");
+    } else {
+        webview->LoadURL(url);
+    }
+    
     webview->Show();
 
     SetSizerAndFit(frame_sizer);
@@ -196,15 +224,15 @@ void MainFrame::OnTitleChanged(wxWebViewEvent &event)
         // Prefix present
         std::string theUrl = title.substr(prefix.size());
         std::cout << "SPECIAL " << theUrl << std::endl;
-        Spawn(config::base_url + theUrl);
+        Spawn(config::base_url + theUrl, true);
     }
 }
 
-MainFrame *MainFrame::Spawn(std::string url)
+MainFrame *MainFrame::Spawn(std::string url, bool indirect_load)
 {
     MainFrame *child = new MainFrame(url, url,
         wxPoint(wxDefaultCoord, wxDefaultCoord),
-        wxSize(config::initial_width, config::initial_height));
+        wxSize(config::initial_width, config::initial_height), indirect_load);
     child->Show();
     return child;
 }
