@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <vector>
 
 #include <wx/wxprec.h>
@@ -12,19 +13,25 @@
 #error "WebView not enabled"
 #endif
 
+#include <wx/menu.h>
 #include <wx/process.h>
 #include <wx/stream.h>
 #include <wx/txtstrm.h>
 #include <wx/utils.h>
 #include <wx/webview.h>
 
+#include "config.h"
+
 namespace config {
 
 /// Environment variable to pass server path
 constexpr char server_script_env[] = "PINEAPPLE_SERVER";
+/// Default server script if none given
 constexpr char server_script_default[] = "venv/bin/python scripts/eridani-main serve";
+/// Default size of main window on startup
 constexpr int initial_width = 900;
 constexpr int initial_height = 700;
+/// Initial url to open
 constexpr char start_url[] = "http://localhost:8888/tree/demo/TestNotebook.ipynb";
 
 } /// namespace config
@@ -35,26 +42,30 @@ public:
     virtual bool OnInit();
 };
 
-class MyFrame: public wxFrame
+class MainFrame: public wxFrame
 {
 public:
-    MyFrame(const wxString &title, const wxPoint &pos, const wxSize &size);
+    MainFrame(const wxString &title, const wxPoint &pos, const wxSize &size);
 
     wxProcess *server;
     wxWebView *webview;
+    wxString url;
+    wxMenuBar *menubar;
+    wxMenu *menu_file;
+    wxMenu *menu_help;
 
     void OnError(wxWebViewEvent &event);
     void OnHello(wxCommandEvent &event);
     void OnClose(wxCloseEvent &event);
-    void OnExit(wxCommandEvent &event);
+    void OnQuit(wxCommandEvent &event);
     void OnAbout(wxCommandEvent &event);
     void OnSubprocessTerminate(wxCommandEvent &event);
 private:
     wxDECLARE_EVENT_TABLE();
 };
 
-wxBEGIN_EVENT_TABLE(MyFrame, wxFrame)
-    EVT_CLOSE(MyFrame::OnClose)
+wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
+    EVT_CLOSE(MainFrame::OnClose)
 wxEND_EVENT_TABLE()
 
 enum
@@ -66,11 +77,10 @@ wxIMPLEMENT_APP(MainApp);
 
 bool MainApp::OnInit()
 {
-    MyFrame *frame = new MyFrame("Pineapple Editor", wxPoint(50, 50), wxSize(400, 400));
+    MainFrame *frame = new MainFrame("Pineapple Editor", wxPoint(50, 50), wxSize(400, 400));
     frame->Show();
-    std::cout << "wxWidget versioninfo = " << wxGetLibraryVersionInfo().ToString() << std::endl;
 
-    Connect(wxEVT_END_PROCESS, wxCommandEventHandler(MyFrame::OnSubprocessTerminate));
+    Connect(wxEVT_END_PROCESS, wxCommandEventHandler(MainFrame::OnSubprocessTerminate));
 
     wxString server_script;
     frame->server = nullptr;
@@ -85,54 +95,73 @@ bool MainApp::OnInit()
     return true;
 }
 
-MyFrame::MyFrame(const wxString &title, const wxPoint &pos, const wxSize &size)
+MainFrame::MainFrame(const wxString &title, const wxPoint &pos, const wxSize &size)
     : wxFrame(nullptr, wxID_ANY, title, pos, size)
 {
+    menubar = new wxMenuBar();
+    menu_file = new wxMenu();
+    menu_file->Append(wxID_EXIT, wxT("&Quit"));
+    menubar->Append(menu_file, wxT("&File"));
+    menu_help = new wxMenu();
+    menu_help->Append(wxID_ABOUT, wxT("&About"));
+    menubar->Append(menu_help, wxT("&Help"));
+    SetMenuBar(menubar);
+
+    Connect(wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED,
+            wxCommandEventHandler(MainFrame::OnQuit));
+    Connect(wxID_ABOUT, wxEVT_COMMAND_MENU_SELECTED,
+            wxCommandEventHandler(MainFrame::OnAbout));
+
     // Create sizer for panel.
     wxBoxSizer* frame_sizer = new wxBoxSizer(wxVERTICAL);
 
-    wxString url = config::start_url;
+    url = config::start_url;
     webview = wxWebView::New(this, wxID_ANY);
     frame_sizer->Add(webview, 1, wxEXPAND, 10);
-    webview->LoadURL(url);
-    webview->Show();
 
     Connect(webview->GetId(), wxEVT_WEBVIEW_ERROR,
-            wxWebViewEventHandler(MyFrame::OnError), NULL, this);
+            wxWebViewEventHandler(MainFrame::OnError), NULL, this);
+
+    webview->LoadURL(url);
+    webview->Show();
 
     SetSizerAndFit(frame_sizer);
     SetSize(wxDefaultCoord, wxDefaultCoord, config::initial_width, config::initial_height);
 }
 
-void MyFrame::OnError(wxWebViewEvent &event)
+void MainFrame::OnError(wxWebViewEvent &event)
 {
     std::cout << "ERROR" << std::endl;
+//    webview->Hide();
+    webview->LoadURL(url);
 }
 
-void MyFrame::OnExit(wxCommandEvent &event)
+void MainFrame::OnQuit(wxCommandEvent &event)
 {
-    std::cout << "EXIT" << std::endl;
+    std::cout << "QUIT" << std::endl;
     Close(true);
 }
 
-void MyFrame::OnAbout(wxCommandEvent &event)
+void MainFrame::OnAbout(wxCommandEvent &event)
 {
-    wxMessageBox("This is wxWidgets",
-        "About", wxOK | wxICON_INFORMATION);
+    std::stringstream ss;
+    ss << config::version_full << "\n\n" << wxGetLibraryVersionInfo().ToString() << std::endl;
+
+    wxMessageBox(ss.str(), "About", wxOK | wxICON_INFORMATION);
 }
 
-void MyFrame::OnHello(wxCommandEvent &event)
+void MainFrame::OnHello(wxCommandEvent &event)
 {
     wxLogMessage("Hello world");
 }
 
-void MyFrame::OnSubprocessTerminate(wxCommandEvent &event)
+void MainFrame::OnSubprocessTerminate(wxCommandEvent &event)
 {
     wxLogMessage("TERMINATE");
     event.Skip();
 }
 
-void MyFrame::OnClose(wxCloseEvent &event)
+void MainFrame::OnClose(wxCloseEvent &event)
 {
     std::cout << "CLOSE" << std::endl;
     if (server) {
