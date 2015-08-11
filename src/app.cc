@@ -94,12 +94,7 @@ wxIMPLEMENT_APP(MainApp);
 bool MainApp::OnInit()
 {
     frame = MainFrame::Spawn(std::string(config::base_url) + std::string(config::start_url));
-/*
-    frame = new MainFrame(config::start_url, "Default Title",
-        wxPoint(wxDefaultCoord, wxDefaultCoord),
-        wxSize(config::initial_width, config::initial_height));
-    frame->Show();
-*/
+
     wxString server_script;
     server = nullptr;
     if (!wxGetEnv(config::server_script_env, &server_script)) {
@@ -158,7 +153,6 @@ MainFrame::MainFrame(std::string url0, const wxString &title,
 void MainFrame::OnError(wxWebViewEvent &event)
 {
     std::cout << "ERROR" << std::endl;
-//    webview->Hide();
     webview->LoadURL(url);
 }
 
