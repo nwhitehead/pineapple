@@ -39,6 +39,7 @@ public:
     wxProcess *server;
     wxWebView *webview;
 
+    void OnError(wxWebViewEvent &event);
     void OnHello(wxCommandEvent &event);
     void OnClose(wxCloseEvent &event);
     void OnExit(wxCommandEvent &event);
@@ -77,7 +78,7 @@ bool MainApp::OnInit()
         wxEXEC_ASYNC | wxEXEC_HIDE_CONSOLE | wxEXEC_MAKE_GROUP_LEADER,
         frame->server);
 
-    webview = new wxWebView();
+    std::cout << "Process execute started" << std::endl;
 
     return true;
 }
@@ -85,7 +86,28 @@ bool MainApp::OnInit()
 MyFrame::MyFrame(const wxString &title, const wxPoint &pos, const wxSize &size)
     : wxFrame(nullptr, wxID_ANY, title, pos, size)
 {
+    std::cout << "Creating MyFrame" << std::endl;
+    // Create sizer for panel.
+    wxStaticBoxSizer* frame_sizer = new wxStaticBoxSizer(wxVERTICAL, this, "WebView");
 
+    wxString url = "http://www.google.com";
+    webview = wxWebView::New(this, wxID_ANY);
+    frame_sizer->Add(webview, 1, wxEXPAND, 10);
+//    webview = wxWebView::New(this, wxID_ANY);
+    webview->LoadURL(url);
+    webview->Show();
+//    std::cout << "Title = " << webview->GetCurrentTitle() << std::endl;
+
+    Connect(webview->GetId(), wxEVT_WEBVIEW_ERROR,
+            wxWebViewEventHandler(MyFrame::OnError), NULL, this);
+
+    SetSizerAndFit(frame_sizer);
+    SetSize(wxDefaultCoord, wxDefaultCoord, 700, 700);
+}
+
+void MyFrame::OnError(wxWebViewEvent &event)
+{
+    std::cout << "ERROR" << std::endl;
 }
 
 void MyFrame::OnExit(wxCommandEvent &event)

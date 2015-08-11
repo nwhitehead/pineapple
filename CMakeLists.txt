@@ -7,7 +7,7 @@ set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
 ### wxWidgets
 
 set(wxWidgets_CONFIGURATION mswu)
-find_package(wxWidgets COMPONENTS core base webview REQUIRED)
+find_package(wxWidgets REQUIRED core base webview)
 include(${wxWidgets_USE_FILE})
 
 ### Pineapple app
