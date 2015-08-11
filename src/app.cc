@@ -64,6 +64,7 @@ public:
     void OnAbout(wxCommandEvent &event);
     void OnSubprocessTerminate(wxProcessEvent &event);
     void OnTitleChanged(wxWebViewEvent &event);
+    void OnNewWindow(wxWebViewEvent &event);
 
 private:
     wxDECLARE_EVENT_TABLE();
@@ -75,6 +76,7 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(wxID_ABOUT, MainFrame::OnAbout)
     EVT_WEBVIEW_ERROR(wxID_ANY, MainFrame::OnError)
     EVT_WEBVIEW_TITLE_CHANGED(wxID_ANY, MainFrame::OnTitleChanged)
+    EVT_WEBVIEW_NEWWINDOW(wxID_ANY, MainFrame::OnNewWindow)
 wxEND_EVENT_TABLE()
 
 class MainApp: public wxApp
@@ -134,9 +136,6 @@ void MainApp::OnSubprocessTerminate(wxProcessEvent &event)
     std::cout << "SUBPROCESS TERMINATED" << std::endl;
 }
 
-
-
-
 MainFrame::MainFrame(std::string url0, const wxString &title,
     const wxPoint &pos, const wxSize &size, bool indirect_load)
     : wxFrame(nullptr, wxID_ANY, title, pos, size), url(url0)
@@ -155,7 +154,6 @@ MainFrame::MainFrame(std::string url0, const wxString &title,
     webview = wxWebView::New(this, wxID_ANY);
     frame_sizer->Add(webview, 1, wxEXPAND, 10);
 
-    
     if (indirect_load) {
         if (!load_page_loaded) {
             // Read loading page
@@ -171,7 +169,7 @@ MainFrame::MainFrame(std::string url0, const wxString &title,
     } else {
         webview->LoadURL(url);
     }
-    
+
     webview->Show();
 
     SetSizerAndFit(frame_sizer);
@@ -237,3 +235,9 @@ MainFrame *MainFrame::Spawn(std::string url, bool indirect_load)
     return child;
 }
 
+void MainFrame::OnNewWindow(wxWebViewEvent &event)
+{
+    wxString url(event.GetURL());
+    std::cout << "NEW WINDOW " << url << std::endl;
+    wxLaunchDefaultBrowser(url);
+}
