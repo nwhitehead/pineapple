@@ -33,6 +33,8 @@ constexpr int initial_width = 900;
 constexpr int initial_height = 700;
 /// Initial url to open
 constexpr char start_url[] = "http://localhost:8888/tree/demo/TestNotebook.ipynb";
+/// Title prefix
+constexpr char title[] = "Pineapple";
 
 } /// namespace config
 
@@ -59,28 +61,22 @@ public:
     void OnClose(wxCloseEvent &event);
     void OnQuit(wxCommandEvent &event);
     void OnAbout(wxCommandEvent &event);
-    void OnSubprocessTerminate(wxCommandEvent &event);
+    void OnSubprocessTerminate(wxProcessEvent &event);
 private:
     wxDECLARE_EVENT_TABLE();
 };
 
 wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_CLOSE(MainFrame::OnClose)
+    EVT_END_PROCESS(wxID_ANY, MainFrame::OnSubprocessTerminate)
 wxEND_EVENT_TABLE()
-
-enum
-{
-    ID_Hello = 1
-};
 
 wxIMPLEMENT_APP(MainApp);
 
 bool MainApp::OnInit()
 {
-    MainFrame *frame = new MainFrame("Pineapple Editor", wxPoint(50, 50), wxSize(400, 400));
+    MainFrame *frame = new MainFrame(config::title, wxPoint(50, 50), wxSize(400, 400));
     frame->Show();
-
-    Connect(wxEVT_END_PROCESS, wxCommandEventHandler(MainFrame::OnSubprocessTerminate));
 
     wxString server_script;
     frame->server = nullptr;
@@ -155,7 +151,7 @@ void MainFrame::OnHello(wxCommandEvent &event)
     wxLogMessage("Hello world");
 }
 
-void MainFrame::OnSubprocessTerminate(wxCommandEvent &event)
+void MainFrame::OnSubprocessTerminate(wxProcessEvent &event)
 {
     wxLogMessage("TERMINATE");
     event.Skip();
