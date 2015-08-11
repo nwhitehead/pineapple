@@ -62,6 +62,7 @@ public:
     void OnQuit(wxCommandEvent &event);
     void OnAbout(wxCommandEvent &event);
     void OnSubprocessTerminate(wxProcessEvent &event);
+    void OnTitleChanged(wxWebViewEvent &event);
 private:
     wxDECLARE_EVENT_TABLE();
 };
@@ -69,6 +70,9 @@ private:
 wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_CLOSE(MainFrame::OnClose)
     EVT_END_PROCESS(wxID_ANY, MainFrame::OnSubprocessTerminate)
+    EVT_MENU(wxID_EXIT, MainFrame::OnQuit)
+    EVT_MENU(wxID_ABOUT, MainFrame::OnAbout)
+    EVT_WEBVIEW_ERROR(wxID_ANY, MainFrame::OnError)
 wxEND_EVENT_TABLE()
 
 wxIMPLEMENT_APP(MainApp);
@@ -103,20 +107,12 @@ MainFrame::MainFrame(const wxString &title, const wxPoint &pos, const wxSize &si
     menubar->Append(menu_help, wxT("&Help"));
     SetMenuBar(menubar);
 
-    Connect(wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED,
-            wxCommandEventHandler(MainFrame::OnQuit));
-    Connect(wxID_ABOUT, wxEVT_COMMAND_MENU_SELECTED,
-            wxCommandEventHandler(MainFrame::OnAbout));
-
     // Create sizer for panel.
     wxBoxSizer* frame_sizer = new wxBoxSizer(wxVERTICAL);
 
     url = config::start_url;
     webview = wxWebView::New(this, wxID_ANY);
     frame_sizer->Add(webview, 1, wxEXPAND, 10);
-
-    Connect(webview->GetId(), wxEVT_WEBVIEW_ERROR,
-            wxWebViewEventHandler(MainFrame::OnError), NULL, this);
 
     webview->LoadURL(url);
     webview->Show();
