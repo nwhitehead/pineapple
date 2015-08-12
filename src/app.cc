@@ -38,6 +38,8 @@ constexpr char title[] = "Pineapple";
 constexpr char protocol_prefix[] = "$$$$";
 /// Page that shows loading animation and loads actual page
 constexpr char loading_html_filename[] = "html/loading.html";
+/// What to put at beginning of window title
+constexpr char title_prefix[] = "Pineapple - ";
 
 } /// namespace config
 
@@ -48,7 +50,7 @@ class MainFrame: public wxFrame
 {
 public:
     MainFrame(std::string url0, const wxString &title, const wxPoint &pos, const wxSize &size, bool indirect_load);
-    static MainFrame *Spawn(std::string url, bool indirect_load);
+    static MainFrame *Spawn(std::string url, bool indirect_load=false);
 
     wxProcess *server;
     wxWebView *webview;
@@ -222,8 +224,11 @@ void MainFrame::OnTitleChanged(wxWebViewEvent &event)
         // Prefix present
         std::string theUrl = title.substr(prefix.size());
         std::cout << "SPECIAL " << theUrl << std::endl;
-        Spawn(config::base_url + theUrl, true);
+        Spawn(config::base_url + theUrl);
+        return;
     }
+    // Otherwise actually change the title
+    SetLabel(config::title_prefix + title);
 }
 
 MainFrame *MainFrame::Spawn(std::string url, bool indirect_load)
