@@ -57,6 +57,7 @@ class MainFrame: public wxFrame
         wxID_MOVE_UP, wxID_MOVE_DOWN,
         wxID_RUN, wxID_RUN_ALL, wxID_RUN_ALL_ABOVE, wxID_RUN_ALL_BELOW,
         wxID_CELL_CODE, wxID_CELL_MARKDOWN, wxID_CELL_RAW,
+        wxID_KERNEL_INTERRUPT, wxID_KERNEL_RESTART, wxID_KERNEL_RECONNECT,
     };
 public:
     MainFrame(std::string url0, const wxString &title, const wxPoint &pos, const wxSize &size, bool indirect_load);
@@ -188,6 +189,12 @@ MainFrame::MainFrame(std::string url0, const wxString &title,
     menu_cell->AppendSubMenu(menu_type, "Cell type");
 
     menubar->Append(menu_cell, "&Cell");
+
+    wxMenu *menu_kernel = new wxMenu();
+    menu_kernel->Append(wxID_KERNEL_INTERRUPT, "Interrupt");
+    menu_kernel->Append(wxID_KERNEL_RESTART, "Restart");
+    menu_kernel->Append(wxID_KERNEL_RECONNECT, "Reconnect");
+    menubar->Append(menu_kernel, "&Kernel");
 
     wxMenu *menu_help = new wxMenu();
     menu_help->Append(wxID_ABOUT, "&About");
@@ -323,6 +330,21 @@ void MainFrame::OnMenuEvent(wxCommandEvent &event)
         case wxID_CELL_RAW:
         {
             jupyter_click_cell(webview, "to_raw");
+            break;
+        }
+        case wxID_KERNEL_INTERRUPT:
+        {
+            jupyter_click_cell(webview, "int_kernel");
+            break;
+        }
+        case wxID_KERNEL_RESTART:
+        {
+            jupyter_click_cell(webview, "restart_kernel");
+            break;
+        }
+        case wxID_KERNEL_RECONNECT:
+        {
+            jupyter_click_cell(webview, "reconnect_kernel");
             break;
         }
         case wxID_SAVE:
