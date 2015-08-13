@@ -58,6 +58,7 @@ class MainFrame: public wxFrame
         wxID_RUN, wxID_RUN_ALL, wxID_RUN_ALL_ABOVE, wxID_RUN_ALL_BELOW,
         wxID_CELL_CODE, wxID_CELL_MARKDOWN, wxID_CELL_RAW,
         wxID_KERNEL_INTERRUPT, wxID_KERNEL_RESTART, wxID_KERNEL_RECONNECT,
+        wxID_HELP_KEYBOARD, wxID_HELP_NOTEBOOK, wxID_HELP_MARKDOWN,
     };
 public:
     MainFrame(std::string url0, const wxString &title, const wxPoint &pos, const wxSize &size, bool indirect_load);
@@ -197,7 +198,45 @@ MainFrame::MainFrame(std::string url0, const wxString &title,
     menubar->Append(menu_kernel, "&Kernel");
 
     wxMenu *menu_help = new wxMenu();
+    menu_help->Append(wxID_HELP_KEYBOARD, "Keyboard shortcuts");
+    menu_help->AppendSeparator();
+    menu_help->Append(wxID_HELP_NOTEBOOK, "Notebook");
+    menu_help->Append(wxID_HELP_MARKDOWN, "Markdown");
+    menu_help->AppendSeparator();
     menu_help->Append(wxID_ABOUT, "&About");
+    menu_help->AppendSeparator();
+
+/*
+        {
+            'text': "Python",
+            'url': "http://docs.python.org/%i.%i" % sys.version_info[:2],
+        },
+        {
+            'text': "IPython",
+            'url': "http://ipython.org/documentation.html",
+        },
+        {
+            'text': "NumPy",
+            'url': "http://docs.scipy.org/doc/numpy/reference/",
+        },
+        {
+            'text': "SciPy",
+            'url': "http://docs.scipy.org/doc/scipy/reference/",
+        },
+        {
+            'text': "Matplotlib",
+            'url': "http://matplotlib.org/contents.html",
+        },
+        {
+            'text': "SymPy",
+            'url': "http://docs.sympy.org/latest/index.html",
+        },
+        {
+            'text': "pandas",
+            'url': "http://pandas.pydata.org/pandas-docs/stable/",
+        },
+*/
+
     menubar->Append(menu_help, "&Help");
     
     SetMenuBar(menubar);
@@ -365,6 +404,21 @@ void MainFrame::OnMenuEvent(wxCommandEvent &event)
         case wxID_NEW_COPY:
         {
             jupyter_click_cell(webview, "copy_notebook");
+            break;
+        }
+        case wxID_HELP_KEYBOARD:
+        {
+            jupyter_click_cell(webview, "keyboard_shortcuts");
+            break;
+        }
+        case wxID_HELP_NOTEBOOK:
+        {
+            wxLaunchDefaultBrowser("http://nbviewer.ipython.org/github/ipython/ipython/blob/3.x/examples/Notebook/Index.ipynb");
+            break;
+        }
+        case wxID_HELP_MARKDOWN:
+        {
+            wxLaunchDefaultBrowser("https://help.github.com/articles/markdown-basics/");
             break;
         }
         case wxID_ABOUT:
