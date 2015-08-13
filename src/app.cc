@@ -56,6 +56,7 @@ class MainFrame: public wxFrame
         wxID_SPLIT, wxID_MERGE,
         wxID_MOVE_UP, wxID_MOVE_DOWN,
         wxID_RUN, wxID_RUN_ALL, wxID_RUN_ALL_ABOVE, wxID_RUN_ALL_BELOW,
+        wxID_CELL_CODE, wxID_CELL_MARKDOWN, wxID_CELL_RAW,
     };
 public:
     MainFrame(std::string url0, const wxString &title, const wxPoint &pos, const wxSize &size, bool indirect_load);
@@ -173,13 +174,20 @@ MainFrame::MainFrame(std::string url0, const wxString &title,
     menu_edit->Append(wxID_MOVE_DOWN, "Move cell down");
     menubar->Append(menu_edit, "&Edit");
 
-    wxMenu *menu_run = new wxMenu();
-    menu_run->Append(wxID_RUN, "Run cell");
-    menu_run->AppendSeparator();
-    menu_run->Append(wxID_RUN_ALL, "Run all cells");
-    menu_run->Append(wxID_RUN_ALL_ABOVE, "Run all above");
-    menu_run->Append(wxID_RUN_ALL_BELOW, "Run all below");
-    menubar->Append(menu_run, "&Run");
+    wxMenu *menu_cell = new wxMenu();
+    menu_cell->Append(wxID_RUN, "Run");
+    menu_cell->AppendSeparator();
+    menu_cell->Append(wxID_RUN_ALL, "Run all");
+    menu_cell->Append(wxID_RUN_ALL_ABOVE, "Run all above");
+    menu_cell->Append(wxID_RUN_ALL_BELOW, "Run all below");
+
+    wxMenu *menu_type = new wxMenu();
+    menu_type->Append(wxID_CELL_CODE, "Code");
+    menu_type->Append(wxID_CELL_MARKDOWN, "Markdown");
+    menu_type->Append(wxID_CELL_RAW, "Raw");
+    menu_cell->AppendSubMenu(menu_type, "Cell type");
+
+    menubar->Append(menu_cell, "&Cell");
 
     wxMenu *menu_help = new wxMenu();
     menu_help->Append(wxID_ABOUT, "&About");
@@ -300,6 +308,21 @@ void MainFrame::OnMenuEvent(wxCommandEvent &event)
         case wxID_RUN_ALL_BELOW:
         {
             jupyter_click_cell(webview, "run_all_cells_below");
+            break;
+        }
+        case wxID_CELL_CODE:
+        {
+            jupyter_click_cell(webview, "to_code");
+            break;
+        }
+        case wxID_CELL_MARKDOWN:
+        {
+            jupyter_click_cell(webview, "to_markdown");
+            break;
+        }
+        case wxID_CELL_RAW:
+        {
+            jupyter_click_cell(webview, "to_raw");
             break;
         }
         case wxID_SAVE:
