@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -48,6 +49,7 @@ bool load_page_loaded = false;
 
 class MainFrame: public wxFrame
 {
+    static constexpr int wxID_SAVE_HTML = 10000;
 public:
     MainFrame(std::string url0, const wxString &title, const wxPoint &pos, const wxSize &size, bool indirect_load);
     static MainFrame *Spawn(std::string url, bool indirect_load=false);
@@ -59,12 +61,10 @@ public:
     wxMenu *menu_file;
     wxMenu *menu_help;
 
-    void OnError(wxWebViewEvent &event);
-    void OnHello(wxCommandEvent &event);
+    void OnMenuEvent(wxCommandEvent &event);
     void OnClose(wxCloseEvent &event);
-    void OnQuit(wxCommandEvent &event);
-    void OnAbout(wxCommandEvent &event);
     void OnSubprocessTerminate(wxProcessEvent &event);
+    void OnError(wxWebViewEvent &event);
     void OnTitleChanged(wxWebViewEvent &event);
     void OnNewWindow(wxWebViewEvent &event);
 
@@ -74,8 +74,6 @@ private:
 
 wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_CLOSE(MainFrame::OnClose)
-    EVT_MENU(wxID_EXIT, MainFrame::OnQuit)
-    EVT_MENU(wxID_ABOUT, MainFrame::OnAbout)
     EVT_WEBVIEW_ERROR(wxID_ANY, MainFrame::OnError)
     EVT_WEBVIEW_TITLE_CHANGED(wxID_ANY, MainFrame::OnTitleChanged)
     EVT_WEBVIEW_NEWWINDOW(wxID_ANY, MainFrame::OnNewWindow)
@@ -144,12 +142,16 @@ MainFrame::MainFrame(std::string url0, const wxString &title,
 {
     menubar = new wxMenuBar();
     menu_file = new wxMenu();
+    menu_file->Append(wxID_NEW, wxT("&New"));
+    menu_file->Append(wxID_SAVE_HTML, wxT("Download HTML"));
     menu_file->Append(wxID_EXIT, wxT("&Quit"));
     menubar->Append(menu_file, wxT("&File"));
     menu_help = new wxMenu();
     menu_help->Append(wxID_ABOUT, wxT("&About"));
     menubar->Append(menu_help, wxT("&Help"));
     SetMenuBar(menubar);
+
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnMenuEvent, this);
 
     wxBoxSizer* frame_sizer = new wxBoxSizer(wxVERTICAL);
 
@@ -184,23 +186,39 @@ void MainFrame::OnError(wxWebViewEvent &event)
     webview->LoadURL(url);
 }
 
-void MainFrame::OnQuit(wxCommandEvent &event)
+void jupyter_click_cell(wxWebView *wv, std::string id)
 {
-    std::cout << "QUIT" << std::endl;
-    Close(true);
+    std::string cmd = "Jupyter.menubar.element.find('#" + id + "').click();";
+    wv->RunScript(cmd);
 }
 
-void MainFrame::OnAbout(wxCommandEvent &event)
+void MainFrame::OnMenuEvent(wxCommandEvent &event)
 {
-    std::stringstream ss;
-    ss << config::version_full << "\n\n" << wxGetLibraryVersionInfo().ToString() << std::endl;
-
-    wxMessageBox(ss.str(), "About", wxOK | wxICON_INFORMATION);
-}
-
-void MainFrame::OnHello(wxCommandEvent &event)
-{
-    wxLogMessage("Hello world");
+    std::cout << "MENU EVENT" << std::endl;
+    switch (event.GetId()) {
+        case wxID_SAVE_HTML:
+        {
+            jupyter_click_cell(webview, "download_markdown");
+            break;
+        }
+        case wxID_NEW:
+        {
+            jupyter_click_cell(webview, "open_notebook");
+            break;
+        }
+        case wxID_ABOUT:
+        {
+            std::stringstream ss;
+            ss << config::version_full << "\n\n" << wxGetLibraryVersionInfo().ToString() << std::endl;            
+            wxMessageBox(ss.str(), "About", wxOK | wxICON_INFORMATION);
+            break;
+        }
+        case wxID_EXIT:
+        {
+            Close(true);
+            break;
+        }
+    }
 }
 
 void MainFrame::OnClose(wxCloseEvent &event)
