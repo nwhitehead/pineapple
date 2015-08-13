@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
-#include <map>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -49,7 +48,15 @@ bool load_page_loaded = false;
 
 class MainFrame: public wxFrame
 {
-    static constexpr int wxID_SAVE_HTML = 10000;
+    enum {
+        wxID_SAVE_HTML = 10000,
+        wxID_NEW_COPY,
+        wxID_INSERT,
+        wxID_DELETE, wxID_UNDELETE,
+        wxID_SPLIT, wxID_MERGE,
+        wxID_MOVE_UP, wxID_MOVE_DOWN,
+        wxID_RUN, wxID_RUN_ALL, wxID_RUN_ALL_ABOVE, wxID_RUN_ALL_BELOW,
+    };
 public:
     MainFrame(std::string url0, const wxString &title, const wxPoint &pos, const wxSize &size, bool indirect_load);
     static MainFrame *Spawn(std::string url, bool indirect_load=false);
@@ -57,9 +64,6 @@ public:
     wxProcess *server;
     wxWebView *webview;
     std::string url;
-    wxMenuBar *menubar;
-    wxMenu *menu_file;
-    wxMenu *menu_help;
 
     void OnMenuEvent(wxCommandEvent &event);
     void OnClose(wxCloseEvent &event);
@@ -140,15 +144,47 @@ MainFrame::MainFrame(std::string url0, const wxString &title,
     const wxPoint &pos, const wxSize &size, bool indirect_load)
     : wxFrame(nullptr, wxID_ANY, title, pos, size), url(url0)
 {
-    menubar = new wxMenuBar();
-    menu_file = new wxMenu();
-    menu_file->Append(wxID_NEW, wxT("&New"));
-    menu_file->Append(wxID_SAVE_HTML, wxT("Download HTML"));
-    menu_file->Append(wxID_EXIT, wxT("&Quit"));
-    menubar->Append(menu_file, wxT("&File"));
-    menu_help = new wxMenu();
-    menu_help->Append(wxID_ABOUT, wxT("&About"));
-    menubar->Append(menu_help, wxT("&Help"));
+    wxMenuBar *menubar = new wxMenuBar();
+    wxMenu *menu_file = new wxMenu();
+    menu_file->Append(wxID_NEW, "&New");
+    menu_file->AppendSeparator();
+    menu_file->Append(wxID_SAVE, "&Save");
+    menu_file->AppendSeparator();
+    menu_file->Append(wxID_NEW_COPY, "Make a copy");
+    menu_file->Append(wxID_SAVE_HTML, "Download HTML");
+    menu_file->AppendSeparator();
+    menu_file->Append(wxID_EXIT, "&Quit");
+    menubar->Append(menu_file, "&File");
+
+    wxMenu *menu_edit = new wxMenu();
+    menu_edit->Append(wxID_CUT, "Cut cell");
+    menu_edit->Append(wxID_COPY, "Copy cell");
+    menu_edit->Append(wxID_PASTE, "Paste cell below");
+    menu_edit->AppendSeparator();
+    menu_edit->Append(wxID_INSERT, "Insert cell below");
+    menu_edit->AppendSeparator();
+    menu_edit->Append(wxID_DELETE, "Delete cell");
+    menu_edit->Append(wxID_UNDELETE, "Undelete cell");
+    menu_edit->AppendSeparator();
+    menu_edit->Append(wxID_SPLIT, "Split cell");
+    menu_edit->Append(wxID_MERGE, "Merge cell below");
+    menu_edit->AppendSeparator();
+    menu_edit->Append(wxID_MOVE_UP, "Move cell up");
+    menu_edit->Append(wxID_MOVE_DOWN, "Move cell down");
+    menubar->Append(menu_edit, "&Edit");
+
+    wxMenu *menu_run = new wxMenu();
+    menu_run->Append(wxID_RUN, "Run cell");
+    menu_run->AppendSeparator();
+    menu_run->Append(wxID_RUN_ALL, "Run all cells");
+    menu_run->Append(wxID_RUN_ALL_ABOVE, "Run all above");
+    menu_run->Append(wxID_RUN_ALL_BELOW, "Run all below");
+    menubar->Append(menu_run, "&Run");
+
+    wxMenu *menu_help = new wxMenu();
+    menu_help->Append(wxID_ABOUT, "&About");
+    menubar->Append(menu_help, "&Help");
+    
     SetMenuBar(menubar);
 
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnMenuEvent, this);
@@ -196,6 +232,81 @@ void MainFrame::OnMenuEvent(wxCommandEvent &event)
 {
     std::cout << "MENU EVENT" << std::endl;
     switch (event.GetId()) {
+        case wxID_CUT:
+        {
+            jupyter_click_cell(webview, "cut_cell");
+            break;
+        }
+        case wxID_COPY:
+        {
+            jupyter_click_cell(webview, "copy_cell");
+            break;
+        }
+        case wxID_PASTE:
+        {
+            jupyter_click_cell(webview, "paste_cell_below");
+            break;
+        }
+        case wxID_INSERT:
+        {
+            jupyter_click_cell(webview, "insert_cell_below");
+            break;
+        }
+        case wxID_DELETE:
+        {
+            jupyter_click_cell(webview, "delete_cell");
+            break;
+        }
+        case wxID_UNDELETE:
+        {
+            jupyter_click_cell(webview, "undelete_cell");
+            break;
+        }
+        case wxID_SPLIT:
+        {
+            jupyter_click_cell(webview, "split_cell");
+            break;
+        }
+        case wxID_MERGE:
+        {
+            jupyter_click_cell(webview, "merge_cell_below");
+            break;
+        }
+        case wxID_MOVE_UP:
+        {
+            jupyter_click_cell(webview, "move_cell_up");
+            break;
+        }
+        case wxID_MOVE_DOWN:
+        {
+            jupyter_click_cell(webview, "move_cell_down");
+            break;
+        }
+        case wxID_RUN:
+        {
+            jupyter_click_cell(webview, "run_cell");
+            break;
+        }
+        case wxID_RUN_ALL:
+        {
+            jupyter_click_cell(webview, "run_all_cells");
+            break;
+        }
+        case wxID_RUN_ALL_ABOVE:
+        {
+            jupyter_click_cell(webview, "run_all_cells_above");
+            break;
+        }
+        case wxID_RUN_ALL_BELOW:
+        {
+            jupyter_click_cell(webview, "run_all_cells_below");
+            break;
+        }
+        case wxID_SAVE:
+        {
+            jupyter_click_cell(webview, "save_checkpoint");
+            break;
+        }
         case wxID_SAVE_HTML:
         {
             jupyter_click_cell(webview, "download_markdown");
@@ -204,6 +315,11 @@ void MainFrame::OnMenuEvent(wxCommandEvent &event)
         case wxID_NEW:
         {
             jupyter_click_cell(webview, "open_notebook");
+            break;
+        }
+        case wxID_NEW_COPY:
+        {
+            jupyter_click_cell(webview, "copy_notebook");
             break;
         }
         case wxID_ABOUT:
@@ -216,6 +332,11 @@ void MainFrame::OnMenuEvent(wxCommandEvent &event)
         case wxID_EXIT:
         {
             Close(true);
+            break;
+        }
+        default:
+        {
+            std::cerr << "ERROR UNHANDLED MENU EVENT" << std::endl;
             break;
         }
     }
