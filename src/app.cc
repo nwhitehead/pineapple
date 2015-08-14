@@ -10,6 +10,7 @@
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
+#include <wx/image.h>
 #include <wx/menu.h>
 #include <wx/process.h>
 #include <wx/stream.h>
@@ -55,7 +56,7 @@ class MainFrame: public wxFrame
         wxID_DELETE, wxID_UNDELETE,
         wxID_SPLIT, wxID_MERGE,
         wxID_MOVE_UP, wxID_MOVE_DOWN,
-        wxID_RUN, wxID_RUN_ALL, wxID_RUN_ALL_ABOVE, wxID_RUN_ALL_BELOW,
+        wxID_RUN, wxID_RUN_NEXT, wxID_RUN_ALL, wxID_RUN_ALL_ABOVE, wxID_RUN_ALL_BELOW,
         wxID_CELL_CODE, wxID_CELL_MARKDOWN, wxID_CELL_RAW,
         wxID_KERNEL_INTERRUPT, wxID_KERNEL_RESTART, wxID_KERNEL_RECONNECT,
         wxID_HELP_KEYBOARD, wxID_HELP_NOTEBOOK, wxID_HELP_MARKDOWN,
@@ -114,6 +115,8 @@ std::string replace_one(std::string &s, std::string mud, std::string gold)
 
 bool MainApp::OnInit()
 {
+    wxInitAllImageHandlers();
+    
     frame = MainFrame::Spawn(std::string(config::base_url) + std::string(config::start_url), true);
 
     wxString server_script;
@@ -205,6 +208,43 @@ MainFrame::MainFrame(std::string url0, const wxString &title,
     menu_help->AppendSeparator();
     menu_help->Append(wxID_ABOUT, "&About");
     menu_help->AppendSeparator();
+    
+    wxToolBar *toolbar = CreateToolBar();
+
+    toolbar->AddTool(wxID_SAVE, "Save", wxBitmap(wxImage("images/save_000000_16.png")), "Save");
+
+    toolbar->AddSeparator();
+
+    toolbar->AddTool(wxID_INSERT, "Insert below", wxBitmap(wxImage("images/plus_000000_16.png")), "Insert below");
+    toolbar->AddTool(wxID_DELETE, "Delete cell", wxBitmap(wxImage("images/trash-o_000000_16.png")), "Delete cell");
+
+    toolbar->AddSeparator();
+
+    toolbar->AddTool(wxID_CUT, "Cut cell", wxBitmap(wxImage("images/cut_000000_16.png")), "Cut cell");
+    toolbar->AddTool(wxID_COPY, "Copy cell", wxBitmap(wxImage("images/copy_000000_16.png")), "Copy cell");
+    toolbar->AddTool(wxID_PASTE, "Paste cell", wxBitmap(wxImage("images/paste_000000_16.png")), "Paste cell");
+
+    toolbar->AddSeparator();
+
+    toolbar->AddTool(wxID_MOVE_UP, "Move cell up", wxBitmap(wxImage("images/arrow-up_000000_16.png")), "Move cell up");
+    toolbar->AddTool(wxID_MOVE_DOWN, "Move cell down", wxBitmap(wxImage("images/arrow-down_000000_16.png")), "Move cell down");
+
+    toolbar->AddSeparator();
+
+    toolbar->AddTool(wxID_RUN_NEXT, "Run cell", wxBitmap(wxImage("images/play_000000_16.png")), "Run cell");
+    toolbar->AddTool(wxID_RUN_ALL, "Run all cells", wxBitmap(wxImage("images/fast-forward_000000_16.png")), "Run all cells");
+    toolbar->AddTool(wxID_KERNEL_INTERRUPT, "Interrupt kernel", wxBitmap(wxImage("images/stop_000000_16.png")), "Interrupt kernel");
+    toolbar->AddTool(wxID_KERNEL_RESTART, "Restart kernel", wxBitmap(wxImage("images/repeat_000000_16.png")), "Restart kernel");
+
+    toolbar->AddSeparator();
+
+    toolbar->AddTool(wxID_CELL_CODE, "Cell type code", wxBitmap(wxImage("images/pencil_000000_16.png")), "Cell type code");
+    toolbar->AddTool(wxID_CELL_MARKDOWN, "Cell type markdown", wxBitmap(wxImage("images/paint-brush_000000_16.png")), "Cell type markdown");
+    toolbar->AddTool(wxID_CELL_RAW, "Cell type raw", wxBitmap(wxImage("images/magic_000000_16.png")), "Cell type raw");
+
+    toolbar->AddSeparator();
+
+    toolbar->Realize();
 
 /*
         {
@@ -339,6 +379,11 @@ void MainFrame::OnMenuEvent(wxCommandEvent &event)
         case wxID_RUN:
         {
             jupyter_click_cell(webview, "run_cell");
+            break;
+        }
+        case wxID_RUN_NEXT:
+        {
+            jupyter_click_cell(webview, "run_cell_select_below");
             break;
         }
         case wxID_RUN_ALL:

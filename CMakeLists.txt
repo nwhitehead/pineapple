@@ -55,5 +55,9 @@ add_custom_target(localtest
 
 ### Demo files
 
-configure_file(demo/TestNotebook.ipynb ${PROJECT_BINARY_DIR}/demo/TestNotebook.ipynb COPY)
-configure_file(src/loading.html ${PROJECT_BINARY_DIR}/html/loading.html COPY)
+file(COPY demo/ DESTINATION ${PROJECT_BINARY_DIR}/demo/)
+
+### Resources
+
+file(COPY src/loading.html DESTINATION ${PROJECT_BINARY_DIR}/html/)
+file(COPY images/ DESTINATION ${PROJECT_BINARY_DIR}/images/)
