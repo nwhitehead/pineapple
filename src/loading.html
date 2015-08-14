@@ -8,7 +8,6 @@ var LOCATION = "{{url}}";
 function load(url, success, failure) {
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
-        console.log('statechange ' + xmlhttp.readyState + ' ' + xmlhttp.status);
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             return success(xmlhttp.responseText);
         }
@@ -20,13 +19,24 @@ function load(url, success, failure) {
     xmlhttp.send();
 }
 
+var failure_timeout = 500;
+var failure_count = 0;
+var failure_max = 20;
+
 window.onload = function() {
     var navto = function(testurl, finalurl) {
         var success = function(resp) {
             window.location.href = finalurl;
         };
         var failure = function(status) {
-            navto(testurl, finalurl);
+            failure_count++;
+            if (failure_count > failure_max) {
+                document.getElementById('error').style.visibility = 'visible';
+            }
+            // Wait a little
+            setTimeout(function() {
+                navto(testurl, finalurl);
+            }, failure_timeout);
         };
         load(testurl, success, failure);
     };
@@ -34,13 +44,11 @@ window.onload = function() {
 };
     </script>
 <!--
-Spinning ideas and color ideas from:
+Spinning ideas from:
     https://ihatetomatoes.net/create-css3-spinning-preloader/
-Some nice colors:
-222222
-3498db
-e74c3c
-f9c922
+
+URI icon from:
+    https://icons8.com/web-app/for/all/failure
 -->
     <style>
 
@@ -136,9 +144,21 @@ body {
     }
 }
 
+#error {
+    visibility: hidden;
+}
+#error p {
+    color: #fff;
+}
+
     </style>
 </head>
 <body>
+
+<div id="error">
+    <img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAZlBMVEUAAAD/vwD/vwD/vwX/wwT/wgb/wgX/wgf/wQb/wQX/wQX/wQb/wQb/wAf/wQf/wAb/wAf/wAZdQDdmSDN6WC2FYCqFYSqPaCijeCKtgB64iBvMmBXNmRXWoBLXoRLqsA31uAn/wQdry73aAAAAEnRSTlMAECAwQFBgcICPkKCwv8DP3++izbRnAAAA7UlEQVRIx+2S2Q6CMBQFWa0slVJBBWW5//+TglBKGyy3b5owbzRMaIbjOAf/hBtFrqWSAWR2xhkGiNW18lHJba6WwIcYb/gw46EVKhSKNUJYCJAKkwqzCCwg+MBN27bo0FNgPoANPQdeFERouihXZGgRuOC8RIYWgUupMGTglWIOPQXWFWPoBLYUU2gfthVDaKood/lEEQuGB+cV7C96tWCoVIUhFtw1Tbe7aBl4i83QifrO86U+x8bAc7GbeuKZAqvj/xo61O4+LLnQjgJD4JG+rnvtSAtNAMFJUS4YJbX/ivY7SXrZISXOwS/zBgZhVG5DKmbnAAAAAElFTkSuQmCC' />
+    <p>There appears to be a problem connecting to the local computation server.</p>
+</div>
 
 <div id="loader-wrapper">
     <div id="loader"></div>
