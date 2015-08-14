@@ -313,6 +313,8 @@ MainFrame::MainFrame(std::string url0, const wxString &title,
     wxBoxSizer* frame_sizer = new wxBoxSizer(wxVERTICAL);
 
     webview = wxWebView::New(this, wxID_ANY);
+    webview->EnableContextMenu(false);
+    
     frame_sizer->Add(webview, 1, wxEXPAND, 10);
 
     if (indirect_load) {

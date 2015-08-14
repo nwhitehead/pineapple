@@ -41,17 +41,8 @@ add_dependencies(${PROJECT_NAME} venv)
 
 ### Server startup script
 
-configure_file(scripts/eridani-main ${PROJECT_BINARY_DIR}/scripts/eridani-main)
-
-### Testing targets
-
-set (ENV{PINEAPPLE_SERVER}
-    "${PROJECT_BINARY_DIR}/venv/bin/python ${PROJECT_BINARY_DIR}/scripts/eridani-main serve")
-
-add_custom_target(localtest
-    DEPENDS ${PROJECT_NAME} venv
-    COMMAND "${PROJECT_NAME}"
-)
+file(COPY scripts/eridani-main DESTINATION ${PROJECT_BINARY_DIR}/scripts/)
+file(COPY scripts/eridani-main.spec DESTINATION ${PROJECT_BINARY_DIR}/scripts/)
 
 ### Demo files
 
@@ -61,3 +52,24 @@ file(COPY demo/ DESTINATION ${PROJECT_BINARY_DIR}/demo/)
 
 file(COPY src/loading.html DESTINATION ${PROJECT_BINARY_DIR}/html/)
 file(COPY images/ DESTINATION ${PROJECT_BINARY_DIR}/images/)
+file(COPY notebook/notebook/static/ DESTINATION ${PROJECT_BINARY_DIR}/notebook/notebook/static/)
+file(COPY notebook/notebook/templates/ DESTINATION ${PROJECT_BINARY_DIR}/notebook/notebook/templates/)
+
+### Testing targets
+
+set (ENV{PINEAPPLE_SERVER}
+    "${VENV_DIR}/bin/python ${PROJECT_BINARY_DIR}/scripts/eridani-main serve")
+
+add_custom_target(localtest
+    DEPENDS ${PROJECT_NAME} venv
+    COMMAND "${PROJECT_NAME}"
+)
+
+### Production targets
+
+add_custom_target(server
+    DEPENDS venv
+    COMMAND "${VENV_DIR}/bin/pyinstaller" -y "${PROJECT_BINARY_DIR}/scripts/eridani-main.spec"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/dist/eridani-main/tcl"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/dist/eridani-main/tk"
+)
