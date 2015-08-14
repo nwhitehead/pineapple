@@ -117,9 +117,9 @@ wxEND_EVENT_TABLE()
 
 wxIMPLEMENT_APP(MainApp);
 
+/// Replace a single occurrence of a string in another with a string
 std::string replace_one(std::string &s, std::string mud, std::string gold)
 {
-    std::cout << s.length() << ", " << mud.length() << ", " << gold.length() << std::endl;
     return s.replace(s.find(mud), mud.length(), gold);
 }
 
@@ -157,6 +157,7 @@ void MainApp::OnSubprocessTerminate(wxProcessEvent &event)
     std::cout << "SUBPROCESS TERMINATED" << std::endl;
 }
 
+/// Load an image file and process it into an appropriate toolbar icon
 static wxBitmap toolbar_icon(std::string filename)
 {
     return wxBitmap(wxImage(filename).Rescale(config::toolbar_width, config::toolbar_height));
@@ -314,7 +315,6 @@ MainFrame::MainFrame(std::string url0, const wxString &title,
         // Do template replacement for url
         std::string contents{load_page};
         replace_one(contents, "{{url}}", url);
-        std::cout << contents << std::endl;
         webview->SetPage(wxString(contents), "");
     } else {
         webview->LoadURL(url);
