@@ -139,6 +139,7 @@ int MainApp::OnExit()
         std::cout << "CLOSING SERVER" << std::endl;
         server->Kill(server->GetPid(), wxSIGTERM, wxKILL_CHILDREN);
     }
+    return(0);
 }
 
 void MainApp::OnSubprocessTerminate(wxProcessEvent &event)
@@ -209,38 +210,42 @@ MainFrame::MainFrame(std::string url0, const wxString &title,
     menu_help->Append(wxID_ABOUT, "&About");
     menu_help->AppendSeparator();
     
+#if defined(__APPLE__)
+    wxToolBar *toolbar = CreateToolBar(wxTB_TEXT);
+#else
     wxToolBar *toolbar = CreateToolBar();
+#endif
 
     toolbar->AddTool(wxID_SAVE, "Save", wxBitmap(wxImage("images/save_000000_16.png")), "Save");
 
     toolbar->AddSeparator();
 
-    toolbar->AddTool(wxID_INSERT, "Insert below", wxBitmap(wxImage("images/plus_000000_16.png")), "Insert below");
-    toolbar->AddTool(wxID_DELETE, "Delete cell", wxBitmap(wxImage("images/trash-o_000000_16.png")), "Delete cell");
+    toolbar->AddTool(wxID_INSERT, "Insert", wxBitmap(wxImage("images/plus_000000_16.png")), "Insert below");
+    toolbar->AddTool(wxID_DELETE, "Delete", wxBitmap(wxImage("images/trash-o_000000_16.png")), "Delete cell");
 
     toolbar->AddSeparator();
 
-    toolbar->AddTool(wxID_CUT, "Cut cell", wxBitmap(wxImage("images/cut_000000_16.png")), "Cut cell");
-    toolbar->AddTool(wxID_COPY, "Copy cell", wxBitmap(wxImage("images/copy_000000_16.png")), "Copy cell");
-    toolbar->AddTool(wxID_PASTE, "Paste cell", wxBitmap(wxImage("images/paste_000000_16.png")), "Paste cell");
+    toolbar->AddTool(wxID_CUT, "Cut", wxBitmap(wxImage("images/cut_000000_16.png")), "Cut cell");
+    toolbar->AddTool(wxID_COPY, "Copy", wxBitmap(wxImage("images/copy_000000_16.png")), "Copy cell");
+    toolbar->AddTool(wxID_PASTE, "Paste", wxBitmap(wxImage("images/paste_000000_16.png")), "Paste cell");
 
     toolbar->AddSeparator();
 
-    toolbar->AddTool(wxID_MOVE_UP, "Move cell up", wxBitmap(wxImage("images/arrow-up_000000_16.png")), "Move cell up");
-    toolbar->AddTool(wxID_MOVE_DOWN, "Move cell down", wxBitmap(wxImage("images/arrow-down_000000_16.png")), "Move cell down");
+    toolbar->AddTool(wxID_MOVE_UP, "Move up", wxBitmap(wxImage("images/arrow-up_000000_16.png")), "Move cell up");
+    toolbar->AddTool(wxID_MOVE_DOWN, "Move down", wxBitmap(wxImage("images/arrow-down_000000_16.png")), "Move cell down");
 
     toolbar->AddSeparator();
 
-    toolbar->AddTool(wxID_RUN_NEXT, "Run cell", wxBitmap(wxImage("images/play_000000_16.png")), "Run cell");
-    toolbar->AddTool(wxID_RUN_ALL, "Run all cells", wxBitmap(wxImage("images/fast-forward_000000_16.png")), "Run all cells");
-    toolbar->AddTool(wxID_KERNEL_INTERRUPT, "Interrupt kernel", wxBitmap(wxImage("images/stop_000000_16.png")), "Interrupt kernel");
-    toolbar->AddTool(wxID_KERNEL_RESTART, "Restart kernel", wxBitmap(wxImage("images/repeat_000000_16.png")), "Restart kernel");
+    toolbar->AddTool(wxID_RUN_NEXT, "Run", wxBitmap(wxImage("images/play_000000_16.png")), "Run cell");
+    toolbar->AddTool(wxID_RUN_ALL, "Run all", wxBitmap(wxImage("images/fast-forward_000000_16.png")), "Run all cells");
+    toolbar->AddTool(wxID_KERNEL_INTERRUPT, "Stop", wxBitmap(wxImage("images/stop_000000_16.png")), "Interrupt kernel");
+    toolbar->AddTool(wxID_KERNEL_RESTART, "Restart", wxBitmap(wxImage("images/repeat_000000_16.png")), "Restart kernel");
 
     toolbar->AddSeparator();
 
-    toolbar->AddTool(wxID_CELL_CODE, "Cell type code", wxBitmap(wxImage("images/pencil_000000_16.png")), "Cell type code");
-    toolbar->AddTool(wxID_CELL_MARKDOWN, "Cell type markdown", wxBitmap(wxImage("images/paint-brush_000000_16.png")), "Cell type markdown");
-    toolbar->AddTool(wxID_CELL_RAW, "Cell type raw", wxBitmap(wxImage("images/magic_000000_16.png")), "Cell type raw");
+    toolbar->AddTool(wxID_CELL_CODE, "Code", wxBitmap(wxImage("images/pencil_000000_16.png")), "Cell type code");
+    toolbar->AddTool(wxID_CELL_MARKDOWN, "Markdown", wxBitmap(wxImage("images/paint-brush_000000_16.png")), "Cell type markdown");
+    toolbar->AddTool(wxID_CELL_RAW, "Raw", wxBitmap(wxImage("images/magic_000000_16.png")), "Cell type raw");
 
     toolbar->AddSeparator();
 
