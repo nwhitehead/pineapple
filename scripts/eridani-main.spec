@@ -5,7 +5,6 @@ block_cipher = None
 a = Analysis(['scripts/eridani-main'],
              pathex=['.'],
              hiddenimports=[
-                'path',
                 'IPython.extensions.storemagic',
                 'notebook.tree.handlers',
                 'notebook.files.handlers',

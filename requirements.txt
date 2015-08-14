@@ -13,5 +13,6 @@ alabaster
 sphinx
 sphinx_rtd_theme
 -e ../pyinstaller/
+-e ../path.py/
 -e ../notebook/
 numpy

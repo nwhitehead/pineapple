@@ -4,3 +4,6 @@
 [submodule "pyinstaller"]
 	path = pyinstaller
 	url = https://github.com/nwhitehead/pyinstaller.git
+[submodule "path.py"]
+	path = path.py
+	url = https://github.com/nwhitehead/path.py.git
