@@ -1,10 +1,13 @@
 
 #include <algorithm>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <sstream>
 #include <vector>
+
+#include <signal.h>
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -123,6 +126,11 @@ std::string replace_one(std::string &s, std::string mud, std::string gold)
     return s.replace(s.find(mud), mud.length(), gold);
 }
 
+void signal_handler(int signum)
+{
+    exit(wxGetApp().OnExit());
+}
+
 bool MainApp::OnInit()
 {
     wxInitAllImageHandlers();
@@ -138,6 +146,8 @@ bool MainApp::OnInit()
     wxExecute(server_script,
         wxEXEC_ASYNC | wxEXEC_HIDE_CONSOLE | wxEXEC_MAKE_GROUP_LEADER,
         server);
+    // Set handler to kill process if we die
+    signal(SIGINT, signal_handler);
 
     return true;
 }
