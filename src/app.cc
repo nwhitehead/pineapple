@@ -27,64 +27,7 @@
 #include <wx/webview.h>
 
 #include "config.h"
-
-namespace config {
-
-/// Environment variable to pass server path
-constexpr char server_script_env[] = "PINEAPPLE_SERVER";
-/// Default server script if none given
-constexpr char server_script_default[] = "venv/bin/python scripts/eridani-main";
-
-/// Prefix of new unnamed files
-constexpr char untitled_prefix[] = "Untitled";
-/// Suffix of new unnamed files
-constexpr char untitled_suffix[] = ".ipynb";
-
-/// Default size of main window on startup
-constexpr int initial_width = 900;
-constexpr int initial_height = 700;
-
-/// Local baseurl
-constexpr char base_url[] = "http://localhost:8888";
-/// Where to look for full path filenames
-constexpr char path_url[] = "/tree";
-/// How many times to increment the number before giving up
-constexpr int max_num_untitled = 50;
-
-/// Title prefix
-constexpr char title[] = "Pineapple";
-/// Special protocol prefix
-constexpr char protocol_prefix[] = "$$$$";
-/// Page that shows loading animation and loads actual page
-constexpr char loading_html_filename[] = "html/loading.html";
-/// What to put at beginning of window title
-constexpr char title_prefix[] = "Pineapple - ";
-/// Blank notebook location
-constexpr char blank_notebook_filename[] = "data/blank.ipynb";
-
-/// Special tokens for permanent handlers
-constexpr int token_kernel_busy = -1;
-
-#if defined(__APPLE__)
-    constexpr long int toolbar_style = wxTB_TEXT;
-    constexpr int toolbar_width = 48;
-    constexpr int toolbar_height = 48;
-#else
-    constexpr long int toolbar_style = wxTB_DEFAULT_STYLE;
-    constexpr int toolbar_width = 25;
-    constexpr int toolbar_height = 25;
-#endif
-
-} /// namespace config
-
-static std::string url_from_filename(std::string filename)
-{
-    std::string uri(filename);
-    return std::string(config::base_url) + std::string(config::path_url) + uri;
-}
-
-std::string load_page;
-bool load_page_loaded = false;
+#include "util.hh"
 
 /// This call holds types about callbacks
 /// Callback::t is the callback type for (string) -> bool
@@ -209,6 +152,8 @@ public:
     wxProcess *server;
     MainFrame *frame;
     std::string blank_notebook;
+    std::string load_page;
+
 private:
     wxDECLARE_EVENT_TABLE();
 
@@ -447,14 +392,13 @@ MainFrame::MainFrame(std::string url0, std::string filename,
     frame_sizer->Add(webview, 1, wxEXPAND, 10);
 
     if (indirect_load) {
-        if (!load_page_loaded) {
+        if (wxGetApp().load_page.size() == 0) {
             // Read loading page
             std::ifstream ifs(config::loading_html_filename);
-            load_page = std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
-            load_page_loaded = true;
+            wxGetApp().load_page = std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
         }
         // Do template replacement for url
-        std::string contents{load_page};
+        std::string contents{wxGetApp().load_page};
         replace_one(contents, "{{url}}", url);
         webview->SetPage(wxString(contents), "");
     } else {
