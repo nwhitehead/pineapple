@@ -1,16 +1,6 @@
 Eridani includes code with the following licenses.
 
 ==============================================================================
-Icons (Color)
-==============================================================================
-
-Icons are by Icons8 and are released under:
-https://creativecommons.org/licenses/by-nd/3.0/
-
-Link:
-https://icons8.com
-
-==============================================================================
 Jupyter, IPython
 ==============================================================================
 # Licensing terms
@@ -262,18 +252,58 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ==============================================================================
-PySide
+wxWidgets
 ==============================================================================
-PySide is licensed under the LGPL version 2.1 license, allowing both
-Free/Open source software and proprietary software development.
+              wxWindows Library Licence, Version 3.1
+              ======================================
 
-==============================================================================
-Qt
-==============================================================================
-Qt licensed under the GNU Lesser General Public License (LGPL) version 3
-is appropriate for the development of Qt applications provided you can
-comply with the terms and conditions of the GNU LGPL version 3 (or GNU
-GPL version 3).
+Copyright (c) 1998-2005 Julian Smart, Robert Roebling et al
+
+Everyone is permitted to copy and distribute verbatim copies
+of this licence document, but changing it is not allowed.
+
+                     WXWINDOWS LIBRARY LICENCE
+   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+
+This library is free software; you can redistribute it and/or modify it
+under the terms of the GNU Library General Public Licence as published by
+the Free Software Foundation; either version 2 of the Licence, or (at your
+option) any later version.
+
+This library is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+Licence for more details.
+
+You should have received a copy of the GNU Library General Public Licence
+along with this software, usually in a file named COPYING.LIB.  If not,
+write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+Floor, Boston, MA 02110-1301 USA.
+
+EXCEPTION NOTICE
+
+1. As a special exception, the copyright holders of this library give
+permission for additional uses of the text contained in this release of the
+library as licenced under the wxWindows Library Licence, applying either
+version 3.1 of the Licence, or (at your option) any later version of the
+Licence as published by the copyright holders of version 3.1 of the Licence
+document.
+
+2. The exception is that you may use, copy, link, modify and distribute
+under your own terms, binary object code versions of works based on the
+Library.
+
+3. If you copy code from files distributed under the terms of the GNU
+General Public Licence or the GNU Library General Public Licence into a
+copy of this library, as this licence permits, the exception does not apply
+to the code that you add in this way.  To avoid misleading anyone as to the
+status of such modified files, you must delete this exception notice from
+such code and/or adjust the licensing conditions notice accordingly.
+
+4. If you write modifications of your own for this library, it is your
+choice whether to permit this exception to apply to your modifications.  If
+you do not wish that, you must delete the exception notice from such code
+and/or adjust the licensing conditions notice accordingly.
 
 ==============================================================================
 WebKit
@@ -299,5 +329,15 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+==============================================================================
+Icons (Color)
+==============================================================================
+
+Icons are by Icons8 and are released under:
+https://creativecommons.org/licenses/by-nd/3.0/
+
+Link:
+https://icons8.com
 
 ==============================================================================
