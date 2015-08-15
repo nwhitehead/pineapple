@@ -51,6 +51,7 @@ file(COPY "demo/" DESTINATION "${PROJECT_BINARY_DIR}/demo/")
 ### Resources
 
 file(COPY "src/loading.html" DESTINATION "${PROJECT_BINARY_DIR}/html/")
+file(COPY "src/blank.ipynb" DESTINATION "${PROJECT_BINARY_DIR}/data/")
 file(COPY "images/" DESTINATION "${PROJECT_BINARY_DIR}/images/")
 file(COPY "notebook/notebook/static/" DESTINATION "${PROJECT_BINARY_DIR}/notebook/notebook/static/")
 file(COPY "notebook/notebook/templates/" DESTINATION "${PROJECT_BINARY_DIR}/notebook/notebook/templates/")

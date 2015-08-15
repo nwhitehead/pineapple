@@ -13,9 +13,12 @@
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
+#include <wx/filefn.h>
+#include <wx/filename.h>
 #include <wx/image.h>
 #include <wx/menu.h>
 #include <wx/process.h>
+#include <wx/stdpaths.h>
 #include <wx/stream.h>
 #include <wx/txtstrm.h>
 #include <wx/utils.h>
@@ -29,13 +32,23 @@ namespace config {
 constexpr char server_script_env[] = "PINEAPPLE_SERVER";
 /// Default server script if none given
 constexpr char server_script_default[] = "venv/bin/python scripts/eridani-main";
+
+/// Prefix of new unnamed files
+constexpr char untitled_prefix[] = "Untitled";
+/// Suffix of new unnamed files
+constexpr char untitled_suffix[] = ".ipynb";
+
 /// Default size of main window on startup
 constexpr int initial_width = 900;
 constexpr int initial_height = 700;
+
 /// Local baseurl
 constexpr char base_url[] = "http://localhost:8888";
-/// Initial url to open
-constexpr char start_url[] = "/tree/demo/TestNotebook.ipynb";
+/// Where to look for full path filenames
+constexpr char path_url[] = "/tree";
+/// How many times to increment the number before giving up
+constexpr int max_num_untitled = 20;
+
 /// Title prefix
 constexpr char title[] = "Pineapple";
 /// Special protocol prefix
@@ -44,6 +57,8 @@ constexpr char protocol_prefix[] = "$$$$";
 constexpr char loading_html_filename[] = "html/loading.html";
 /// What to put at beginning of window title
 constexpr char title_prefix[] = "Pineapple - ";
+/// Blank notebook location
+constexpr char blank_notebook_filename[] = "data/blank.ipynb";
 
 #if defined(__APPLE__)
     constexpr long int toolbar_style = wxTB_TEXT;
@@ -64,9 +79,8 @@ class MainFrame: public wxFrame
 {
     enum {
         wxID_SAVE_HTML = 10000,
-        wxID_NEW_COPY,
-        wxID_INSERT,
-        wxID_DELETE, wxID_UNDELETE,
+        wxID_SAVE_AS, wxID_NEW_COPY,
+        wxID_INSERT, wxID_DELETE, wxID_UNDELETE,
         wxID_SPLIT, wxID_MERGE,
         wxID_MOVE_UP, wxID_MOVE_DOWN,
         wxID_RUN, wxID_RUN_NEXT, wxID_RUN_ALL, wxID_RUN_ALL_ABOVE, wxID_RUN_ALL_BELOW,
@@ -74,9 +88,13 @@ class MainFrame: public wxFrame
         wxID_KERNEL_INTERRUPT, wxID_KERNEL_RESTART, wxID_KERNEL_RECONNECT,
         wxID_HELP_KEYBOARD, wxID_HELP_NOTEBOOK, wxID_HELP_MARKDOWN,
     };
+
 public:
+
     MainFrame(std::string url0, const wxString &title, const wxPoint &pos, const wxSize &size, bool indirect_load);
+
     static MainFrame *Spawn(std::string url, bool indirect_load=false);
+    static MainFrame *CreateNew(bool indirect_load=false);
 
     wxProcess *server;
     wxWebView *webview;
@@ -88,6 +106,7 @@ public:
     void OnError(wxWebViewEvent &event);
     void OnTitleChanged(wxWebViewEvent &event);
     void OnNewWindow(wxWebViewEvent &event);
+    
 
 private:
     wxDECLARE_EVENT_TABLE();
@@ -109,6 +128,7 @@ public:
 
     wxProcess *server;
     MainFrame *frame;
+    std::string blank_notebook;
 private:
     wxDECLARE_EVENT_TABLE();
 
@@ -133,9 +153,13 @@ void signal_handler(int signum)
 
 bool MainApp::OnInit()
 {
+    // Load blank notebook so we can do "New"
+    std::ifstream ifs(config::blank_notebook_filename);
+    blank_notebook = std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
+
     wxInitAllImageHandlers();
     
-    frame = MainFrame::Spawn(std::string(config::base_url) + std::string(config::start_url), true);
+    frame = MainFrame::CreateNew(true);
 
     wxString server_script;
     server = nullptr;
@@ -181,7 +205,10 @@ MainFrame::MainFrame(std::string url0, const wxString &title,
     wxMenu *menu_file = new wxMenu();
     menu_file->Append(wxID_NEW, "&New");
     menu_file->AppendSeparator();
+    menu_file->Append(wxID_OPEN, "&Open...");
+    menu_file->AppendSeparator();
     menu_file->Append(wxID_SAVE, "&Save");
+    menu_file->Append(wxID_SAVE_AS, "Save As...");
     menu_file->AppendSeparator();
     menu_file->Append(wxID_NEW_COPY, "Make a copy");
     menu_file->Append(wxID_SAVE_HTML, "Download HTML");
@@ -459,24 +486,34 @@ void MainFrame::OnMenuEvent(wxCommandEvent &event)
             jupyter_click_cell(webview, "reconnect_kernel");
             break;
         }
-        case wxID_SAVE:
-        {
-            jupyter_click_cell(webview, "save_checkpoint");
-            break;
-        }
-        case wxID_SAVE_HTML:
-        {
-            jupyter_click_cell(webview, "download_markdown");
-            break;
-        }
         case wxID_NEW:
         {
-            jupyter_click_cell(webview, "open_notebook");
+            CreateNew();
+            break;
+        }
+        case wxID_OPEN:
+        {
+            std::cout << "OPEN" << std::endl;
             break;
         }
         case wxID_NEW_COPY:
         {
             jupyter_click_cell(webview, "copy_notebook");
+            break;
+        }
+        case wxID_SAVE:
+        {
+            jupyter_click_cell(webview, "save_checkpoint");
+            break;
+        }
+        case wxID_SAVE_AS:
+        {
+            std::cout << "SAVE AS" << std::endl;
+            break;
+        }
+        case wxID_SAVE_HTML:
+        {
+            jupyter_click_cell(webview, "download_markdown");
             break;
         }
         case wxID_HELP_KEYBOARD:
@@ -557,4 +594,33 @@ void MainFrame::OnNewWindow(wxWebViewEvent &event)
     wxString url(event.GetURL());
     std::cout << "NEW WINDOW " << url << std::endl;
     wxLaunchDefaultBrowser(url);
+}
+
+MainFrame *MainFrame::CreateNew(bool indirect_load)
+{
+    std::cout << "CREATE NEW" << std::endl;
+    wxString datadir = wxStandardPaths::Get().GetAppDocumentsDir();
+    int n = 1;
+    wxFileName fullname;
+    do {
+        std::stringstream ss;
+        ss << config::untitled_prefix << n << config::untitled_suffix;
+        fullname = wxFileName(datadir, ss.str());
+        std::cout << "TRYING " << fullname.GetFullPath() << std::endl;
+        if (!fullname.IsOk()) break;
+        if (fullname.IsOk() && !fullname.FileExists()) break;
+        if (n > config::max_num_untitled) break;
+        n++;
+    } while (1);
+    if (fullname.IsOk() && !fullname.FileExists()) {
+        std::cout << "FILENAME " << fullname.GetFullPath() << std::endl;
+        // FIXME: drive must be the same as we mounted for windows!!!
+        std::ofstream out(fullname.GetFullPath());
+        out << wxGetApp().blank_notebook << std::endl;
+        // Get path in UNIX so it is a URI
+        std::string uri(fullname.GetFullPath(wxPATH_UNIX));
+        // Open new window for it
+        return Spawn(std::string(config::base_url) + std::string(config::path_url) + uri, indirect_load);
+    }
+    return nullptr;
 }
