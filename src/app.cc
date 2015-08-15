@@ -47,7 +47,7 @@ constexpr char base_url[] = "http://localhost:8888";
 /// Where to look for full path filenames
 constexpr char path_url[] = "/tree";
 /// How many times to increment the number before giving up
-constexpr int max_num_untitled = 20;
+constexpr int max_num_untitled = 50;
 
 /// Title prefix
 constexpr char title[] = "Pineapple";
@@ -107,6 +107,7 @@ public:
     void OnTitleChanged(wxWebViewEvent &event);
     void OnNewWindow(wxWebViewEvent &event);
     
+    void OnOpen();
 
 private:
     wxDECLARE_EVENT_TABLE();
@@ -160,6 +161,7 @@ bool MainApp::OnInit()
     wxInitAllImageHandlers();
     
     frame = MainFrame::CreateNew(true);
+    if (frame == nullptr) return false;
 
     wxString server_script;
     server = nullptr;
@@ -494,6 +496,7 @@ void MainFrame::OnMenuEvent(wxCommandEvent &event)
         case wxID_OPEN:
         {
             std::cout << "OPEN" << std::endl;
+            OnOpen();
             break;
         }
         case wxID_NEW_COPY:
@@ -622,5 +625,23 @@ MainFrame *MainFrame::CreateNew(bool indirect_load)
         // Open new window for it
         return Spawn(std::string(config::base_url) + std::string(config::path_url) + uri, indirect_load);
     }
+    std::stringstream ss;
+    ss << "Could not create new untitled notebook in ";
+    ss << wxStandardPaths::Get().GetAppDocumentsDir() << "\n\n";
+    ss << "Last attempt was to create " << std::string(fullname.GetFullPath()) << std::endl;
+    wxMessageBox(ss.str(), "ERROR", wxOK | wxICON_ERROR);
+
     return nullptr;
+}
+
+void MainFrame::OnOpen()
+{
+    wxFileDialog dialog(this, "Open Notebook file", "", "",
+        "Notebook files (*.ipynb)|*.ipynb", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+    
+    if (dialog.ShowModal() == wxID_CANCEL) return;
+
+    std::string filename = std::string(dialog.GetPath());
+    std::cout << "OPEN " << filename << std::endl;
+    Spawn(std::string(config::base_url) + std::string(config::path_url) + filename, false);
 }
