@@ -1,15 +1,11 @@
 To-do lists.
 
-toolbar
-file open dialog
-save as... dialog
 show kernel busy icon in toolbar
 save option on quit
-custom theme colors
+custom theme colors (first pass done)
 
 icons on Mac broken
 standard packages available easily in python
-open file works
 get working on Windows same way as linux
 program icon
 windows installer
