@@ -79,7 +79,7 @@ class MainFrame: public wxFrame
 {
     enum {
         wxID_SAVE_HTML = 10000,
-        wxID_SAVE_AS, wxID_NEW_COPY,
+        wxID_SAVE_AS,
         wxID_INSERT, wxID_DELETE, wxID_UNDELETE,
         wxID_SPLIT, wxID_MERGE,
         wxID_MOVE_UP, wxID_MOVE_DOWN,
@@ -91,14 +91,15 @@ class MainFrame: public wxFrame
 
 public:
 
-    MainFrame(std::string url0, const wxString &title, const wxPoint &pos, const wxSize &size, bool indirect_load);
+    MainFrame(std::string url0, std::string filename, const wxString &title, const wxPoint &pos, const wxSize &size, bool indirect_load);
 
-    static MainFrame *Spawn(std::string url, bool indirect_load=false);
+    static MainFrame *Spawn(std::string url, std::string filename, bool indirect_load=false);
     static MainFrame *CreateNew(bool indirect_load=false);
 
     wxProcess *server;
     wxWebView *webview;
     std::string url;
+    std::string local_filename;
 
     void OnMenuEvent(wxCommandEvent &event);
     void OnClose(wxCloseEvent &event);
@@ -108,6 +109,7 @@ public:
     void OnNewWindow(wxWebViewEvent &event);
     
     void OnOpen();
+    void OnSaveAs();
 
 private:
     wxDECLARE_EVENT_TABLE();
@@ -199,9 +201,11 @@ static wxBitmap toolbar_icon(std::string filename)
     return wxBitmap(wxImage(filename).Rescale(config::toolbar_width, config::toolbar_height, wxIMAGE_QUALITY_BICUBIC));
 }
 
-MainFrame::MainFrame(std::string url0, const wxString &title,
-    const wxPoint &pos, const wxSize &size, bool indirect_load)
-    : wxFrame(nullptr, wxID_ANY, title, pos, size), url(url0)
+MainFrame::MainFrame(std::string url0, std::string filename,
+    const wxString &title, const wxPoint &pos, const wxSize &size,
+    bool indirect_load)
+        : wxFrame(nullptr, wxID_ANY, title, pos, size),
+          url(url0), local_filename(filename)
 {
     wxMenuBar *menubar = new wxMenuBar();
     wxMenu *menu_file = new wxMenu();
@@ -212,7 +216,6 @@ MainFrame::MainFrame(std::string url0, const wxString &title,
     menu_file->Append(wxID_SAVE, "&Save");
     menu_file->Append(wxID_SAVE_AS, "Save As...");
     menu_file->AppendSeparator();
-    menu_file->Append(wxID_NEW_COPY, "Make a copy");
     menu_file->Append(wxID_SAVE_HTML, "Download HTML");
     menu_file->AppendSeparator();
     menu_file->Append(wxID_EXIT, "&Quit");
@@ -499,11 +502,6 @@ void MainFrame::OnMenuEvent(wxCommandEvent &event)
             OnOpen();
             break;
         }
-        case wxID_NEW_COPY:
-        {
-            jupyter_click_cell(webview, "copy_notebook");
-            break;
-        }
         case wxID_SAVE:
         {
             jupyter_click_cell(webview, "save_checkpoint");
@@ -512,6 +510,7 @@ void MainFrame::OnMenuEvent(wxCommandEvent &event)
         case wxID_SAVE_AS:
         {
             std::cout << "SAVE AS" << std::endl;
+            OnSaveAs();
             break;
         }
         case wxID_SAVE_HTML:
@@ -576,16 +575,17 @@ void MainFrame::OnTitleChanged(wxWebViewEvent &event)
         // Prefix present
         std::string theUrl = title.substr(prefix.size());
         std::cout << "SPECIAL " << theUrl << std::endl;
-        Spawn(config::base_url + theUrl);
+        std::exit(-1); /// Not supported currently
+//        Spawn(config::base_url + theUrl);
         return;
     }
     // Otherwise actually change the title
     SetLabel(config::title_prefix + title);
 }
 
-MainFrame *MainFrame::Spawn(std::string url, bool indirect_load)
+MainFrame *MainFrame::Spawn(std::string url, std::string filename, bool indirect_load)
 {
-    MainFrame *child = new MainFrame(url, url,
+    MainFrame *child = new MainFrame(url, filename, url,
         wxPoint(wxDefaultCoord, wxDefaultCoord),
         wxSize(config::initial_width, config::initial_height), indirect_load);
     child->Show();
@@ -623,7 +623,7 @@ MainFrame *MainFrame::CreateNew(bool indirect_load)
         // Get path in UNIX so it is a URI
         std::string uri(fullname.GetFullPath(wxPATH_UNIX));
         // Open new window for it
-        return Spawn(std::string(config::base_url) + std::string(config::path_url) + uri, indirect_load);
+        return Spawn(std::string(config::base_url) + std::string(config::path_url) + uri, uri, indirect_load);
     }
     std::stringstream ss;
     ss << "Could not create new untitled notebook in ";
@@ -643,5 +643,17 @@ void MainFrame::OnOpen()
 
     std::string filename = std::string(dialog.GetPath());
     std::cout << "OPEN " << filename << std::endl;
-    Spawn(std::string(config::base_url) + std::string(config::path_url) + filename, false);
+    Spawn(std::string(config::base_url) + std::string(config::path_url) + filename, filename, false);
+}
+
+void MainFrame::OnSaveAs()
+{
+    wxFileDialog dialog(this, "Save Notebook file", "", "",
+        "Notebook files (*.ipynb)|*.ipynb", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    
+    if (dialog.ShowModal() == wxID_CANCEL) return;
+
+    std::string new_filename = std::string(dialog.GetPath());
+    std::cout << "SAVE AS " << local_filename << " -> " << new_filename << std::endl;
+//    Spawn(std::string(config::base_url) + std::string(config::path_url) + filename, false);    
 }
