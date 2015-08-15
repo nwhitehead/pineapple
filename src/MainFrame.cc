@@ -33,13 +33,6 @@
 #include "MainApp.hh"
 
 
-wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
-    EVT_CLOSE(MainFrame::OnClose)
-    EVT_WEBVIEW_ERROR(wxID_ANY, MainFrame::OnError)
-    EVT_WEBVIEW_TITLE_CHANGED(wxID_ANY, MainFrame::OnTitleChanged)
-wxEND_EVENT_TABLE()
-
-
 /**
  * MainFrame constructor
  */
@@ -173,12 +166,22 @@ MainFrame::MainFrame(std::string url0, std::string filename,
     
     SetMenuBar(menubar);
 
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnMenuEvent, this);
+    /// Bind menu items
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSaveAs, this, wxID_SAVE_AS);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, [this](wxCommandEvent &event)->void {
+        jupyter_click_cell(webview, "delete_cell");
+    }, wxID_DELETE);
+
+//    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnMenuEvent, this);
 
     wxBoxSizer* frame_sizer = new wxBoxSizer(wxVERTICAL);
 
     webview = wxWebView::New(this, wxID_ANY);
     webview->EnableContextMenu(false);
+
+    /// Bind other events
+    Bind(wxEVT_WEBVIEW_TITLE_CHANGED, &MainFrame::OnTitleChanged, this, wxID_ANY);
+    Bind(wxEVT_CLOSE_WINDOW, &MainFrame::OnClose, this, wxID_ANY);
     
     frame_sizer->Add(webview, 1, wxEXPAND, 10);
 
@@ -292,11 +295,6 @@ void MainFrame::OnMenuEvent(wxCommandEvent &event)
             jupyter_click_cell(webview, "insert_cell_below");
             break;
         }
-        case wxID_DELETE:
-        {
-            jupyter_click_cell(webview, "delete_cell");
-            break;
-        }
         case wxID_UNDELETE:
         {
             jupyter_click_cell(webview, "undelete_cell");
@@ -393,12 +391,6 @@ void MainFrame::OnMenuEvent(wxCommandEvent &event)
             jupyter_click_cell(webview, "save_checkpoint");
             break;
         }
-        case wxID_SAVE_AS:
-        {
-            std::cout << "SAVE AS" << std::endl;
-            OnSaveAs();
-            break;
-        }
         case wxID_SAVE_HTML:
         {
             jupyter_click_cell(webview, "download_markdown");
@@ -446,7 +438,7 @@ void MainFrame::OnMenuEvent(wxCommandEvent &event)
         }
         default:
         {
-            std::cerr << "ERROR UNHANDLED MENU EVENT" << std::endl;
+            event.Skip(true); // let parent handle it
             break;
         }
     }
@@ -464,7 +456,7 @@ void MainFrame::OnOpen()
     Spawn(url_from_filename(filename), filename, false);
 }
 
-void MainFrame::OnSaveAs()
+void MainFrame::OnSaveAs(wxCommandEvent &event)
 {
     wxFileDialog dialog(this, "Save Notebook file", "", "",
         "Notebook files (*.ipynb)|*.ipynb", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
@@ -522,8 +514,3 @@ void MainFrame::OnTitleChanged(wxWebViewEvent &event)
     SetLabel(config::title_prefix + title);
 }
 
-void MainFrame::OnError(wxWebViewEvent &event)
-{
-    std::cout << "ERROR" << std::endl;
-    webview->LoadURL(url);
-}

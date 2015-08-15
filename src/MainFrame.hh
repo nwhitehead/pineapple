@@ -44,14 +44,10 @@ public:
     void OnMenuEvent(wxCommandEvent &event);
     void OnClose(wxCloseEvent &event);
     void OnSubprocessTerminate(wxProcessEvent &event);
-    void OnError(wxWebViewEvent &event);
     void OnTitleChanged(wxWebViewEvent &event);
 
     void OnOpen();
-    void OnSaveAs();
+    void OnSaveAs(wxCommandEvent &event);
     
     void eval_javascript(std::string expression, Callback::t success, Callback::t failure=Callback::debug);
-
-private:
-    wxDECLARE_EVENT_TABLE();
 };
