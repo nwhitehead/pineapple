@@ -1,34 +1,20 @@
 
 #include "MainApp.hh"
 
-#include <algorithm>
-#include <cstdlib>
-#include <functional>
 #include <fstream>
 #include <iostream>
-#include <map>
-#include <string>
-#include <sstream>
-#include <vector>
-
 #include <signal.h>
+#include <string>
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
 #include <wx/app.h>
-#include <wx/filefn.h>
-#include <wx/filename.h>
-#include <wx/image.h>
-#include <wx/menu.h>
 #include <wx/process.h>
-#include <wx/stdpaths.h>
-#include <wx/stream.h>
-#include <wx/txtstrm.h>
-#include <wx/utils.h>
 #include <wx/webview.h>
 
+#include "config.hh"
 #include "MainFrame.hh"
 
 wxBEGIN_EVENT_TABLE(MainApp, wxApp)

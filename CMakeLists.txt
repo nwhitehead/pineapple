@@ -23,8 +23,8 @@ set(SRC_LIST
     src/MainFrame.cc
     src/MainApp.cc
 )
-configure_file("${PROJECT_SOURCE_DIR}/src/config.h.in"
-    "${PROJECT_BINARY_DIR}/include/config.h")
+configure_file("${PROJECT_SOURCE_DIR}/src/config.hh.in"
+    "${PROJECT_BINARY_DIR}/include/config.hh")
 include_directories("${PROJECT_BINARY_DIR}/include")
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 target_link_libraries(${PROJECT_NAME} ${wxWidgets_LIBRARIES})

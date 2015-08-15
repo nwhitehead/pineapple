@@ -27,7 +27,7 @@
 #include <wx/webview.h>
 
 #include "callback.hh"
-#include "config.h"
+#include "config.hh"
 #include "util.hh"
 
 class MainFrame: public wxFrame

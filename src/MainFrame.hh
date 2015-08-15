@@ -3,16 +3,13 @@
 #include <signal.h>
 #include <string>
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-    #include <wx/wx.h>
-#endif
+#include <wx/frame.h>
 #include <wx/menu.h>
 #include <wx/process.h>
+#include <wx/toolbar.h>
 #include <wx/webview.h>
 
 #include "callback.hh"
-#include "config.h"
 
 class MainFrame: public wxFrame
 {

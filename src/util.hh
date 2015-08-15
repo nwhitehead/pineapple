@@ -4,7 +4,7 @@
 #include <sstream>
 #include <vector>
 
-#include "config.h"
+#include "config.hh"
 
 static std::string url_from_filename(std::string filename)
 {

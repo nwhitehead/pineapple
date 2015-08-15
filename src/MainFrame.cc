@@ -2,7 +2,6 @@
 #include "MainFrame.hh"
 
 #include <algorithm>
-#include <cstdlib>
 #include <functional>
 #include <fstream>
 #include <iostream>
@@ -11,25 +10,25 @@
 #include <sstream>
 #include <vector>
 
-#include <signal.h>
-
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-    #include <wx/wx.h>
-#endif
+#include <wx/bitmap.h>
+#include <wx/filedlg.h>
 #include <wx/filefn.h>
 #include <wx/filename.h>
 #include <wx/image.h>
 #include <wx/menu.h>
+#include <wx/msgdlg.h>
 #include <wx/process.h>
+#include <wx/sizer.h>
 #include <wx/stdpaths.h>
 #include <wx/stream.h>
+#include <wx/toolbar.h>
 #include <wx/txtstrm.h>
 #include <wx/utils.h>
 #include <wx/webview.h>
 
 #include "callback.hh"
-#include "config.h"
+#include "config.hh"
+#include "gui_util.hh"
 #include "util.hh"
 #include "MainApp.hh"
 
@@ -38,18 +37,6 @@
  * Utility section
  */
 
-/// Load an image file and process it into an appropriate toolbar icon
-static wxBitmap toolbar_icon(std::string filename)
-{
-    return wxBitmap(wxImage(filename).Rescale(config::toolbar_width, config::toolbar_height, wxIMAGE_QUALITY_BICUBIC));
-}
-
-/// Click a menu item by name (hidden in our webview)
-static void jupyter_click_cell(wxWebView *wv, std::string id)
-{
-    std::string cmd = "Jupyter.menubar.element.find('#" + id + "').click();";
-    wv->RunScript(cmd);
-}
 
 /**
  * MainFrame functions

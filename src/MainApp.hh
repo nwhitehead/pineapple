@@ -1,9 +1,7 @@
+#pragma once
+
 #include <string>
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-    #include <wx/wx.h>
-#endif
 #include <wx/app.h>
 #include <wx/process.h>
 
