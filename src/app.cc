@@ -1,6 +1,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <functional>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -81,11 +82,37 @@ static std::string url_from_filename(std::string filename)
 std::string load_page;
 bool load_page_loaded = false;
 
+class Callback {
+public:
+    using response = std::string;
+    using result = void;
+    using t = std::function<result(response)>;
+    static response debug_handler(response r) {
+        std::cout << "Response: " << r << std::endl;
+    }
+};
+
+class CallbackHandler
+{
+    using token = int;
+    using expression = std::string;
+public:
+};
+
+/*
+CallbackHandler::callback CallbackHandler::get_debug_handler()
+{
+    return std::function<result(response)>([](response r) {
+        return std::string("Response: ") + r;
+    });
+}
+*/
+
 class MainFrame: public wxFrame
 {
     enum {
         wxID_SAVE_HTML = 10000,
-        wxID_SAVE_AS,
+        wxID_SAVE_AS, wxID_PROPERTIES,
         wxID_INSERT, wxID_DELETE, wxID_UNDELETE,
         wxID_SPLIT, wxID_MERGE,
         wxID_MOVE_UP, wxID_MOVE_DOWN,
@@ -106,6 +133,7 @@ public:
     wxWebView *webview;
     std::string url;
     std::string local_filename;
+//    std::map<token,
 
     void OnMenuEvent(wxCommandEvent &event);
     void OnClose(wxCloseEvent &event);
@@ -223,6 +251,8 @@ MainFrame::MainFrame(std::string url0, std::string filename,
     menu_file->Append(wxID_SAVE_AS, "Save As...");
     menu_file->AppendSeparator();
     menu_file->Append(wxID_SAVE_HTML, "Download HTML");
+    menu_file->AppendSeparator();
+    menu_file->Append(wxID_PROPERTIES, "Properties...");
     menu_file->AppendSeparator();
     menu_file->Append(wxID_EXIT, "&Quit");
     menubar->Append(menu_file, "&File");
@@ -382,10 +412,18 @@ void MainFrame::OnError(wxWebViewEvent &event)
     webview->LoadURL(url);
 }
 
+/// Click a menu item by name (hidden in our webview)
 void jupyter_click_cell(wxWebView *wv, std::string id)
 {
     std::string cmd = "Jupyter.menubar.element.find('#" + id + "').click();";
     wv->RunScript(cmd);
+}
+
+/// Evaluate js string in the webview
+/// Call success or failure continuation with json response
+void jupyter_eval(std::string expr, std::function<void(std::string)> success)
+{
+    success(std::string("true"));
 }
 
 void MainFrame::OnMenuEvent(wxCommandEvent &event)
@@ -542,7 +580,7 @@ void MainFrame::OnMenuEvent(wxCommandEvent &event)
         case wxID_ABOUT:
         {
             std::stringstream ss;
-            ss << config::version_full << "\n\n" << wxGetLibraryVersionInfo().ToString() << std::endl;
+            ss << config::version_full << "\n\nCopyright (c) 2015 Nathan Whitehead\n\n" << wxGetLibraryVersionInfo().ToString() << std::endl;
             ss << "Icons are from: https://icons8.com/" << std::endl; 
             wxMessageBox(ss.str(), "About", wxOK | wxICON_INFORMATION);
             break;
@@ -551,6 +589,14 @@ void MainFrame::OnMenuEvent(wxCommandEvent &event)
         {
             Close(true);
             break;
+        }
+        case wxID_PROPERTIES:
+        {
+            Callback::t mycallback(Callback::debug_handler);
+            mycallback("hello");
+            std::stringstream ss;
+            ss << "Name: " << std::endl;
+            wxMessageBox(ss.str(), "Properties", wxOK | wxICON_INFORMATION);            
         }
         default:
         {
