@@ -4,6 +4,7 @@
 #include <functional>
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -82,31 +83,58 @@ static std::string url_from_filename(std::string filename)
 std::string load_page;
 bool load_page_loaded = false;
 
+/// This call holds types about callbacks
+/// Callback::t is the callback type for (string) -> void
 class Callback {
 public:
-    using response = std::string;
-    using result = void;
-    using t = std::function<result(response)>;
-    static response debug_handler(response r) {
-        std::cout << "Response: " << r << std::endl;
+    using argument = std::string;
+    using t = std::function<void(argument)>;
+    static void ignore(argument x) { /* nop */ }
+    static void debug(argument x) {
+        std::cout << "Argument: " << x << std::endl;
     }
 };
 
+/// What can happen to an async call
+enum class AsyncResult { Success, Failure, Timeout };
+
+/// Handle callbacks, associate tokens with callback actions
 class CallbackHandler
 {
-    using token = int;
-    using expression = std::string;
 public:
+    using token = int;
+
+    /// Register a callback of the given type with a token
+    bool register_callback(token id, AsyncResult c, Callback::t cb);
+
+    /// Call a previously registered callback for the id and type
+    /// remove means unregister it after we do the call
+    void call(token id, AsyncResult c, Callback::argument x, bool remove=true);
+private:
+    std::map<std::pair<token, AsyncResult>, Callback::t> map;
 };
 
-/*
-CallbackHandler::callback CallbackHandler::get_debug_handler()
+bool CallbackHandler::register_callback(token id, AsyncResult c, Callback::t cb)
 {
-    return std::function<result(response)>([](response r) {
-        return std::string("Response: ") + r;
-    });
+    std::pair<token, AsyncResult> key(id, c);
+    bool filled = (map.find(key) != map.end());
+    map[key] = cb;
+    return filled;
 }
-*/
+
+void CallbackHandler::call(token id, AsyncResult c, Callback::argument x, bool remove)
+{
+    std::pair<token, AsyncResult> key(id, c);
+    auto it = map.find(key);
+    if (it == map.end()) {
+        std::cerr << "CALLBACK KEY NOT FOUND " << id << " - " << static_cast<int>(c) << std::endl;
+        return;
+    }
+    map[key](x);
+    if (remove) {
+        map.erase(it);
+    }
+}
 
 class MainFrame: public wxFrame
 {
@@ -133,7 +161,7 @@ public:
     wxWebView *webview;
     std::string url;
     std::string local_filename;
-//    std::map<token,
+    CallbackHandler handler;
 
     void OnMenuEvent(wxCommandEvent &event);
     void OnClose(wxCloseEvent &event);
@@ -141,9 +169,11 @@ public:
     void OnError(wxWebViewEvent &event);
     void OnTitleChanged(wxWebViewEvent &event);
     void OnNewWindow(wxWebViewEvent &event);
-    
+
     void OnOpen();
     void OnSaveAs();
+    
+    void eval_javascript(std::string expression, Callback::t success, Callback::t failure=Callback::debug);
 
 private:
     wxDECLARE_EVENT_TABLE();
@@ -419,6 +449,18 @@ void jupyter_click_cell(wxWebView *wv, std::string id)
     wv->RunScript(cmd);
 }
 
+void MainFrame::eval_javascript(std::string expression, Callback::t success, Callback::t failure)
+{
+    static CallbackHandler::token id = 0;
+    id++;
+    handler.register_callback(id, AsyncResult::Success, success);
+    handler.register_callback(id, AsyncResult::Failure, failure);
+    std::stringstream ss;
+    ss << "document.title=\"" << config::protocol_prefix << id << "|\"+JSON.stringify(" << expression << ");";
+    std::cout << "Trying to eval " << ss.str() << std::endl;
+    webview->RunScript(ss.str());
+}
+
 /// Evaluate js string in the webview
 /// Call success or failure continuation with json response
 void jupyter_eval(std::string expr, std::function<void(std::string)> success)
@@ -592,11 +634,29 @@ void MainFrame::OnMenuEvent(wxCommandEvent &event)
         }
         case wxID_PROPERTIES:
         {
-            Callback::t mycallback(Callback::debug_handler);
+/*
+            Callback::t mycallback(Callback::debug);
             mycallback("hello");
+            CallbackHandler h;
+            h.register_callback(1, AsyncResult::Success, mycallback);
+            h.register_callback(2, AsyncResult::Success, mycallback);
+            h.call(1, AsyncResult::Success, "Booya");
+            h.call(1, AsyncResult::Success, "Booya");
+            h.call(2, AsyncResult::Success, "Keep trucking", false);
+            h.call(2, AsyncResult::Success, "Keep trucking");
+            h.register_callback(3, AsyncResult::Success, Callback::ignore);
+            h.register_callback(3, AsyncResult::Failure, Callback::debug);
+            h.call(3, AsyncResult::Failure, "Debug msg");
+*/
+
+            eval_javascript(std::string("2+2"), [](Callback::argument x) {
+                std::cout << "Result of 2+2 is " << x << std::endl;
+            });
+
             std::stringstream ss;
             ss << "Name: " << std::endl;
-            wxMessageBox(ss.str(), "Properties", wxOK | wxICON_INFORMATION);            
+            wxMessageBox(ss.str(), "Properties", wxOK | wxICON_INFORMATION);
+            break;            
         }
         default:
         {
@@ -617,18 +677,39 @@ void MainFrame::OnClose(wxCloseEvent &event)
     Destroy();
 }
 
+static std::vector<std::string> split(const std::string &s, char delimiter)
+{
+    std::vector<std::string> items;
+    std::stringstream ss(s);
+    std::string item;
+    while (std::getline(ss, item, delimiter)) {
+        items.push_back(item);
+    }
+    return items;
+}
+
 void MainFrame::OnTitleChanged(wxWebViewEvent &event)
 {
     std::string title = event.GetString().ToStdString();
     std::cout << "TITLE CHANGED - " << title << std::endl;
-    // Check if starts with $$$$
+    // Check if starts with special prefix
     std::string prefix = config::protocol_prefix;
     if (std::equal(prefix.begin(), prefix.end(), title.begin())) {
         // Prefix present
-        std::string theUrl = title.substr(prefix.size());
-        std::cout << "SPECIAL " << theUrl << std::endl;
-        std::exit(-1); /// Not supported currently
-//        Spawn(config::base_url + theUrl);
+        std::string txt = title.substr(prefix.size());
+        std::vector<std::string> items(split(txt, '|'));
+        if (items.size() < 2) {
+            std::cerr << "SPECIAL TITLE MALFORMED - " << txt << std::endl;
+            return;
+        }
+        CallbackHandler::token id;
+        try {
+            id = std::stoi(items[0]);
+        } catch (...) {
+            std::cerr << "SPECIAL TITLE MALFORMED - " << txt << std::endl;
+            return;
+        }
+        handler.call(id, AsyncResult::Success, items[1], true);
         return;
     }
     // Otherwise actually change the title
