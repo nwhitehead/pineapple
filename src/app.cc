@@ -28,7 +28,7 @@ namespace config {
 /// Environment variable to pass server path
 constexpr char server_script_env[] = "PINEAPPLE_SERVER";
 /// Default server script if none given
-constexpr char server_script_default[] = "venv/bin/python scripts/eridani-main serve";
+constexpr char server_script_default[] = "venv/bin/python scripts/eridani-main";
 /// Default size of main window on startup
 constexpr int initial_width = 900;
 constexpr int initial_height = 700;

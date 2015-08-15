@@ -58,7 +58,7 @@ file(COPY "notebook/notebook/templates/" DESTINATION "${PROJECT_BINARY_DIR}/note
 ### Testing targets
 
 set (ENV{PINEAPPLE_SERVER}
-    "${VENV_DIR}/bin/python ${PROJECT_BINARY_DIR}/scripts/eridani-main serve")
+    "${VENV_DIR}/bin/python ${PROJECT_BINARY_DIR}/scripts/eridani-main")
 
 add_custom_target(localtest
     DEPENDS ${PROJECT_NAME} venv
