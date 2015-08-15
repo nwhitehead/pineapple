@@ -62,6 +62,9 @@ constexpr char title_prefix[] = "Pineapple - ";
 /// Blank notebook location
 constexpr char blank_notebook_filename[] = "data/blank.ipynb";
 
+/// Special tokens for permanent handlers
+constexpr int token_kernel_busy = -1;
+
 #if defined(__APPLE__)
     constexpr long int toolbar_style = wxTB_TEXT;
     constexpr int toolbar_width = 48;
@@ -84,14 +87,21 @@ std::string load_page;
 bool load_page_loaded = false;
 
 /// This call holds types about callbacks
-/// Callback::t is the callback type for (string) -> void
+/// Callback::t is the callback type for (string) -> bool
+/// Result value is whether event should be removed (done handling)
 class Callback {
 public:
     using argument = std::string;
-    using t = std::function<void(argument)>;
-    static void ignore(argument x) { /* nop */ }
-    static void debug(argument x) {
+    using t = std::function<bool (argument)>;
+    static bool ignore(argument x) { return true; }
+    static bool ignore_infinite(argument x) { return false; }
+    static bool debug(argument x) {
         std::cout << "Argument: " << x << std::endl;
+        return true;
+    }
+    static bool debug_infinite(argument x) {
+        std::cout << "Argument: " << x << std::endl;
+        return false;
     }
 };
 
@@ -109,7 +119,7 @@ public:
 
     /// Call a previously registered callback for the id and type
     /// remove means unregister it after we do the call
-    void call(token id, AsyncResult c, Callback::argument x, bool remove=true);
+    void call(token id, AsyncResult c, Callback::argument x);
 private:
     std::map<std::pair<token, AsyncResult>, Callback::t> map;
 };
@@ -122,7 +132,7 @@ bool CallbackHandler::register_callback(token id, AsyncResult c, Callback::t cb)
     return filled;
 }
 
-void CallbackHandler::call(token id, AsyncResult c, Callback::argument x, bool remove)
+void CallbackHandler::call(token id, AsyncResult c, Callback::argument x)
 {
     std::pair<token, AsyncResult> key(id, c);
     auto it = map.find(key);
@@ -130,8 +140,8 @@ void CallbackHandler::call(token id, AsyncResult c, Callback::argument x, bool r
         std::cerr << "CALLBACK KEY NOT FOUND " << id << " - " << static_cast<int>(c) << std::endl;
         return;
     }
-    map[key](x);
-    if (remove) {
+    if (map[key](x)) {
+        // true result means remove it
         map.erase(it);
     }
 }
@@ -402,6 +412,11 @@ MainFrame::MainFrame(std::string url0, std::string filename,
         },
 */
 
+    handler.register_callback(config::token_kernel_busy, AsyncResult::Success, [](Callback::argument x) -> bool {
+        std::cout << "KERNEL BUSY " << x << std::endl;
+        return false; // keep handler alive permanently
+    });
+
     menubar->Append(menu_help, "&Help");
     
     SetMenuBar(menubar);
@@ -634,23 +649,9 @@ void MainFrame::OnMenuEvent(wxCommandEvent &event)
         }
         case wxID_PROPERTIES:
         {
-/*
-            Callback::t mycallback(Callback::debug);
-            mycallback("hello");
-            CallbackHandler h;
-            h.register_callback(1, AsyncResult::Success, mycallback);
-            h.register_callback(2, AsyncResult::Success, mycallback);
-            h.call(1, AsyncResult::Success, "Booya");
-            h.call(1, AsyncResult::Success, "Booya");
-            h.call(2, AsyncResult::Success, "Keep trucking", false);
-            h.call(2, AsyncResult::Success, "Keep trucking");
-            h.register_callback(3, AsyncResult::Success, Callback::ignore);
-            h.register_callback(3, AsyncResult::Failure, Callback::debug);
-            h.call(3, AsyncResult::Failure, "Debug msg");
-*/
-
-            eval_javascript(std::string("2+2"), [](Callback::argument x) {
+            eval_javascript(std::string("2+2"), [](Callback::argument x) -> bool {
                 std::cout << "Result of 2+2 is " << x << std::endl;
+                return true;
             });
 
             std::stringstream ss;
@@ -709,7 +710,7 @@ void MainFrame::OnTitleChanged(wxWebViewEvent &event)
             std::cerr << "SPECIAL TITLE MALFORMED - " << txt << std::endl;
             return;
         }
-        handler.call(id, AsyncResult::Success, items[1], true);
+        handler.call(id, AsyncResult::Success, items[1]);
         return;
     }
     // Otherwise actually change the title
