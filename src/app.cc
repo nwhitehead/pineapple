@@ -26,68 +26,9 @@
 #include <wx/utils.h>
 #include <wx/webview.h>
 
+#include "callback.hh"
 #include "config.h"
 #include "util.hh"
-
-/// This call holds types about callbacks
-/// Callback::t is the callback type for (string) -> bool
-/// Result value is whether event should be removed (done handling)
-class Callback {
-public:
-    using argument = std::string;
-    using t = std::function<bool (argument)>;
-    static bool ignore(argument x) { return true; }
-    static bool ignore_infinite(argument x) { return false; }
-    static bool debug(argument x) {
-        std::cout << "Argument: " << x << std::endl;
-        return true;
-    }
-    static bool debug_infinite(argument x) {
-        std::cout << "Argument: " << x << std::endl;
-        return false;
-    }
-};
-
-/// What can happen to an async call
-enum class AsyncResult { Success, Failure, Timeout };
-
-/// Handle callbacks, associate tokens with callback actions
-class CallbackHandler
-{
-public:
-    using token = int;
-
-    /// Register a callback of the given type with a token
-    bool register_callback(token id, AsyncResult c, Callback::t cb);
-
-    /// Call a previously registered callback for the id and type
-    /// remove means unregister it after we do the call
-    void call(token id, AsyncResult c, Callback::argument x);
-private:
-    std::map<std::pair<token, AsyncResult>, Callback::t> map;
-};
-
-bool CallbackHandler::register_callback(token id, AsyncResult c, Callback::t cb)
-{
-    std::pair<token, AsyncResult> key(id, c);
-    bool filled = (map.find(key) != map.end());
-    map[key] = cb;
-    return filled;
-}
-
-void CallbackHandler::call(token id, AsyncResult c, Callback::argument x)
-{
-    std::pair<token, AsyncResult> key(id, c);
-    auto it = map.find(key);
-    if (it == map.end()) {
-        std::cerr << "CALLBACK KEY NOT FOUND " << id << " - " << static_cast<int>(c) << std::endl;
-        return;
-    }
-    if (map[key](x)) {
-        // true result means remove it
-        map.erase(it);
-    }
-}
 
 class MainFrame: public wxFrame
 {
