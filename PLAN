@@ -1,5 +1,6 @@
 To-do lists.
 
+open most recently opened instead of creating new notebook
 show kernel busy icon in toolbar
 save option on quit
 custom theme colors (first pass done)

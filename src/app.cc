@@ -158,6 +158,7 @@ class MainFrame: public wxFrame
         wxID_CELL_CODE, wxID_CELL_MARKDOWN, wxID_CELL_RAW,
         wxID_KERNEL_INTERRUPT, wxID_KERNEL_RESTART, wxID_KERNEL_RECONNECT,
         wxID_HELP_KEYBOARD, wxID_HELP_NOTEBOOK, wxID_HELP_MARKDOWN,
+        wxID_KERNEL_BUSY,
     };
 
 public:
@@ -169,6 +170,8 @@ public:
 
     wxProcess *server;
     wxWebView *webview;
+    wxMenuBar *menubar;
+    wxToolBar *toolbar;
     std::string url;
     std::string local_filename;
     CallbackHandler handler;
@@ -281,7 +284,7 @@ MainFrame::MainFrame(std::string url0, std::string filename,
         : wxFrame(nullptr, wxID_ANY, title, pos, size),
           url(url0), local_filename(filename)
 {
-    wxMenuBar *menubar = new wxMenuBar();
+    menubar = new wxMenuBar();
     wxMenu *menu_file = new wxMenu();
     menu_file->Append(wxID_NEW, "&New");
     menu_file->AppendSeparator();
@@ -344,7 +347,7 @@ MainFrame::MainFrame(std::string url0, std::string filename,
     menu_help->Append(wxID_ABOUT, "&About");
     menu_help->AppendSeparator();
 
-    wxToolBar *toolbar = CreateToolBar(config::toolbar_style);
+    toolbar = CreateToolBar(config::toolbar_style);
 
     toolbar->AddTool(wxID_SAVE, "Save", toolbar_icon("images/Save-50.png"), "Save");
 
@@ -379,6 +382,12 @@ MainFrame::MainFrame(std::string url0, std::string filename,
 
     toolbar->AddSeparator();
 
+    toolbar->AddTool(wxID_KERNEL_BUSY, "Busy",
+        toolbar_icon("images/Led-Yellow-On-32.png"),
+        toolbar_icon("images/Led-Yellow-Off-32.png"),
+        wxITEM_NORMAL, "Kernel busy");
+    toolbar->EnableTool(wxID_KERNEL_BUSY, false);
+
     toolbar->Realize();
 
 /*
@@ -412,10 +421,17 @@ MainFrame::MainFrame(std::string url0, std::string filename,
         },
 */
 
-    handler.register_callback(config::token_kernel_busy, AsyncResult::Success, [](Callback::argument x) -> bool {
-        std::cout << "KERNEL BUSY " << x << std::endl;
-        return false; // keep handler alive permanently
-    });
+    handler.register_callback(config::token_kernel_busy, AsyncResult::Success,
+        [this](Callback::argument x) -> bool {
+            std::cout << "KERNEL BUSY " << x << std::endl;
+            if (x == std::string("true")) {
+                this->toolbar->EnableTool(wxID_KERNEL_BUSY, true);
+            }
+            if (x == std::string("false")) {
+                this->toolbar->EnableTool(wxID_KERNEL_BUSY, false);
+            }
+            return false; // keep handler alive permanently
+        });
 
     menubar->Append(menu_help, "&Help");
     
