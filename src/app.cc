@@ -497,7 +497,8 @@ void MainFrame::OnMenuEvent(wxCommandEvent &event)
         case wxID_ABOUT:
         {
             std::stringstream ss;
-            ss << config::version_full << "\n\n" << wxGetLibraryVersionInfo().ToString() << std::endl;            
+            ss << config::version_full << "\n\n" << wxGetLibraryVersionInfo().ToString() << std::endl;
+            ss << "Icons are from: https://icons8.com/" << std::endl; 
             wxMessageBox(ss.str(), "About", wxOK | wxICON_INFORMATION);
             break;
         }
