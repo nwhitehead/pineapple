@@ -46,7 +46,6 @@ public:
     void OnSubprocessTerminate(wxProcessEvent &event);
     void OnError(wxWebViewEvent &event);
     void OnTitleChanged(wxWebViewEvent &event);
-    void OnNewWindow(wxWebViewEvent &event);
 
     void OnOpen();
     void OnSaveAs();

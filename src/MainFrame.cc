@@ -33,21 +33,16 @@
 #include "MainApp.hh"
 
 
-/**
- * Utility section
- */
-
-
-/**
- * MainFrame functions
- */
-
 wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_CLOSE(MainFrame::OnClose)
     EVT_WEBVIEW_ERROR(wxID_ANY, MainFrame::OnError)
     EVT_WEBVIEW_TITLE_CHANGED(wxID_ANY, MainFrame::OnTitleChanged)
-    EVT_WEBVIEW_NEWWINDOW(wxID_ANY, MainFrame::OnNewWindow)
 wxEND_EVENT_TABLE()
+
+
+/**
+ * MainFrame constructor
+ */
 
 MainFrame::MainFrame(std::string url0, std::string filename,
     const wxString &title, const wxPoint &pos, const wxSize &size,
@@ -161,36 +156,6 @@ MainFrame::MainFrame(std::string url0, std::string filename,
 
     toolbar->Realize();
 
-/*
-        {
-            'text': "Python",
-            'url': "http://docs.python.org/%i.%i" % sys.version_info[:2],
-        },
-        {
-            'text': "IPython",
-            'url': "http://ipython.org/documentation.html",
-        },
-        {
-            'text': "NumPy",
-            'url': "http://docs.scipy.org/doc/numpy/reference/",
-        },
-        {
-            'text': "SciPy",
-            'url': "http://docs.scipy.org/doc/scipy/reference/",
-        },
-        {
-            'text': "Matplotlib",
-            'url': "http://matplotlib.org/contents.html",
-        },
-        {
-            'text': "SymPy",
-            'url': "http://docs.sympy.org/latest/index.html",
-        },
-        {
-            'text': "pandas",
-            'url': "http://pandas.pydata.org/pandas-docs/stable/",
-        },
-*/
 
     handler.register_callback(config::token_kernel_busy, AsyncResult::Success,
         [this](Callback::argument x) -> bool {
@@ -237,10 +202,18 @@ MainFrame::MainFrame(std::string url0, std::string filename,
     SetSize(wxDefaultCoord, wxDefaultCoord, size.GetWidth(), size.GetHeight());
 }
 
-void MainFrame::OnError(wxWebViewEvent &event)
+
+/**
+ * Functions that are called by other actions
+ */
+
+MainFrame *MainFrame::Spawn(std::string url, std::string filename, bool indirect_load)
 {
-    std::cout << "ERROR" << std::endl;
-    webview->LoadURL(url);
+    MainFrame *child = new MainFrame(url, filename, url,
+        wxPoint(wxDefaultCoord, wxDefaultCoord),
+        wxSize(config::initial_width, config::initial_height), indirect_load);
+    child->Show();
+    return child;
 }
 
 void MainFrame::eval_javascript(std::string expression, Callback::t success, Callback::t failure)
@@ -254,6 +227,46 @@ void MainFrame::eval_javascript(std::string expression, Callback::t success, Cal
     std::cout << "Trying to eval " << ss.str() << std::endl;
     webview->RunScript(ss.str());
 }
+
+MainFrame *MainFrame::CreateNew(bool indirect_load)
+{
+    std::cout << "CREATE NEW" << std::endl;
+    wxString datadir = wxStandardPaths::Get().GetAppDocumentsDir();
+    int n = 1;
+    wxFileName fullname;
+    do {
+        std::stringstream ss;
+        ss << config::untitled_prefix << n << config::untitled_suffix;
+        fullname = wxFileName(datadir, ss.str());
+        std::cout << "TRYING " << fullname.GetFullPath() << std::endl;
+        if (!fullname.IsOk()) break;
+        if (fullname.IsOk() && !fullname.FileExists()) break;
+        if (n > config::max_num_untitled) break;
+        n++;
+    } while (1);
+    if (fullname.IsOk() && !fullname.FileExists()) {
+        std::cout << "FILENAME " << fullname.GetFullPath() << std::endl;
+        // FIXME: drive must be the same as we mounted for windows!!!
+        std::ofstream out(fullname.GetFullPath());
+        out << wxGetApp().blank_notebook << std::endl;
+        // Get path in UNIX so it is a URI
+        std::string uri(fullname.GetFullPath(wxPATH_UNIX));
+        // Open new window for it
+        return Spawn(url_from_filename(uri), std::string(fullname.GetFullPath()), indirect_load);
+    }
+    std::stringstream ss;
+    ss << "Could not create new untitled notebook in ";
+    ss << wxStandardPaths::Get().GetAppDocumentsDir() << "\n\n";
+    ss << "Last attempt was to create " << std::string(fullname.GetFullPath()) << std::endl;
+    wxMessageBox(ss.str(), "ERROR", wxOK | wxICON_ERROR);
+
+    return nullptr;
+}
+
+
+/**
+ * MainFrame handlers for wx events
+ */
 
 void MainFrame::OnMenuEvent(wxCommandEvent &event)
 {
@@ -439,6 +452,37 @@ void MainFrame::OnMenuEvent(wxCommandEvent &event)
     }
 }
 
+void MainFrame::OnOpen()
+{
+    wxFileDialog dialog(this, "Open Notebook file", "", "",
+        "Notebook files (*.ipynb)|*.ipynb", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+    
+    if (dialog.ShowModal() == wxID_CANCEL) return;
+
+    std::string filename = std::string(dialog.GetPath());
+    std::cout << "OPEN " << filename << std::endl;
+    Spawn(url_from_filename(filename), filename, false);
+}
+
+void MainFrame::OnSaveAs()
+{
+    wxFileDialog dialog(this, "Save Notebook file", "", "",
+        "Notebook files (*.ipynb)|*.ipynb", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+    if (dialog.ShowModal() == wxID_CANCEL) return;
+
+    std::string new_filename = std::string(dialog.GetPath());
+    std::cout << "SAVE AS " << local_filename << " -> " << new_filename << std::endl;
+
+    std::ifstream ifs(local_filename);
+    std::string contents = std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
+    std::ofstream ofs(new_filename);
+    ofs << contents;
+    local_filename = new_filename;
+    url = url_from_filename(local_filename);
+    webview->LoadURL(url);
+}
+
 void MainFrame::OnClose(wxCloseEvent &event)
 {
     std::cout << "CLOSE" << std::endl;
@@ -478,84 +522,8 @@ void MainFrame::OnTitleChanged(wxWebViewEvent &event)
     SetLabel(config::title_prefix + title);
 }
 
-MainFrame *MainFrame::Spawn(std::string url, std::string filename, bool indirect_load)
+void MainFrame::OnError(wxWebViewEvent &event)
 {
-    MainFrame *child = new MainFrame(url, filename, url,
-        wxPoint(wxDefaultCoord, wxDefaultCoord),
-        wxSize(config::initial_width, config::initial_height), indirect_load);
-    child->Show();
-    return child;
-}
-
-void MainFrame::OnNewWindow(wxWebViewEvent &event)
-{
-    wxString url(event.GetURL());
-    std::cout << "NEW WINDOW " << url << std::endl;
-    wxLaunchDefaultBrowser(url);
-}
-
-MainFrame *MainFrame::CreateNew(bool indirect_load)
-{
-    std::cout << "CREATE NEW" << std::endl;
-    wxString datadir = wxStandardPaths::Get().GetAppDocumentsDir();
-    int n = 1;
-    wxFileName fullname;
-    do {
-        std::stringstream ss;
-        ss << config::untitled_prefix << n << config::untitled_suffix;
-        fullname = wxFileName(datadir, ss.str());
-        std::cout << "TRYING " << fullname.GetFullPath() << std::endl;
-        if (!fullname.IsOk()) break;
-        if (fullname.IsOk() && !fullname.FileExists()) break;
-        if (n > config::max_num_untitled) break;
-        n++;
-    } while (1);
-    if (fullname.IsOk() && !fullname.FileExists()) {
-        std::cout << "FILENAME " << fullname.GetFullPath() << std::endl;
-        // FIXME: drive must be the same as we mounted for windows!!!
-        std::ofstream out(fullname.GetFullPath());
-        out << wxGetApp().blank_notebook << std::endl;
-        // Get path in UNIX so it is a URI
-        std::string uri(fullname.GetFullPath(wxPATH_UNIX));
-        // Open new window for it
-        return Spawn(url_from_filename(uri), std::string(fullname.GetFullPath()), indirect_load);
-    }
-    std::stringstream ss;
-    ss << "Could not create new untitled notebook in ";
-    ss << wxStandardPaths::Get().GetAppDocumentsDir() << "\n\n";
-    ss << "Last attempt was to create " << std::string(fullname.GetFullPath()) << std::endl;
-    wxMessageBox(ss.str(), "ERROR", wxOK | wxICON_ERROR);
-
-    return nullptr;
-}
-
-void MainFrame::OnOpen()
-{
-    wxFileDialog dialog(this, "Open Notebook file", "", "",
-        "Notebook files (*.ipynb)|*.ipynb", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-    
-    if (dialog.ShowModal() == wxID_CANCEL) return;
-
-    std::string filename = std::string(dialog.GetPath());
-    std::cout << "OPEN " << filename << std::endl;
-    Spawn(url_from_filename(filename), filename, false);
-}
-
-void MainFrame::OnSaveAs()
-{
-    wxFileDialog dialog(this, "Save Notebook file", "", "",
-        "Notebook files (*.ipynb)|*.ipynb", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-
-    if (dialog.ShowModal() == wxID_CANCEL) return;
-
-    std::string new_filename = std::string(dialog.GetPath());
-    std::cout << "SAVE AS " << local_filename << " -> " << new_filename << std::endl;
-
-    std::ifstream ifs(local_filename);
-    std::string contents = std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
-    std::ofstream ofs(new_filename);
-    ofs << contents;
-    local_filename = new_filename;
-    url = url_from_filename(local_filename);
+    std::cout << "ERROR" << std::endl;
     webview->LoadURL(url);
 }
