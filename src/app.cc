@@ -51,8 +51,8 @@ constexpr char title_prefix[] = "Pineapple - ";
     constexpr int toolbar_height = 48;
 #else
     constexpr long int toolbar_style = wxTB_DEFAULT_STYLE;
-    constexpr int toolbar_width = 24;
-    constexpr int toolbar_height = 24;
+    constexpr int toolbar_width = 25;
+    constexpr int toolbar_height = 25;
 #endif
 
 } /// namespace config
@@ -170,7 +170,7 @@ void MainApp::OnSubprocessTerminate(wxProcessEvent &event)
 /// Load an image file and process it into an appropriate toolbar icon
 static wxBitmap toolbar_icon(std::string filename)
 {
-    return wxBitmap(wxImage(filename).Rescale(config::toolbar_width, config::toolbar_height));
+    return wxBitmap(wxImage(filename).Rescale(config::toolbar_width, config::toolbar_height, wxIMAGE_QUALITY_BICUBIC));
 }
 
 MainFrame::MainFrame(std::string url0, const wxString &title,
@@ -238,36 +238,36 @@ MainFrame::MainFrame(std::string url0, const wxString &title,
 
     wxToolBar *toolbar = CreateToolBar(config::toolbar_style);
 
-    toolbar->AddTool(wxID_SAVE, "Save", toolbar_icon("images/save_555555_48.png"), "Save");
+    toolbar->AddTool(wxID_SAVE, "Save", toolbar_icon("images/Save-50.png"), "Save");
 
     toolbar->AddSeparator();
 
-    toolbar->AddTool(wxID_INSERT, "Insert", toolbar_icon("images/plus_555555_48.png"), "Insert below");
-    toolbar->AddTool(wxID_DELETE, "Delete", toolbar_icon("images/trash-o_555555_48.png"), "Delete cell");
+    toolbar->AddTool(wxID_INSERT, "Insert", toolbar_icon("images/Plus-50.png"), "Insert below");
+    toolbar->AddTool(wxID_DELETE, "Delete", toolbar_icon("images/Delete-50.png"), "Delete cell");
 
     toolbar->AddSeparator();
 
-    toolbar->AddTool(wxID_CUT, "Cut", toolbar_icon("images/cut_555555_48.png"), "Cut cell");
-    toolbar->AddTool(wxID_COPY, "Copy", toolbar_icon("images/copy_555555_48.png"), "Copy cell");
-    toolbar->AddTool(wxID_PASTE, "Paste", toolbar_icon("images/paste_555555_48.png"), "Paste cell");
+    toolbar->AddTool(wxID_CUT, "Cut", toolbar_icon("images/Cut-50.png"), "Cut cell");
+    toolbar->AddTool(wxID_COPY, "Copy", toolbar_icon("images/Copy-50.png"), "Copy cell");
+    toolbar->AddTool(wxID_PASTE, "Paste", toolbar_icon("images/Paste-50.png"), "Paste cell");
 
     toolbar->AddSeparator();
 
-    toolbar->AddTool(wxID_MOVE_UP, "Move up", toolbar_icon("images/arrow-up_555555_48.png"), "Move cell up");
-    toolbar->AddTool(wxID_MOVE_DOWN, "Move down", toolbar_icon("images/arrow-down_555555_48.png"), "Move cell down");
+    toolbar->AddTool(wxID_MOVE_UP, "Move up", toolbar_icon("images/Up-50.png"), "Move cell up");
+    toolbar->AddTool(wxID_MOVE_DOWN, "Move down", toolbar_icon("images/Down-50.png"), "Move cell down");
 
     toolbar->AddSeparator();
 
-    toolbar->AddTool(wxID_RUN_NEXT, "Run", toolbar_icon("images/play_555555_48.png"), "Run cell");
-    toolbar->AddTool(wxID_RUN_ALL, "Run all", toolbar_icon("images/fast-forward_555555_48.png"), "Run all cells");
-    toolbar->AddTool(wxID_KERNEL_INTERRUPT, "Stop", toolbar_icon("images/stop_555555_48.png"), "Interrupt kernel");
-    toolbar->AddTool(wxID_KERNEL_RESTART, "Restart", toolbar_icon("images/repeat_555555_48.png"), "Restart kernel");
+    toolbar->AddTool(wxID_RUN_NEXT, "Run", toolbar_icon("images/Play-50.png"), "Run cell");
+    toolbar->AddTool(wxID_RUN_ALL, "Run all", toolbar_icon("images/FastForward-50.png"), "Run all cells");
+    toolbar->AddTool(wxID_KERNEL_INTERRUPT, "Stop", toolbar_icon("images/Stop-50.png"), "Interrupt kernel");
+    toolbar->AddTool(wxID_KERNEL_RESTART, "Restart", toolbar_icon("images/Synchronize-50.png"), "Restart kernel");
 
     toolbar->AddSeparator();
 
-    toolbar->AddTool(wxID_CELL_CODE, "Code", toolbar_icon("images/pencil_555555_48.png"), "Cell type code");
-    toolbar->AddTool(wxID_CELL_MARKDOWN, "Markdown", toolbar_icon("images/paint-brush_555555_48.png"), "Cell type markdown");
-    toolbar->AddTool(wxID_CELL_RAW, "Raw", toolbar_icon("images/magic_555555_48.png"), "Cell type raw");
+    toolbar->AddTool(wxID_CELL_CODE, "Code", toolbar_icon("images/Edit-50.png"), "Cell type code");
+    toolbar->AddTool(wxID_CELL_MARKDOWN, "Markdown", toolbar_icon("images/Pen-50.png"), "Cell type markdown");
+    toolbar->AddTool(wxID_CELL_RAW, "Raw", toolbar_icon("images/Fantasy-50.png"), "Cell type raw");
 
     toolbar->AddSeparator();
 
