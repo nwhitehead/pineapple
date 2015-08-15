@@ -72,6 +72,12 @@ constexpr char blank_notebook_filename[] = "data/blank.ipynb";
 
 } /// namespace config
 
+static std::string url_from_filename(std::string filename)
+{
+    std::string uri(filename);
+    return std::string(config::base_url) + std::string(config::path_url) + uri;
+}
+
 std::string load_page;
 bool load_page_loaded = false;
 
@@ -623,7 +629,7 @@ MainFrame *MainFrame::CreateNew(bool indirect_load)
         // Get path in UNIX so it is a URI
         std::string uri(fullname.GetFullPath(wxPATH_UNIX));
         // Open new window for it
-        return Spawn(std::string(config::base_url) + std::string(config::path_url) + uri, uri, indirect_load);
+        return Spawn(url_from_filename(uri), std::string(fullname.GetFullPath()), indirect_load);
     }
     std::stringstream ss;
     ss << "Could not create new untitled notebook in ";
@@ -643,17 +649,24 @@ void MainFrame::OnOpen()
 
     std::string filename = std::string(dialog.GetPath());
     std::cout << "OPEN " << filename << std::endl;
-    Spawn(std::string(config::base_url) + std::string(config::path_url) + filename, filename, false);
+    Spawn(url_from_filename(filename), filename, false);
 }
 
 void MainFrame::OnSaveAs()
 {
     wxFileDialog dialog(this, "Save Notebook file", "", "",
         "Notebook files (*.ipynb)|*.ipynb", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-    
+
     if (dialog.ShowModal() == wxID_CANCEL) return;
 
     std::string new_filename = std::string(dialog.GetPath());
     std::cout << "SAVE AS " << local_filename << " -> " << new_filename << std::endl;
-//    Spawn(std::string(config::base_url) + std::string(config::path_url) + filename, false);    
+
+    std::ifstream ifs(local_filename);
+    std::string contents = std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
+    std::ofstream ofs(new_filename);
+    ofs << contents;
+    local_filename = new_filename;
+    url = url_from_filename(local_filename);
+    webview->LoadURL(url);
 }
