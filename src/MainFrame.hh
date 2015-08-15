@@ -48,6 +48,11 @@ public:
 
     void OnOpen();
     void OnSaveAs(wxCommandEvent &event);
-    
+
+    void SetupMenu();
+    void SetupToolbar();
+    void SetupWebView();
+    void SetupBindings();
+
     void eval_javascript(std::string expression, Callback::t success, Callback::t failure=Callback::debug);
 };

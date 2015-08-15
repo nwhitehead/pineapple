@@ -34,7 +34,7 @@
 
 
 /**
- * MainFrame constructor
+ * MainFrame constructor and associated helpers
  */
 
 MainFrame::MainFrame(std::string url0, std::string filename,
@@ -42,6 +42,35 @@ MainFrame::MainFrame(std::string url0, std::string filename,
     bool indirect_load)
         : wxFrame(nullptr, wxID_ANY, title, pos, size),
           url(url0), local_filename(filename)
+{
+    SetupMenu();
+    SetupToolbar();
+    SetupWebView();
+    SetupBindings();
+
+    wxBoxSizer* frame_sizer = new wxBoxSizer(wxVERTICAL);
+    frame_sizer->Add(webview, 1, wxEXPAND, 10);
+    webview->Show();
+    SetSizerAndFit(frame_sizer);
+    SetSize(wxDefaultCoord, wxDefaultCoord, size.GetWidth(), size.GetHeight());
+
+    if (indirect_load) {
+        if (wxGetApp().load_page.size() == 0) {
+            // Read loading page
+            std::ifstream ifs(config::loading_html_filename);
+            wxGetApp().load_page = std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
+        }
+        // Do template replacement for url
+        std::string contents{wxGetApp().load_page};
+        replace_one(contents, "{{url}}", url);
+        webview->SetPage(wxString(contents), "");
+    } else {
+        webview->LoadURL(url);
+    }
+
+}
+
+void MainFrame::SetupMenu()
 {
     menubar = new wxMenuBar();
     wxMenu *menu_file = new wxMenu();
@@ -82,13 +111,13 @@ MainFrame::MainFrame(std::string url0, std::string filename,
     menu_cell->Append(wxID_RUN_ALL, "Run all");
     menu_cell->Append(wxID_RUN_ALL_ABOVE, "Run all above");
     menu_cell->Append(wxID_RUN_ALL_BELOW, "Run all below");
-
-    wxMenu *menu_type = new wxMenu();
-    menu_type->Append(wxID_CELL_CODE, "Code");
-    menu_type->Append(wxID_CELL_MARKDOWN, "Markdown");
-    menu_type->Append(wxID_CELL_RAW, "Raw");
-    menu_cell->AppendSubMenu(menu_type, "Cell type");
-
+    {
+        wxMenu *menu_type = new wxMenu();
+        menu_type->Append(wxID_CELL_CODE, "Code");
+        menu_type->Append(wxID_CELL_MARKDOWN, "Markdown");
+        menu_type->Append(wxID_CELL_RAW, "Raw");
+        menu_cell->AppendSubMenu(menu_type, "Cell type");
+    }
     menubar->Append(menu_cell, "&Cell");
 
     wxMenu *menu_kernel = new wxMenu();
@@ -105,7 +134,13 @@ MainFrame::MainFrame(std::string url0, std::string filename,
     menu_help->AppendSeparator();
     menu_help->Append(wxID_ABOUT, "&About");
     menu_help->AppendSeparator();
+    menubar->Append(menu_help, "&Help");
+    
+    SetMenuBar(menubar);
+}
 
+void MainFrame::SetupToolbar()
+{
     toolbar = CreateToolBar(config::toolbar_style);
 
     toolbar->AddTool(wxID_SAVE, "Save", toolbar_icon("images/Save-50.png"), "Save");
@@ -148,8 +183,29 @@ MainFrame::MainFrame(std::string url0, std::string filename,
     toolbar->EnableTool(wxID_KERNEL_BUSY, false);
 
     toolbar->Realize();
+}
 
+void MainFrame::SetupWebView()
+{
+    webview = wxWebView::New(this, wxID_ANY);
+    webview->EnableContextMenu(false);
+}
 
+void MainFrame::SetupBindings()
+{
+    /// Bind menu items
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSaveAs, this, wxID_SAVE_AS);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, [this](wxCommandEvent &event)->void {
+        jupyter_click_cell(webview, "delete_cell");
+    }, wxID_DELETE);
+
+    //    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnMenuEvent, this);
+
+    /// Bind other events
+    Bind(wxEVT_WEBVIEW_TITLE_CHANGED, &MainFrame::OnTitleChanged, this, wxID_ANY);
+    Bind(wxEVT_CLOSE_WINDOW, &MainFrame::OnClose, this, wxID_ANY);
+
+    /// Setup permanent handler for kernel busy/idle updates
     handler.register_callback(config::token_kernel_busy, AsyncResult::Success,
         [this](Callback::argument x) -> bool {
             std::cout << "KERNEL BUSY " << x << std::endl;
@@ -160,49 +216,8 @@ MainFrame::MainFrame(std::string url0, std::string filename,
                 this->toolbar->EnableTool(wxID_KERNEL_BUSY, false);
             }
             return false; // keep handler alive permanently
-        });
-
-    menubar->Append(menu_help, "&Help");
-    
-    SetMenuBar(menubar);
-
-    /// Bind menu items
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSaveAs, this, wxID_SAVE_AS);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, [this](wxCommandEvent &event)->void {
-        jupyter_click_cell(webview, "delete_cell");
-    }, wxID_DELETE);
-
-//    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnMenuEvent, this);
-
-    wxBoxSizer* frame_sizer = new wxBoxSizer(wxVERTICAL);
-
-    webview = wxWebView::New(this, wxID_ANY);
-    webview->EnableContextMenu(false);
-
-    /// Bind other events
-    Bind(wxEVT_WEBVIEW_TITLE_CHANGED, &MainFrame::OnTitleChanged, this, wxID_ANY);
-    Bind(wxEVT_CLOSE_WINDOW, &MainFrame::OnClose, this, wxID_ANY);
-    
-    frame_sizer->Add(webview, 1, wxEXPAND, 10);
-
-    if (indirect_load) {
-        if (wxGetApp().load_page.size() == 0) {
-            // Read loading page
-            std::ifstream ifs(config::loading_html_filename);
-            wxGetApp().load_page = std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
         }
-        // Do template replacement for url
-        std::string contents{wxGetApp().load_page};
-        replace_one(contents, "{{url}}", url);
-        webview->SetPage(wxString(contents), "");
-    } else {
-        webview->LoadURL(url);
-    }
-
-    webview->Show();
-
-    SetSizerAndFit(frame_sizer);
-    SetSize(wxDefaultCoord, wxDefaultCoord, size.GetWidth(), size.GetHeight());
+    );
 }
 
 
