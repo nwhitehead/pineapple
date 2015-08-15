@@ -1,4 +1,6 @@
 
+#include "MainFrame.hh"
+
 #include <algorithm>
 #include <cstdlib>
 #include <functional>
@@ -29,52 +31,29 @@
 #include "callback.hh"
 #include "config.h"
 #include "util.hh"
+#include "MainApp.hh"
 
-class MainFrame: public wxFrame
+
+/**
+ * Utility section
+ */
+
+/// Load an image file and process it into an appropriate toolbar icon
+static wxBitmap toolbar_icon(std::string filename)
 {
-    enum {
-        wxID_SAVE_HTML = 10000,
-        wxID_SAVE_AS, wxID_PROPERTIES,
-        wxID_INSERT, wxID_DELETE, wxID_UNDELETE,
-        wxID_SPLIT, wxID_MERGE,
-        wxID_MOVE_UP, wxID_MOVE_DOWN,
-        wxID_RUN, wxID_RUN_NEXT, wxID_RUN_ALL, wxID_RUN_ALL_ABOVE, wxID_RUN_ALL_BELOW,
-        wxID_CELL_CODE, wxID_CELL_MARKDOWN, wxID_CELL_RAW,
-        wxID_KERNEL_INTERRUPT, wxID_KERNEL_RESTART, wxID_KERNEL_RECONNECT,
-        wxID_HELP_KEYBOARD, wxID_HELP_NOTEBOOK, wxID_HELP_MARKDOWN,
-        wxID_KERNEL_BUSY,
-    };
+    return wxBitmap(wxImage(filename).Rescale(config::toolbar_width, config::toolbar_height, wxIMAGE_QUALITY_BICUBIC));
+}
 
-public:
+/// Click a menu item by name (hidden in our webview)
+static void jupyter_click_cell(wxWebView *wv, std::string id)
+{
+    std::string cmd = "Jupyter.menubar.element.find('#" + id + "').click();";
+    wv->RunScript(cmd);
+}
 
-    MainFrame(std::string url0, std::string filename, const wxString &title, const wxPoint &pos, const wxSize &size, bool indirect_load);
-
-    static MainFrame *Spawn(std::string url, std::string filename, bool indirect_load=false);
-    static MainFrame *CreateNew(bool indirect_load=false);
-
-    wxProcess *server;
-    wxWebView *webview;
-    wxMenuBar *menubar;
-    wxToolBar *toolbar;
-    std::string url;
-    std::string local_filename;
-    CallbackHandler handler;
-
-    void OnMenuEvent(wxCommandEvent &event);
-    void OnClose(wxCloseEvent &event);
-    void OnSubprocessTerminate(wxProcessEvent &event);
-    void OnError(wxWebViewEvent &event);
-    void OnTitleChanged(wxWebViewEvent &event);
-    void OnNewWindow(wxWebViewEvent &event);
-
-    void OnOpen();
-    void OnSaveAs();
-    
-    void eval_javascript(std::string expression, Callback::t success, Callback::t failure=Callback::debug);
-
-private:
-    wxDECLARE_EVENT_TABLE();
-};
+/**
+ * MainFrame functions
+ */
 
 wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_CLOSE(MainFrame::OnClose)
@@ -82,12 +61,6 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_WEBVIEW_TITLE_CHANGED(wxID_ANY, MainFrame::OnTitleChanged)
     EVT_WEBVIEW_NEWWINDOW(wxID_ANY, MainFrame::OnNewWindow)
 wxEND_EVENT_TABLE()
-
-/// Load an image file and process it into an appropriate toolbar icon
-static wxBitmap toolbar_icon(std::string filename)
-{
-    return wxBitmap(wxImage(filename).Rescale(config::toolbar_width, config::toolbar_height, wxIMAGE_QUALITY_BICUBIC));
-}
 
 MainFrame::MainFrame(std::string url0, std::string filename,
     const wxString &title, const wxPoint &pos, const wxSize &size,
@@ -283,13 +256,6 @@ void MainFrame::OnError(wxWebViewEvent &event)
     webview->LoadURL(url);
 }
 
-/// Click a menu item by name (hidden in our webview)
-void jupyter_click_cell(wxWebView *wv, std::string id)
-{
-    std::string cmd = "Jupyter.menubar.element.find('#" + id + "').click();";
-    wv->RunScript(cmd);
-}
-
 void MainFrame::eval_javascript(std::string expression, Callback::t success, Callback::t failure)
 {
     static CallbackHandler::token id = 0;
@@ -300,13 +266,6 @@ void MainFrame::eval_javascript(std::string expression, Callback::t success, Cal
     ss << "document.title=\"" << config::protocol_prefix << id << "|\"+JSON.stringify(" << expression << ");";
     std::cout << "Trying to eval " << ss.str() << std::endl;
     webview->RunScript(ss.str());
-}
-
-/// Evaluate js string in the webview
-/// Call success or failure continuation with json response
-void jupyter_eval(std::string expr, std::function<void(std::string)> success)
-{
-    success(std::string("true"));
 }
 
 void MainFrame::OnMenuEvent(wxCommandEvent &event)

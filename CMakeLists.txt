@@ -19,8 +19,9 @@ include(${wxWidgets_USE_FILE})
 ### Pineapple app
 
 set(SRC_LIST
-    src/app.cc
     src/callback.cc
+    src/MainFrame.cc
+    src/MainApp.cc
 )
 configure_file("${PROJECT_SOURCE_DIR}/src/config.h.in"
     "${PROJECT_BINARY_DIR}/include/config.h")
