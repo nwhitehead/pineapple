@@ -67,6 +67,8 @@ void MainFrame::SetupMenu()
     menu_file->AppendSeparator();
     menu_file->Append(wxID_PROPERTIES, "Properties...");
     menu_file->AppendSeparator();
+    menu_file->Append(wxID_CLOSE, "Close\tCtrl-W");
+    menu_file->AppendSeparator();
     menu_file->Append(wxID_EXIT, "Quit\tCtrl-Q");
     menubar->Append(menu_file, "File");
 
@@ -93,6 +95,7 @@ void MainFrame::SetupMenu()
     menu_cell->Append(wxID_RUN_ALL, "Run all\tCtrl-Shift-Enter");
     menu_cell->Append(wxID_RUN_ALL_ABOVE, "Run all above");
     menu_cell->Append(wxID_RUN_ALL_BELOW, "Run all below");
+    menu_cell->AppendSeparator();
     {
         wxMenu *menu_type = new wxMenu();
         menu_type->Append(wxID_CELL_CODE, "Code\tCtrl-Y");
@@ -104,7 +107,9 @@ void MainFrame::SetupMenu()
 
     wxMenu *menu_kernel = new wxMenu();
     menu_kernel->Append(wxID_KERNEL_INTERRUPT, "Interrupt\tCtrl-I");
+    menu_kernel->AppendSeparator();
     menu_kernel->Append(wxID_KERNEL_RESTART, "Restart\tCtrl-0");
+    menu_kernel->AppendSeparator();
     menu_kernel->Append(wxID_KERNEL_RECONNECT, "Reconnect");
     menubar->Append(menu_kernel, "Kernel");
 
@@ -239,6 +244,7 @@ void MainFrame::SetupBindings()
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnNew, wxID_NEW);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnOpen, wxID_OPEN);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSaveAs, this, wxID_SAVE_AS);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnMenuClose, this, wxID_CLOSE);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainApp::OnAbout, wxID_ABOUT);
     MainApp *theApp = &wxGetApp();
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainApp::OnQuit, theApp, wxID_EXIT);
@@ -427,6 +433,14 @@ void MainFrame::OnClose(wxCloseEvent &event)
         return;
     }
     Destroy();
+    // Remove ourselves from app list of main frames
+    wxGetApp().frames.erase(
+        std::remove(wxGetApp().frames.begin(), wxGetApp().frames.end(), this),
+        wxGetApp().frames.end());
+    // If we were last one the app was waiting on to exit, exit
+    if (wxGetApp().waiting_to_quit && wxGetApp().frames.size() == 0) {
+        wxGetApp().ExitMainLoop();
+    }
 }
 
 void MainFrame::OnTitleChanged(wxWebViewEvent &event)

@@ -28,6 +28,8 @@ static void signal_handler(int /* signum */)
 
 bool MainApp::OnInit()
 {
+    waiting_to_quit = false;
+
     // Load blank notebook so we can do "New"
     blank_notebook = read_all_file(config::blank_notebook_filename);
 
@@ -109,5 +111,17 @@ void MainApp::OnAbout(wxCommandEvent &/* event */)
 
 void MainApp::OnQuit(wxCommandEvent &/* event */)
 {
-    ExitMainLoop();
+    // Close all frames asynchronously
+    // As they close, they remove themselves from list
+    // and notice waiting_to_quit
+    waiting_to_quit = true;
+    if (frames.size() > 0) {
+        for (auto it : frames) {
+            if (it) {
+                it->Close();
+            }
+        }
+    } else {
+        ExitMainLoop();
+    }
 }

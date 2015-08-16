@@ -24,6 +24,7 @@ public:
     std::string load_page;
     RecentManager recently_used;
     std::vector<wxWindow *> frames;
+    bool waiting_to_quit;
 };
 
 wxDECLARE_APP(MainApp);
