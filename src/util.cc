@@ -1,6 +1,7 @@
 #include "util.hh"
 
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -20,6 +21,16 @@ std::vector<std::string> read_file_lines(std::string filename)
     std::string s;
     while (std::getline(ifs, s)) {
         v.push_back(std::string(s));
+    }
+    return v;
+}
+
+void write_file_lines(std::string filename, std::vector<std::string> v)
+{
+    std::ofstream ofs;
+    ofs.open(filename, std::fstream::out);
+    for(auto it = v.begin(); it != v.end(); ++it) {
+        ofs << *it << std::endl;
     }
 }
 

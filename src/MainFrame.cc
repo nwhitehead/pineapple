@@ -173,7 +173,7 @@ void MainFrame::SetupWebView()
     webview->EnableContextMenu(false);
 }
 
-void MainFrame::SetupLayout(const wxPoint &pos, const wxSize &size)
+void MainFrame::SetupLayout(const wxPoint &/* pos */, const wxSize &size)
 {
     wxBoxSizer* frame_sizer = new wxBoxSizer(wxVERTICAL);
     frame_sizer->Add(webview, 1, wxEXPAND, 10);
@@ -190,7 +190,7 @@ void MainFrame::SetupBindings()
     auto bind_jupyter_click_cell = [this](int id, std::string cell) -> void {
 
         Bind(wxEVT_COMMAND_MENU_SELECTED,
-            [this, cell](wxCommandEvent &event)->void {
+            [this, cell](wxCommandEvent &/* event */)->void {
                 jupyter_click_cell(webview, cell);
             }, id);
 
@@ -199,7 +199,7 @@ void MainFrame::SetupBindings()
     auto bind_goto_url = [this](int id, std::string url) -> void {
 
         Bind(wxEVT_COMMAND_MENU_SELECTED,
-            [this, url](wxCommandEvent &event)->void {
+            [this, url](wxCommandEvent &/* event */)->void {
                 wxLaunchDefaultBrowser(url);
             }, id);
 
@@ -249,7 +249,6 @@ void MainFrame::SetupBindings()
     /// Setup permanent handler for kernel busy/idle updates
     handler.register_callback(config::token_kernel_busy, AsyncResult::Success,
         [this](Callback::argument x) -> bool {
-            std::cout << "KERNEL BUSY " << x << std::endl;
             if (x == std::string("true")) {
                 this->toolbar->EnableTool(wxID_KERNEL_BUSY, true);
             }
@@ -343,12 +342,12 @@ MainFrame *MainFrame::CreateNew(bool indirect_load)
  * MainFrame handlers for wx events
  */
 
-void MainFrame::OnNew(wxCommandEvent &event)
+void MainFrame::OnNew(wxCommandEvent &/* event */)
 {
     CreateNew(false);
 }
 
-void MainFrame::OnOpen(wxCommandEvent &event)
+void MainFrame::OnOpen(wxCommandEvent &/* event */)
 {
     wxFileDialog dialog(this, "Open Notebook file", "", "",
         "Notebook files (*.ipynb)|*.ipynb", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
@@ -360,7 +359,7 @@ void MainFrame::OnOpen(wxCommandEvent &event)
     Spawn(url_from_filename(filename), filename, false);
 }
 
-void MainFrame::OnSaveAs(wxCommandEvent &event)
+void MainFrame::OnSaveAs(wxCommandEvent &/* event */)
 {
     wxFileDialog dialog(this, "Save Notebook file", "", "",
         "Notebook files (*.ipynb)|*.ipynb", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
@@ -381,13 +380,10 @@ void MainFrame::OnSaveAs(wxCommandEvent &event)
 
 void MainFrame::OnClose(wxCloseEvent &event)
 {
-    std::cout << "CLOSE" << std::endl;
-    std::cout << "CLOSING WEBVIEW" << std::endl;
     if (webview) {
-        webview->Destroy();
+        webview->Close();
     }
-    std::cout << "DESTROY SELF" << std::endl;
-    Destroy();
+    event.Skip();
 }
 
 void MainFrame::OnTitleChanged(wxWebViewEvent &event)
@@ -418,7 +414,7 @@ void MainFrame::OnTitleChanged(wxWebViewEvent &event)
     SetLabel(config::title_prefix + title);
 }
 
-void MainFrame::OnAbout(wxCommandEvent &event)
+void MainFrame::OnAbout(wxCommandEvent &/* event */)
 {
     std::stringstream ss;
     ss << config::version_full << "\n\n";
@@ -428,7 +424,7 @@ void MainFrame::OnAbout(wxCommandEvent &event)
     wxMessageBox(ss.str(), "About", wxOK | wxICON_INFORMATION);
 }
 
-void MainFrame::OnProperties(wxCommandEvent &event)
+void MainFrame::OnProperties(wxCommandEvent &/* event */)
 {
     eval_javascript(std::string("2+2"), [](Callback::argument x) -> bool {
         std::cout << "Result of 2+2 is " << x << std::endl;
@@ -440,7 +436,7 @@ void MainFrame::OnProperties(wxCommandEvent &event)
     wxMessageBox(ss.str(), "Properties", wxOK | wxICON_INFORMATION);
 }
 
-void MainFrame::OnMenuClose(wxCommandEvent &event)
+void MainFrame::OnMenuClose(wxCommandEvent &/* event */)
 {
     Close();
 }

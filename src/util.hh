@@ -17,6 +17,9 @@ std::string read_all_file(std::string filename);
 /// Read all contents of a file into a vector of strings (per line)
 std::vector<std::string> read_file_lines(std::string filename);
 
+/// Write vector of strings into a file
+void write_file_lines(std::string filename, std::vector<std::string> v);
+
 /// Replace a single occurrence of a string in another with a string
 std::string replace_one(std::string &s, std::string mud, std::string gold);
 

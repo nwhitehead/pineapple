@@ -4,11 +4,11 @@
 #include <iostream>
 #include <map>
 
-bool Callback::ignore(argument x) {
+bool Callback::ignore(argument /* x */) {
     return true;
 }
 
-bool Callback::ignore_infinite(argument x) {
+bool Callback::ignore_infinite(argument /* x */) {
     return false;
 }
 

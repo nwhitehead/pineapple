@@ -19,7 +19,7 @@
 
 wxIMPLEMENT_APP(MainApp);
 
-static void signal_handler(int signum)
+static void signal_handler(int /* signum */)
 {
     exit(wxGetApp().OnExit());
 }
@@ -55,15 +55,13 @@ bool MainApp::OnInit()
 
 int MainApp::OnExit()
 {
-    std::cout << "APP OnExit()" << std::endl;
     if (server) {
-        std::cout << "CLOSING SERVER" << std::endl;
-        server->Kill(server->GetPid(), wxSIGTERM, wxKILL_CHILDREN);
+        server->Kill(static_cast<int>(server->GetPid()), wxSIGTERM, wxKILL_CHILDREN);
     }
     return(0);
 }
 
-void MainApp::OnSubprocessTerminate(wxProcessEvent &event)
+void MainApp::OnSubprocessTerminate(wxProcessEvent &/* event */)
 {
     std::cout << "SUBPROCESS TERMINATED" << std::endl;
 }
