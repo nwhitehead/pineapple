@@ -28,8 +28,7 @@ static void signal_handler(int /* signum */)
 bool MainApp::OnInit()
 {
     // Load blank notebook so we can do "New"
-    std::ifstream ifs(config::blank_notebook_filename);
-    blank_notebook = std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
+    blank_notebook = read_all_file(config::blank_notebook_filename);
 
     // Initialize image handlers so we can load toolbar bitmaps
     wxInitAllImageHandlers();

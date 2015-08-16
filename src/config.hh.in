@@ -25,8 +25,13 @@ constexpr char untitled_suffix[] = ".ipynb";
 constexpr char recent_files_filename[] = "recent";
 
 /// Default size of main window on startup
-constexpr int initial_width = 900;
-constexpr int initial_height = 700;
+#if defined(__LINUX__)
+    constexpr int initial_width = 900;
+    constexpr int initial_height = 700;
+#elif defined(__APPLE__)
+    constexpr int initial_width = 1000;
+    constexpr int initial_height = 800;
+#endif
 
 /// Local baseurl
 constexpr char base_url[] = "http://localhost:8888";
