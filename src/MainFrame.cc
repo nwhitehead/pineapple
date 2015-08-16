@@ -416,15 +416,16 @@ void MainFrame::OnClose(wxCloseEvent &event)
         handler.register_callback(config::token_final_save, AsyncResult::Success,
             [this](Callback::argument /* x */) -> bool {
                 Close(true); // unvetoable
+                // Make sure this event gets through without blocking
+                // (Stops on Ubuntu)
+                wxGetApp().WakeUpIdle();
                 return true;
             }
         );
-        std::cout << "REGISTERED CALLBACK FOR QUIT" << std::endl;
         // Don't close yet, wait for final save to finish
         event.Veto();
         return;
     }
-    std::cout << "COULD NOT VETO CLOSE" << std::endl;
     Destroy();
 }
 
