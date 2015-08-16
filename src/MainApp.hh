@@ -18,10 +18,6 @@ public:
     MainFrame *frame;
     std::string blank_notebook;
     std::string load_page;
-
-private:
-    wxDECLARE_EVENT_TABLE();
-
 };
 
 wxDECLARE_APP(MainApp);

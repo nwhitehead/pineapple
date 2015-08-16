@@ -17,10 +17,6 @@
 #include "config.hh"
 #include "MainFrame.hh"
 
-wxBEGIN_EVENT_TABLE(MainApp, wxApp)
-    EVT_END_PROCESS(wxID_ANY, MainApp::OnSubprocessTerminate)
-wxEND_EVENT_TABLE()
-
 wxIMPLEMENT_APP(MainApp);
 
 static void signal_handler(int signum)
@@ -44,6 +40,9 @@ bool MainApp::OnInit()
     if (!wxGetEnv(config::server_script_env, &server_script)) {
         server_script = config::server_script_default;
     }
+
+    Bind(wxEVT_END_PROCESS, &MainApp::OnSubprocessTerminate, this, wxID_ANY);
+
     server = new wxProcess(frame);
     wxExecute(server_script,
         wxEXEC_ASYNC | wxEXEC_HIDE_CONSOLE | wxEXEC_MAKE_GROUP_LEADER,
