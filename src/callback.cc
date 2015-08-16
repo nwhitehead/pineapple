@@ -38,6 +38,7 @@ void CallbackHandler::call(token id, AsyncResult c, Callback::argument x)
         std::cerr << "CALLBACK KEY NOT FOUND " << id << " - " << static_cast<int>(c) << std::endl;
         return;
     }
+    std::cout << "CALLING CALLBACK id=" << id << std::endl;
     if (map[key](x)) {
         // true result means remove it
         map.erase(it);

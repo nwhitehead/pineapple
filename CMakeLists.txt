@@ -24,6 +24,7 @@ include(${wxWidgets_USE_FILE})
 
 set(SRC_LIST
     src/callback.cc
+    src/gui_util.cc
     src/util.cc
     src/MainFrame.cc
     src/MainApp.cc

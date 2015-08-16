@@ -48,6 +48,7 @@ constexpr char blank_notebook_filename[] = "data/blank.ipynb";
 
 /// Special tokens for permanent handlers
 constexpr int token_kernel_busy = -1;
+constexpr int token_final_save = -2;
 
 #if defined(__APPLE__)
     constexpr long int toolbar_style = wxTB_TEXT;

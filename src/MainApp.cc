@@ -34,6 +34,7 @@ bool MainApp::OnInit()
     // Initialize image handlers so we can load toolbar bitmaps
     wxInitAllImageHandlers();
 
+    // See if we can load most recently used file
     std::string filename(recently_used.Get());
 
     if (filename.empty()) {

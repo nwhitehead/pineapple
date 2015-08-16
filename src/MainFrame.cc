@@ -278,7 +278,7 @@ void MainFrame::LoadDocument(bool indirect_load)
 
 
 /**
- * Functions that are called by other actions
+ * Alternate ways to create MainFrames
  */
 
 MainFrame *MainFrame::Spawn(std::string url, std::string filename, bool indirect_load)
@@ -290,35 +290,12 @@ MainFrame *MainFrame::Spawn(std::string url, std::string filename, bool indirect
     return child;
 }
 
-void MainFrame::eval_javascript(std::string expression, Callback::t success, Callback::t failure)
-{
-    static CallbackHandler::token id = 0;
-    id++;
-    handler.register_callback(id, AsyncResult::Success, success);
-    handler.register_callback(id, AsyncResult::Failure, failure);
-    std::stringstream ss;
-    ss << "document.title=\"" << config::protocol_prefix << id << "|\"+JSON.stringify(" << expression << ");";
-    std::cout << "Trying to eval " << ss.str() << std::endl;
-    webview->RunScript(ss.str());
-}
-
 MainFrame *MainFrame::CreateNew(bool indirect_load)
 {
     std::cout << "CREATE NEW" << std::endl;
-    wxString datadir = wxStandardPaths::Get().GetAppDocumentsDir();
-    int n = 1;
+
     wxFileName fullname;
-    do {
-        std::stringstream ss;
-        ss << config::untitled_prefix << n << config::untitled_suffix;
-        fullname = wxFileName(datadir, ss.str());
-        std::cout << "TRYING " << fullname.GetFullPath() << std::endl;
-        if (!fullname.IsOk()) break;
-        if (fullname.IsOk() && !fullname.FileExists()) break;
-        if (n > config::max_num_untitled) break;
-        n++;
-    } while (1);
-    if (fullname.IsOk() && !fullname.FileExists()) {
+    if (FindNewFileName(fullname)) {
         std::cout << "FILENAME " << fullname.GetFullPath() << std::endl;
         // FIXME: drive must be the same as we mounted for windows!!!
         std::ofstream out(fullname.GetFullPath());
@@ -331,6 +308,7 @@ MainFrame *MainFrame::CreateNew(bool indirect_load)
         // Open new window for it
         return Spawn(url_from_filename(uri), filename, indirect_load);
     }
+
     std::stringstream ss;
     ss << "Could not create new untitled notebook in ";
     ss << wxStandardPaths::Get().GetAppDocumentsDir() << "\n\n";
@@ -338,6 +316,47 @@ MainFrame *MainFrame::CreateNew(bool indirect_load)
     wxMessageBox(ss.str(), "ERROR", wxOK | wxICON_ERROR);
 
     return nullptr;
+}
+
+bool MainFrame::FindNewFileName(wxFileName &fullname)
+{
+    wxString datadir = wxStandardPaths::Get().GetAppDocumentsDir();
+    int n = 1;
+    do {
+        std::stringstream ss;
+        if (n > 1) {
+            ss << config::untitled_prefix << n << config::untitled_suffix;
+        } else {
+            ss << config::untitled_prefix << config::untitled_suffix;
+        }
+        fullname = wxFileName(datadir, ss.str());
+        std::cout << "TRYING " << fullname.GetFullPath() << std::endl;
+        if (!fullname.IsOk()) break;
+        if (fullname.IsOk() && !fullname.FileExists()) break;
+        if (n > config::max_num_untitled) break;
+        n++;
+    } while (1);
+    if (fullname.IsOk() && !fullname.FileExists()) {
+        return true;
+    }
+    return false;
+} 
+
+
+/**
+ * JavaScript integration
+ */
+
+void MainFrame::eval_javascript(std::string expression, Callback::t success, Callback::t failure)
+{
+    static CallbackHandler::token id = 0;
+    id++;
+    handler.register_callback(id, AsyncResult::Success, success);
+    handler.register_callback(id, AsyncResult::Failure, failure);
+    std::stringstream ss;
+    ss << "document.title=\"" << config::protocol_prefix << id << "|\"+JSON.stringify(" << expression << ");";
+    std::cout << "Trying to eval " << ss.str() << std::endl;
+    webview->RunScript(ss.str());
 }
 
 
@@ -373,21 +392,40 @@ void MainFrame::OnSaveAs(wxCommandEvent &/* event */)
     std::string new_filename = std::string(dialog.GetPath());
     std::cout << "SAVE AS " << local_filename << " -> " << new_filename << std::endl;
 
+    // Copy the old file to the new filename
     std::ifstream ifs(local_filename);
     std::string contents = std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
     std::ofstream ofs(new_filename);
     ofs << contents;
     local_filename = new_filename;
-    url = url_from_filename(local_filename);
+    url = url_from_filename(new_filename);
+
+    // Remember this as a recent file
+    wxGetApp().recently_used.Add(local_filename);
+
     webview->LoadURL(url);
 }
 
 void MainFrame::OnClose(wxCloseEvent &event)
 {
-    if (webview) {
-        webview->Close();
+    if (event.CanVeto()) {
+        // Always save to disk, there is no choice
+        jupyter_click_cell(webview, "save_checkpoint");
+    
+        /// Setup handler to catch save finished
+        handler.register_callback(config::token_final_save, AsyncResult::Success,
+            [this](Callback::argument /* x */) -> bool {
+                Close(true); // unvetoable
+                return true;
+            }
+        );
+        std::cout << "REGISTERED CALLBACK FOR QUIT" << std::endl;
+        // Don't close yet, wait for final save to finish
+        event.Veto();
+        return;
     }
-    event.Skip();
+    std::cout << "COULD NOT VETO CLOSE" << std::endl;
+    Destroy();
 }
 
 void MainFrame::OnTitleChanged(wxWebViewEvent &event)
@@ -401,8 +439,7 @@ void MainFrame::OnTitleChanged(wxWebViewEvent &event)
         std::string txt = title.substr(prefix.size());
         std::vector<std::string> items(split(txt, '|'));
         if (items.size() < 2) {
-            std::cerr << "SPECIAL TITLE MALFORMED - " << txt << std::endl;
-            return;
+            items.push_back("");
         }
         CallbackHandler::token id;
         try {
@@ -442,5 +479,5 @@ void MainFrame::OnProperties(wxCommandEvent &/* event */)
 
 void MainFrame::OnMenuClose(wxCommandEvent &/* event */)
 {
-    Close();
+    Close(false);
 }

@@ -3,6 +3,7 @@
 #include <signal.h>
 #include <string>
 
+#include <wx/filename.h>
 #include <wx/frame.h>
 #include <wx/menu.h>
 #include <wx/process.h>
@@ -32,6 +33,7 @@ public:
 
     static MainFrame *Spawn(std::string url, std::string filename, bool indirect_load=false);
     static MainFrame *CreateNew(bool indirect_load=false);
+    static bool FindNewFileName(wxFileName &fullname);
 
     wxProcess *server;
     wxWebView *webview;

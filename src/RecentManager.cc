@@ -1,5 +1,6 @@
 #include "RecentManager.hh"
 
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -23,6 +24,19 @@ RecentManager::RecentManager()
         wxFileName(dir, config::recent_files_filename).GetFullPath()
     );
     state = read_file_lines(backing_file);
+    // Take out any entries that are of files we cannot open
+    state.erase(
+        std::remove_if( state.begin(), state.end(), 
+            [](std::string x) -> bool {
+                std::cout << "RECENT CHECK " << x << " = " << wxFileExists(x) << std::endl;
+                return !wxFileExists(x);
+            }
+        ),
+        state.end()
+    );
+    for (auto x : state) {
+        std::cout << "RECENT " << x << std::endl;
+    }
 }
 
 RecentManager::~RecentManager()
