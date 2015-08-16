@@ -15,6 +15,7 @@ didn't do that when you cloned, you can get them afterwards with
 ## Building
 
 Some misc. requirements:
+* C++14 compiler (e.g. g++-4.9)
 * Python, virtualenv (use brew on Mac OS X)
 * NodeJS installed and working
 * NPM installed and working properly (not as root)

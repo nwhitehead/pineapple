@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <memory>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -48,8 +49,8 @@ MainFrame::MainFrame(std::string url0, std::string filename,
     SetupWebView();
     SetupLayout(pos, size);
     SetupBindings();
-
     LoadDocument(indirect_load);
+    Show();
 }
 
 void MainFrame::SetupMenu()
@@ -284,16 +285,16 @@ void MainFrame::LoadDocument(bool indirect_load)
 
 void MainFrame::Spawn(std::string url, std::string filename, bool indirect_load)
 {
-    MainFrame *child = new MainFrame(url, filename, url,
-        wxPoint(wxDefaultCoord, wxDefaultCoord),
-        wxSize(config::initial_width, config::initial_height), indirect_load);
-    child->Show();
+    wxGetApp().frames.push_back(
+        std::make_unique<MainFrame>(url, filename, url,
+            wxPoint(wxDefaultCoord, wxDefaultCoord),
+            wxSize(config::initial_width, config::initial_height),
+            indirect_load)
+    );
 }
 
 void MainFrame::CreateNew(bool indirect_load)
 {
-    std::cout << "CREATE NEW" << std::endl;
-
     wxFileName fullname;
     if (FindNewFileName(fullname)) {
         std::cout << "FILENAME " << fullname.GetFullPath() << std::endl;
