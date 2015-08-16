@@ -6,6 +6,7 @@
 #include <wx/process.h>
 
 #include "MainFrame.hh"
+#include "RecentManager.hh"
 
 class MainApp: public wxApp
 {
@@ -18,6 +19,7 @@ public:
     MainFrame *frame;
     std::string blank_notebook;
     std::string load_page;
+    RecentManager recently_used;
 };
 
 wxDECLARE_APP(MainApp);

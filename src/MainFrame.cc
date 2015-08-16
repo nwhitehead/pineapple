@@ -266,8 +266,7 @@ void MainFrame::LoadDocument(bool indirect_load)
     if (indirect_load) {
         if (wxGetApp().load_page.size() == 0) {
             // Read loading page
-            std::ifstream ifs(config::loading_html_filename);
-            wxGetApp().load_page = std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
+            wxGetApp().load_page = read_all_file(config::loading_html_filename);
         }
         // Do template replacement for url
         std::string contents{wxGetApp().load_page};

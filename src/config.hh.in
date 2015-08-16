@@ -21,6 +21,9 @@ constexpr char untitled_prefix[] = "Untitled";
 /// Suffix of new unnamed files
 constexpr char untitled_suffix[] = ".ipynb";
 
+/// Filename of config file to store recent files
+constexpr char recent_files_filename[] = "recent";
+
 /// Default size of main window on startup
 constexpr int initial_width = 900;
 constexpr int initial_height = 700;
