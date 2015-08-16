@@ -50,8 +50,8 @@ add_dependencies(${PROJECT_NAME} venv)
 
 ### Server startup script
 
-file(COPY "scripts/eridani-main" DESTINATION "${PROJECT_BINARY_DIR}/scripts/")
-file(COPY "scripts/eridani-main.spec" DESTINATION "${PROJECT_BINARY_DIR}/scripts/")
+file(COPY "scripts/pineapple-main" DESTINATION "${PROJECT_BINARY_DIR}/scripts/")
+file(COPY "scripts/pineapple-main.spec" DESTINATION "${PROJECT_BINARY_DIR}/scripts/")
 
 ### Demo files
 
@@ -59,8 +59,8 @@ file(COPY "demo/" DESTINATION "${PROJECT_BINARY_DIR}/demo/")
 
 ### Resources
 
-file(COPY "src/loading.html" DESTINATION "${PROJECT_BINARY_DIR}/html/")
-file(COPY "src/blank.ipynb" DESTINATION "${PROJECT_BINARY_DIR}/data/")
+file(COPY "data/loading.html" DESTINATION "${PROJECT_BINARY_DIR}/data/")
+file(COPY "data/blank.ipynb" DESTINATION "${PROJECT_BINARY_DIR}/data/")
 file(COPY "images/" DESTINATION "${PROJECT_BINARY_DIR}/images/")
 file(COPY "notebook/notebook/static/" DESTINATION "${PROJECT_BINARY_DIR}/notebook/notebook/static/")
 file(COPY "notebook/notebook/templates/" DESTINATION "${PROJECT_BINARY_DIR}/notebook/notebook/templates/")
@@ -68,7 +68,7 @@ file(COPY "notebook/notebook/templates/" DESTINATION "${PROJECT_BINARY_DIR}/note
 ### Testing targets
 
 set (ENV{PINEAPPLE_SERVER}
-    "${VENV_DIR}/bin/python ${PROJECT_BINARY_DIR}/scripts/eridani-main")
+    "${VENV_DIR}/bin/python ${PROJECT_BINARY_DIR}/scripts/pineapple-main")
 
 add_custom_target(localtest
     DEPENDS ${PROJECT_NAME} venv
@@ -86,7 +86,7 @@ add_custom_target(notebook_install
 add_custom_target(server
     DEPENDS venv notebook_install
     WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
-    COMMAND "${VENV_DIR}/bin/pyinstaller" -y "${PROJECT_BINARY_DIR}/scripts/eridani-main.spec"
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/dist/eridani-main/tcl"
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/dist/eridani-main/tk"
+    COMMAND "${VENV_DIR}/bin/pyinstaller" -y "${PROJECT_BINARY_DIR}/scripts/pineapple-main.spec"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/dist/pineapple-main/tcl"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/dist/pineapple-main/tk"
 )
