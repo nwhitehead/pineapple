@@ -50,8 +50,8 @@ add_dependencies(${PROJECT_NAME} venv)
 
 ### Server startup script
 
-file(COPY "scripts/pineapple-main" DESTINATION "${PROJECT_BINARY_DIR}/scripts/")
-file(COPY "scripts/pineapple-main.spec" DESTINATION "${PROJECT_BINARY_DIR}/scripts/")
+file(COPY "scripts/pineapple-server" DESTINATION "${PROJECT_BINARY_DIR}/scripts/")
+file(COPY "scripts/pineapple-server.spec" DESTINATION "${PROJECT_BINARY_DIR}/scripts/")
 
 ### Demo files
 
@@ -68,7 +68,7 @@ file(COPY "notebook/notebook/templates/" DESTINATION "${PROJECT_BINARY_DIR}/note
 ### Testing targets
 
 set (ENV{PINEAPPLE_SERVER}
-    "${VENV_DIR}/bin/python ${PROJECT_BINARY_DIR}/scripts/pineapple-main")
+    "${VENV_DIR}/bin/python ${PROJECT_BINARY_DIR}/scripts/pineapple-server")
 
 add_custom_target(localtest
     DEPENDS ${PROJECT_NAME} venv
@@ -86,7 +86,7 @@ add_custom_target(notebook_install
 add_custom_target(server
     DEPENDS venv notebook_install
     WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
-    COMMAND "${VENV_DIR}/bin/pyinstaller" -y "${PROJECT_BINARY_DIR}/scripts/pineapple-main.spec"
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/dist/pineapple-main/tcl"
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/dist/pineapple-main/tk"
+    COMMAND "${VENV_DIR}/bin/pyinstaller" -y "${PROJECT_BINARY_DIR}/scripts/pineapple-server.spec"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/dist/pineapple-server/tcl"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/dist/pineapple-server/tk"
 )

@@ -2,7 +2,7 @@
 
 block_cipher = None
 
-a = Analysis(['scripts/pineapple-main'],
+a = Analysis(['scripts/pineapple-server'],
              pathex=['.'],
              hiddenimports=[
                 'IPython.extensions.storemagic',
@@ -30,7 +30,7 @@ pyz = PYZ(a.pure,
 exe = EXE(pyz,
           a.scripts,
           exclude_binaries=True,
-          name='eridani-main',
+          name='pineapple-server',
           debug=False,
           strip=None,
           upx=True,
@@ -45,4 +45,4 @@ coll = COLLECT(exe,
                Tree('venv/lib/python2.7/site-packages/nbformat/v4', prefix='nbformat/v4'),
                strip=None,
                upx=True,
-               name='eridani-main')
+               name='pineapple-server')
