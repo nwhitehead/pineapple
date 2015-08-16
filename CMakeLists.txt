@@ -22,6 +22,16 @@ include(${wxWidgets_USE_FILE})
 
 ### Pineapple app
 
+## Mac OS X specific
+set(MACOSX_BUNDLE_NAME "${PROJECT_NAME}")
+set(ICON_FILE "${PROJECT_SOURCE_DIR}/images/Pineapple.icns")
+set_source_files_properties("${ICON_FILE}" PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+set(MACOSX_BUNDLE_ICON_FILE "Pineapple.icns")
+set(MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2015 Nathan Whitehead")
+set(MACOSX_BUNDLE_GUI_IDENTIFIER "com.nathanwhitehead.pineapple")
+
+## General
+
 set(SRC_LIST
     src/callback.cc
     src/gui_util.cc
@@ -29,11 +39,11 @@ set(SRC_LIST
     src/MainFrame.cc
     src/MainApp.cc
     src/RecentManager.cc
+    ${ICON_FILE}
 )
 configure_file("${PROJECT_SOURCE_DIR}/src/config.hh.in"
     "${PROJECT_BINARY_DIR}/include/config.hh")
 include_directories("${PROJECT_BINARY_DIR}/include")
-set(MACOSX_BUNDLE_NAME "${PROJECT_NAME}")
 add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${SRC_LIST})
 target_link_libraries(${PROJECT_NAME} ${wxWidgets_LIBRARIES})
 
