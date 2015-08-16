@@ -33,7 +33,8 @@ set(SRC_LIST
 configure_file("${PROJECT_SOURCE_DIR}/src/config.hh.in"
     "${PROJECT_BINARY_DIR}/include/config.hh")
 include_directories("${PROJECT_BINARY_DIR}/include")
-add_executable(${PROJECT_NAME} ${SRC_LIST})
+set(MACOSX_BUNDLE_NAME "${PROJECT_NAME}")
+add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${SRC_LIST})
 target_link_libraries(${PROJECT_NAME} ${wxWidgets_LIBRARIES})
 
 ### Rules for virtualenv
@@ -93,9 +94,11 @@ add_custom_target(server
 
 ### Install
 
-install (TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin
+install (TARGETS ${PROJECT_NAME}
+    RUNTIME DESTINATION bin
+    BUNDLE DESTINATION data
     COMPONENT applications)
-install (FILES "${PROJECT_BINARY_DIR}/data" DESTINATION bin)
+#install (FILES "${PROJECT_BINARY_DIR}/data" DESTINATION bin)
 
 ### CPACK
 
