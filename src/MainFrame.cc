@@ -159,8 +159,8 @@ void MainFrame::SetupToolbar()
     toolbar->AddSeparator();
 
     toolbar->AddTool(wxID_KERNEL_BUSY, "Busy",
-        toolbar_icon("images/Led-Yellow-On-32.png"),
-        toolbar_icon("images/Led-Yellow-Off-32.png"),
+        toolbar_icon("images/Led-Yellow-On-1632.png"),
+        toolbar_icon("images/Led-Yellow-Off-1632.png"),
         wxITEM_NORMAL, "Kernel busy");
     toolbar->EnableTool(wxID_KERNEL_BUSY, false);
 
