@@ -2,7 +2,7 @@
 
 block_cipher = None
 
-a = Analysis(['scripts/eridani-main'],
+a = Analysis(['scripts/pineapple-main'],
              pathex=['.'],
              hiddenimports=[
                 'IPython.extensions.storemagic',
