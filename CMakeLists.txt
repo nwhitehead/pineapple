@@ -90,3 +90,18 @@ add_custom_target(server
     COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/dist/pineapple-server/tcl"
     COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/dist/pineapple-server/tk"
 )
+
+### Install
+
+install (TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin
+    COMPONENT applications)
+install (FILES "${PROJECT_BINARY_DIR}/data" DESTINATION bin)
+
+### CPACK
+
+include (InstallRequiredSystemLibraries)
+set (CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
+set (CPACK_PACKAGE_VERSION_MAJOR "${VERSION_MAJOR}")
+set (CPACK_PACKAGE_VERSION_MINOR "${VERSION_MINOR}")
+include (CPack)
+
