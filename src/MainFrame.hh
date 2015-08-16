@@ -41,18 +41,23 @@ public:
     std::string local_filename;
     CallbackHandler handler;
 
-    void OnMenuEvent(wxCommandEvent &event);
     void OnClose(wxCloseEvent &event);
     void OnSubprocessTerminate(wxProcessEvent &event);
     void OnTitleChanged(wxWebViewEvent &event);
 
-    void OnOpen();
+    void OnNew(wxCommandEvent &event);
+    void OnOpen(wxCommandEvent &event);
     void OnSaveAs(wxCommandEvent &event);
+    void OnAbout(wxCommandEvent &event);
+    void OnProperties(wxCommandEvent &event);
+    void OnMenuClose(wxCommandEvent &event);
 
     void SetupMenu();
     void SetupToolbar();
     void SetupWebView();
+    void SetupLayout(const wxPoint &pos, const wxSize &size);
     void SetupBindings();
+    void LoadDocument(bool indirect_load=true);
 
     void eval_javascript(std::string expression, Callback::t success, Callback::t failure=Callback::debug);
 };

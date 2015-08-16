@@ -4,6 +4,7 @@ open most recently opened instead of creating new notebook
 show kernel busy icon in toolbar
 save option on quit
 custom theme colors (first pass done)
+bug: when interrupt,restart kernel, sometimes lose connection, cannot restart
 bug: intermittent leftover python kernels sometimes
 bug: big output causes pineapple to hang while rendering (eg recursion f x = f x)
 

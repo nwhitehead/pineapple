@@ -46,28 +46,10 @@ MainFrame::MainFrame(std::string url0, std::string filename,
     SetupMenu();
     SetupToolbar();
     SetupWebView();
+    SetupLayout(pos, size);
     SetupBindings();
 
-    wxBoxSizer* frame_sizer = new wxBoxSizer(wxVERTICAL);
-    frame_sizer->Add(webview, 1, wxEXPAND, 10);
-    webview->Show();
-    SetSizerAndFit(frame_sizer);
-    SetSize(wxDefaultCoord, wxDefaultCoord, size.GetWidth(), size.GetHeight());
-
-    if (indirect_load) {
-        if (wxGetApp().load_page.size() == 0) {
-            // Read loading page
-            std::ifstream ifs(config::loading_html_filename);
-            wxGetApp().load_page = std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
-        }
-        // Do template replacement for url
-        std::string contents{wxGetApp().load_page};
-        replace_one(contents, "{{url}}", url);
-        webview->SetPage(wxString(contents), "");
-    } else {
-        webview->LoadURL(url);
-    }
-
+    LoadDocument(indirect_load);
 }
 
 void MainFrame::SetupMenu()
@@ -191,15 +173,74 @@ void MainFrame::SetupWebView()
     webview->EnableContextMenu(false);
 }
 
+void MainFrame::SetupLayout(const wxPoint &pos, const wxSize &size)
+{
+    wxBoxSizer* frame_sizer = new wxBoxSizer(wxVERTICAL);
+    frame_sizer->Add(webview, 1, wxEXPAND, 10);
+    webview->Show();
+    SetSizerAndFit(frame_sizer);
+    SetSize(wxDefaultCoord, wxDefaultCoord, size.GetWidth(), size.GetHeight());
+}
+
 void MainFrame::SetupBindings()
 {
-    /// Bind menu items
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSaveAs, this, wxID_SAVE_AS);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, [this](wxCommandEvent &event)->void {
-        jupyter_click_cell(webview, "delete_cell");
-    }, wxID_DELETE);
+    // Inline helpers to save typing
+    // You give it (wxID_DELETE, "delete_cell") and it calls Bind
+    // with the right lambda.
+    auto bind_jupyter_click_cell = [this](int id, std::string cell) -> void {
 
-    //    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnMenuEvent, this);
+        Bind(wxEVT_COMMAND_MENU_SELECTED,
+            [this, cell](wxCommandEvent &event)->void {
+                jupyter_click_cell(webview, cell);
+            }, id);
+
+    };
+
+    auto bind_goto_url = [this](int id, std::string url) -> void {
+
+        Bind(wxEVT_COMMAND_MENU_SELECTED,
+            [this, url](wxCommandEvent &event)->void {
+                wxLaunchDefaultBrowser(url);
+            }, id);
+
+    };
+
+    /// Bind simple menu items (simple Jupyter functions on the cell)
+    bind_jupyter_click_cell(wxID_CUT, "cut_cell");
+    bind_jupyter_click_cell(wxID_COPY, "copy_cell");
+    bind_jupyter_click_cell(wxID_PASTE, "paste_cell_below");
+    bind_jupyter_click_cell(wxID_INSERT, "insert_cell_below");
+    bind_jupyter_click_cell(wxID_DELETE, "delete_cell");
+    bind_jupyter_click_cell(wxID_UNDELETE, "undelete_cell");
+    bind_jupyter_click_cell(wxID_SPLIT, "split_cell");
+    bind_jupyter_click_cell(wxID_MERGE, "merge_cell_below");
+    bind_jupyter_click_cell(wxID_MOVE_UP, "move_cell_up");
+    bind_jupyter_click_cell(wxID_MOVE_DOWN, "move_cell_down");
+    bind_jupyter_click_cell(wxID_RUN, "run_cell");
+    bind_jupyter_click_cell(wxID_RUN_NEXT, "run_cell_select_below");
+    bind_jupyter_click_cell(wxID_RUN_ALL, "run_all_cells");
+    bind_jupyter_click_cell(wxID_RUN_ALL_ABOVE, "run_all_cells_above");
+    bind_jupyter_click_cell(wxID_RUN_ALL_BELOW, "run_all_cells_below");
+    bind_jupyter_click_cell(wxID_CELL_CODE, "to_code");
+    bind_jupyter_click_cell(wxID_CELL_MARKDOWN, "to_markdown");
+    bind_jupyter_click_cell(wxID_CELL_RAW, "to_raw");
+    bind_jupyter_click_cell(wxID_KERNEL_INTERRUPT, "int_kernel");
+    bind_jupyter_click_cell(wxID_KERNEL_RESTART, "restart_kernel");
+    bind_jupyter_click_cell(wxID_KERNEL_RECONNECT, "reconnect_kernel");
+    bind_jupyter_click_cell(wxID_SAVE, "save_checkpoint");
+    bind_jupyter_click_cell(wxID_HELP_KEYBOARD, "keyboard_shortcuts");
+
+    /// Bind url opens in default browser
+    bind_goto_url(wxID_HELP_NOTEBOOK, "http://nbviewer.ipython.org/github/ipython/ipython/blob/3.x/examples/Notebook/Index.ipynb");
+    bind_goto_url(wxID_HELP_MARKDOWN, "https://help.github.com/articles/markdown-basics/");
+
+    /// Bind custom menu items
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnNew, this, wxID_NEW);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnOpen, this, wxID_OPEN);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSaveAs, this, wxID_SAVE_AS);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnAbout, this, wxID_ABOUT);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnMenuClose, this, wxID_EXIT);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnProperties, this, wxID_PROPERTIES);
 
     /// Bind other events
     Bind(wxEVT_WEBVIEW_TITLE_CHANGED, &MainFrame::OnTitleChanged, this, wxID_ANY);
@@ -218,6 +259,23 @@ void MainFrame::SetupBindings()
             return false; // keep handler alive permanently
         }
     );
+}
+
+void MainFrame::LoadDocument(bool indirect_load)
+{
+    if (indirect_load) {
+        if (wxGetApp().load_page.size() == 0) {
+            // Read loading page
+            std::ifstream ifs(config::loading_html_filename);
+            wxGetApp().load_page = std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
+        }
+        // Do template replacement for url
+        std::string contents{wxGetApp().load_page};
+        replace_one(contents, "{{url}}", url);
+        webview->SetPage(wxString(contents), "");
+    } else {
+        webview->LoadURL(url);
+    }
 }
 
 
@@ -286,180 +344,12 @@ MainFrame *MainFrame::CreateNew(bool indirect_load)
  * MainFrame handlers for wx events
  */
 
-void MainFrame::OnMenuEvent(wxCommandEvent &event)
+void MainFrame::OnNew(wxCommandEvent &event)
 {
-    std::cout << "MENU EVENT" << std::endl;
-    switch (event.GetId()) {
-        case wxID_CUT:
-        {
-            jupyter_click_cell(webview, "cut_cell");
-            break;
-        }
-        case wxID_COPY:
-        {
-            jupyter_click_cell(webview, "copy_cell");
-            break;
-        }
-        case wxID_PASTE:
-        {
-            jupyter_click_cell(webview, "paste_cell_below");
-            break;
-        }
-        case wxID_INSERT:
-        {
-            jupyter_click_cell(webview, "insert_cell_below");
-            break;
-        }
-        case wxID_UNDELETE:
-        {
-            jupyter_click_cell(webview, "undelete_cell");
-            break;
-        }
-        case wxID_SPLIT:
-        {
-            jupyter_click_cell(webview, "split_cell");
-            break;
-        }
-        case wxID_MERGE:
-        {
-            jupyter_click_cell(webview, "merge_cell_below");
-            break;
-        }
-        case wxID_MOVE_UP:
-        {
-            jupyter_click_cell(webview, "move_cell_up");
-            break;
-        }
-        case wxID_MOVE_DOWN:
-        {
-            jupyter_click_cell(webview, "move_cell_down");
-            break;
-        }
-        case wxID_RUN:
-        {
-            jupyter_click_cell(webview, "run_cell");
-            break;
-        }
-        case wxID_RUN_NEXT:
-        {
-            jupyter_click_cell(webview, "run_cell_select_below");
-            break;
-        }
-        case wxID_RUN_ALL:
-        {
-            jupyter_click_cell(webview, "run_all_cells");
-            break;
-        }
-        case wxID_RUN_ALL_ABOVE:
-        {
-            jupyter_click_cell(webview, "run_all_cells_above");
-            break;
-        }
-        case wxID_RUN_ALL_BELOW:
-        {
-            jupyter_click_cell(webview, "run_all_cells_below");
-            break;
-        }
-        case wxID_CELL_CODE:
-        {
-            jupyter_click_cell(webview, "to_code");
-            break;
-        }
-        case wxID_CELL_MARKDOWN:
-        {
-            jupyter_click_cell(webview, "to_markdown");
-            break;
-        }
-        case wxID_CELL_RAW:
-        {
-            jupyter_click_cell(webview, "to_raw");
-            break;
-        }
-        case wxID_KERNEL_INTERRUPT:
-        {
-            jupyter_click_cell(webview, "int_kernel");
-            break;
-        }
-        case wxID_KERNEL_RESTART:
-        {
-            jupyter_click_cell(webview, "restart_kernel");
-            break;
-        }
-        case wxID_KERNEL_RECONNECT:
-        {
-            jupyter_click_cell(webview, "reconnect_kernel");
-            break;
-        }
-        case wxID_NEW:
-        {
-            CreateNew();
-            break;
-        }
-        case wxID_OPEN:
-        {
-            std::cout << "OPEN" << std::endl;
-            OnOpen();
-            break;
-        }
-        case wxID_SAVE:
-        {
-            jupyter_click_cell(webview, "save_checkpoint");
-            break;
-        }
-        case wxID_SAVE_HTML:
-        {
-            jupyter_click_cell(webview, "download_markdown");
-            break;
-        }
-        case wxID_HELP_KEYBOARD:
-        {
-            jupyter_click_cell(webview, "keyboard_shortcuts");
-            break;
-        }
-        case wxID_HELP_NOTEBOOK:
-        {
-            wxLaunchDefaultBrowser("http://nbviewer.ipython.org/github/ipython/ipython/blob/3.x/examples/Notebook/Index.ipynb");
-            break;
-        }
-        case wxID_HELP_MARKDOWN:
-        {
-            wxLaunchDefaultBrowser("https://help.github.com/articles/markdown-basics/");
-            break;
-        }
-        case wxID_ABOUT:
-        {
-            std::stringstream ss;
-            ss << config::version_full << "\n\nCopyright (c) 2015 Nathan Whitehead\n\n" << wxGetLibraryVersionInfo().ToString() << std::endl;
-            ss << "Icons are from: https://icons8.com/" << std::endl; 
-            wxMessageBox(ss.str(), "About", wxOK | wxICON_INFORMATION);
-            break;
-        }
-        case wxID_EXIT:
-        {
-            Close(true);
-            break;
-        }
-        case wxID_PROPERTIES:
-        {
-            eval_javascript(std::string("2+2"), [](Callback::argument x) -> bool {
-                std::cout << "Result of 2+2 is " << x << std::endl;
-                return true;
-            });
-
-            std::stringstream ss;
-            ss << "Name: " << std::endl;
-            wxMessageBox(ss.str(), "Properties", wxOK | wxICON_INFORMATION);
-            break;            
-        }
-        default:
-        {
-            event.Skip(true); // let parent handle it
-            break;
-        }
-    }
+    CreateNew(false);
 }
 
-void MainFrame::OnOpen()
+void MainFrame::OnOpen(wxCommandEvent &event)
 {
     wxFileDialog dialog(this, "Open Notebook file", "", "",
         "Notebook files (*.ipynb)|*.ipynb", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
@@ -529,3 +419,29 @@ void MainFrame::OnTitleChanged(wxWebViewEvent &event)
     SetLabel(config::title_prefix + title);
 }
 
+void MainFrame::OnAbout(wxCommandEvent &event)
+{
+    std::stringstream ss;
+    ss << config::version_full << "\n\n";
+    ss << "Copyright (c) 2015 Nathan Whitehead\n\n";
+    ss << wxGetLibraryVersionInfo().ToString() << "\n";
+    ss << "Icons are from: https://icons8.com/" << std::endl; 
+    wxMessageBox(ss.str(), "About", wxOK | wxICON_INFORMATION);
+}
+
+void MainFrame::OnProperties(wxCommandEvent &event)
+{
+    eval_javascript(std::string("2+2"), [](Callback::argument x) -> bool {
+        std::cout << "Result of 2+2 is " << x << std::endl;
+        return true;
+    });
+
+    std::stringstream ss;
+    ss << "Name: " << std::endl;
+    wxMessageBox(ss.str(), "Properties", wxOK | wxICON_INFORMATION);
+}
+
+void MainFrame::OnMenuClose(wxCommandEvent &event)
+{
+    Close();
+}
