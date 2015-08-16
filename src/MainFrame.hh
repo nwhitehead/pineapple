@@ -16,8 +16,7 @@ class MainFrame: public wxFrame
 {
     enum {
         wxID_SAVE_HTML = 10000,
-        wxID_CLOSE, wxID_CLOSE_ALL,
-        wxID_SAVE_AS, wxID_PROPERTIES,
+        wxID_CLOSE_ALL, wxID_PROPERTIES,
         wxID_INSERT, wxID_DELETE, wxID_UNDELETE,
         wxID_SPLIT, wxID_MERGE,
         wxID_MOVE_UP, wxID_MOVE_DOWN,

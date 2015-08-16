@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDevelopmentRegion</key>        <string>English</string>
+    <key>CFBundleExecutable</key>               <string>${MACOSX_BUNDLE_BUNDLE_NAME}</string>
+    <key>CFBundleInfoDictionaryVersion</key>    <string>6.0</string>
+    <key>CFBundlePackageType</key>              <string>APPL</string>
+    <key>CSResourcesFileMapped</key>            <true/>
+
+    <key>CFBundleVersion</key>                  <string>${MACOSX_BUNDLE_LONG_VERSION_STRING}</string>
+    <key>CFBundleShortVersionString</key>       <string>${MACOSX_BUNDLE_SHORT_VERSION_STRING}</string>
+    <key>CFBundleName</key>                     <string>${MACOSX_BUNDLE_BUNDLE_NAME}</string>
+    <key>CFBundleIconFile</key>                 <string>${MACOSX_BUNDLE_ICON_FILE}</string>
+    <key>NSHumanReadableCopyright</key>         <string>${MACOSX_BUNDLE_COPYRIGHT}</string>
+
+    <key>CFBundleDocumentTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeExtensions</key>
+            <array>
+                <string>'ipynb'</string>
+            </array>
+            <key>CFBundleTypeIconFile</key>    <string>'Pineapple.icns'</string>
+            <key>CFBundleTypeName</key>        <string>'IPython notebook'</string>
+            <key>LSIsAppleDefaultForType</key> <true/>
+            <key>LSTypeIsPackage</key>         <false/>
+        </dict>
+    </array>
+</dict>
+</plist>

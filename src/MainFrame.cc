@@ -61,7 +61,7 @@ void MainFrame::SetupMenu()
     menu_file->Append(wxID_OPEN, "Open\tCtrl-O");
     menu_file->AppendSeparator();
     menu_file->Append(wxID_SAVE, "Save\tCtrl-S");
-    menu_file->Append(wxID_SAVE_AS, "Save As\tShift-Ctrl-S");
+    menu_file->Append(wxID_SAVEAS, "Save As\tShift-Ctrl-S");
     menu_file->AppendSeparator();
     menu_file->Append(wxID_SAVE_HTML, "Download HTML");
     menu_file->AppendSeparator();
@@ -247,7 +247,7 @@ void MainFrame::SetupBindings()
     /// Bind custom menu items
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnNew, wxID_NEW);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnOpen, wxID_OPEN);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSaveAs, this, wxID_SAVE_AS);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSaveAs, this, wxID_SAVEAS);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnMenuClose, this, wxID_CLOSE);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnMenuCloseAll, this, wxID_CLOSE_ALL);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainApp::OnAbout, wxID_ABOUT);
