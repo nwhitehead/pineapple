@@ -325,8 +325,11 @@ MainFrame *MainFrame::CreateNew(bool indirect_load)
         out << wxGetApp().blank_notebook << std::endl;
         // Get path in UNIX so it is a URI
         std::string uri(fullname.GetFullPath(wxPATH_UNIX));
+        std::string filename(fullname.GetFullPath());
+        // Remember it as recently used
+        wxGetApp().recently_used.Add(filename);
         // Open new window for it
-        return Spawn(url_from_filename(uri), std::string(fullname.GetFullPath()), indirect_load);
+        return Spawn(url_from_filename(uri), filename, indirect_load);
     }
     std::stringstream ss;
     ss << "Could not create new untitled notebook in ";
@@ -356,6 +359,7 @@ void MainFrame::OnOpen(wxCommandEvent &/* event */)
 
     std::string filename = std::string(dialog.GetPath());
     std::cout << "OPEN " << filename << std::endl;
+    wxGetApp().recently_used.Add(filename);
     Spawn(url_from_filename(filename), filename, false);
 }
 

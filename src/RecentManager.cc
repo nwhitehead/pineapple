@@ -30,9 +30,12 @@ RecentManager::~RecentManager()
     SyncWrite();
 }
 
-std::string RecentManager::GetMostRecent()
+std::string RecentManager::Get()
 {
-    return state[state.size() - 1];
+    if (state.size() > 0) {
+        return state[state.size() - 1];
+    }
+    return std::string();
 }
 
 void RecentManager::Add(std::string filename)

@@ -15,6 +15,7 @@
 #include <wx/webview.h>
 
 #include "config.hh"
+#include "util.hh"
 #include "MainFrame.hh"
 
 wxIMPLEMENT_APP(MainApp);
@@ -30,9 +31,18 @@ bool MainApp::OnInit()
     std::ifstream ifs(config::blank_notebook_filename);
     blank_notebook = std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
 
+    // Initialize image handlers so we can load toolbar bitmaps
     wxInitAllImageHandlers();
-    
-    frame = MainFrame::CreateNew(true);
+
+    std::string filename(recently_used.Get());
+
+    if (filename.empty()) {
+        // If no recently used, create fresh new file
+        frame = MainFrame::CreateNew(true);
+    } else {
+        // Open most recently used
+        frame = MainFrame::Spawn(url_from_filename(filename), filename, true);
+    }
     if (frame == nullptr) return false;
 
     wxString server_script;
