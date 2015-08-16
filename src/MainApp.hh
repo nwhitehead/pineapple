@@ -1,6 +1,8 @@
 #pragma once
 
+#include <memory>
 #include <string>
+#include <vector>
 
 #include <wx/app.h>
 #include <wx/process.h>
@@ -21,6 +23,7 @@ public:
     std::string blank_notebook;
     std::string load_page;
     RecentManager recently_used;
+    std::vector<std::unique_ptr<wxWindow>> frames;
 };
 
 wxDECLARE_APP(MainApp);

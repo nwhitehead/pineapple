@@ -170,6 +170,7 @@ void MainFrame::SetupToolbar()
 void MainFrame::SetupWebView()
 {
     webview = wxWebView::New(this, wxID_ANY);
+    // Turn off right-click as much as possible
     webview->EnableContextMenu(false);
 }
 
@@ -281,16 +282,15 @@ void MainFrame::LoadDocument(bool indirect_load)
  * Alternate ways to create MainFrames
  */
 
-MainFrame *MainFrame::Spawn(std::string url, std::string filename, bool indirect_load)
+void MainFrame::Spawn(std::string url, std::string filename, bool indirect_load)
 {
     MainFrame *child = new MainFrame(url, filename, url,
         wxPoint(wxDefaultCoord, wxDefaultCoord),
         wxSize(config::initial_width, config::initial_height), indirect_load);
     child->Show();
-    return child;
 }
 
-MainFrame *MainFrame::CreateNew(bool indirect_load)
+void MainFrame::CreateNew(bool indirect_load)
 {
     std::cout << "CREATE NEW" << std::endl;
 
@@ -306,7 +306,8 @@ MainFrame *MainFrame::CreateNew(bool indirect_load)
         // Remember it as recently used
         wxGetApp().recently_used.Add(filename);
         // Open new window for it
-        return Spawn(url_from_filename(uri), filename, indirect_load);
+        Spawn(url_from_filename(uri), filename, indirect_load);
+        return;
     }
 
     std::stringstream ss;
@@ -314,8 +315,6 @@ MainFrame *MainFrame::CreateNew(bool indirect_load)
     ss << wxStandardPaths::Get().GetAppDocumentsDir() << "\n\n";
     ss << "Last attempt was to create " << std::string(fullname.GetFullPath()) << std::endl;
     wxMessageBox(ss.str(), "ERROR", wxOK | wxICON_ERROR);
-
-    return nullptr;
 }
 
 bool MainFrame::FindNewFileName(wxFileName &fullname)
