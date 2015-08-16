@@ -1,24 +1,23 @@
 To-do lists.
 
-open most recently opened instead of creating new notebook
-show kernel busy icon in toolbar
-save option on quit
+mac drag&drop handling
+program icon
+update branding/logos
+write webpage to advertise
 custom theme colors (first pass done)
-bug: when interrupt,restart kernel, sometimes lose connection, cannot restart
-bug: intermittent leftover python kernels sometimes
-bug: big output causes pineapple to hang while rendering (eg recursion f x = f x)
-
-icons on Mac broken
 standard packages available easily in python
 get working on Windows same way as linux
-program icon
 windows installer
-update branding/logos
 automate builds for releases
 add more packages following pyzo
 write a few demo notebooks
 include variation with python 3.4
 include variation with python 3.5 (demo @ operator!!!)
+
+bug: mac version you need to quit twice
+bug: when interrupt,restart kernel, sometimes lose connection, cannot restart
+bug: intermittent leftover python kernels sometimes
+bug: big output causes pineapple to hang while rendering (eg recursion f x = f x)
 
 Competitors:
 
