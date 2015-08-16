@@ -19,26 +19,12 @@ Some misc. requirements:
 * Python, virtualenv (use brew on Mac OS X)
 * NodeJS installed and working
 * NPM installed and working properly (not as root)
-* wxpython 2.9 or later (use brew on Mac OS X, binary wheel install on Windows, source compile on Linux)
-
-WxPython should be system installed and working.
-Test in python with "import wx; import wx.html2; wx.App()"
+* wxwidgets 3.x (used brew on Mac, source compile on Linux)
 
 Once requirements are met, to build everything:
 * `make all`
 This sets up virtualenv, installs requirements with pip, and calls
-pyinstaller to build the application. Do `make test` to try it.
-
-## Linux
-
-I am building wxpython from my fork of the git repo (no changes needed yet):
-`git clone https://github.com/nwhitehead/wxWidgets.git`
-
-Unbuntu packages needed:
-`sudo apt-get install dpkg-dev build-essential python2.7-dev libjpeg-dev libtiff-dev libgtk2.0-dev libsdl1.2-dev libgstreamer-plugins-base0.10-dev`
-
-Build:
-`python build.py dox etg --nodoc sip build install`
+pyinstaller to build the application. Do `make localtest` to try it.
 
 ## Mac OS X
 

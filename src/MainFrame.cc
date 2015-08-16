@@ -6,7 +6,6 @@
 #include <fstream>
 #include <iostream>
 #include <map>
-#include <memory>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -287,7 +286,7 @@ void MainFrame::LoadDocument(bool indirect_load)
 void MainFrame::Spawn(std::string url, std::string filename, bool indirect_load)
 {
     wxGetApp().frames.push_back(
-        std::make_unique<MainFrame>(url, filename, url,
+        new MainFrame(url, filename, url,
             wxPoint(wxDefaultCoord, wxDefaultCoord),
             wxSize(config::initial_width, config::initial_height),
             indirect_load)

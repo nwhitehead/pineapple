@@ -107,7 +107,7 @@ void MainApp::OnAbout(wxCommandEvent &/* event */)
     wxMessageBox(ss.str(), "About", wxOK | wxICON_INFORMATION);
 }
 
-void MainApp::OnQuit(wxCommandEvent &event)
+void MainApp::OnQuit(wxCommandEvent &/* event */)
 {
     ExitMainLoop();
 }
