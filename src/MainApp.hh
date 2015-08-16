@@ -13,6 +13,7 @@ class MainApp: public wxApp
 public:
     virtual bool OnInit();
     virtual int OnExit();
+    void OnQuit(wxCommandEvent &event);
     void OnSubprocessTerminate(wxProcessEvent &event);
     static void OnAbout(wxCommandEvent &event);
 

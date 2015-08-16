@@ -43,6 +43,7 @@ bool MainApp::OnInit()
     menu->Append(wxID_NEW, "New\tCtrl-N");
     menu->Append(wxID_OPEN, "Open\tCtrl-O");
     menu->AppendSeparator();
+    menu->Append(wxID_EXIT, "Quit\tCtrl-Q");
     menubar->Append(menu, "File");
 
     wxMenuBar::MacSetCommonMenuBar(menubar);
@@ -50,6 +51,7 @@ bool MainApp::OnInit()
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnNew, wxID_NEW);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnOpen, wxID_OPEN);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainApp::OnAbout, wxID_ABOUT);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainApp::OnQuit, this, wxID_EXIT);
 
 #endif
 
@@ -104,4 +106,9 @@ void MainApp::OnAbout(wxCommandEvent &/* event */)
     ss << wxGetLibraryVersionInfo().ToString() << "\n";
     ss << "Icons are from: https://icons8.com/" << std::endl; 
     wxMessageBox(ss.str(), "About", wxOK | wxICON_INFORMATION);
+}
+
+void MainApp::OnQuit(wxCommandEvent &event)
+{
+    ExitMainLoop();
 }
