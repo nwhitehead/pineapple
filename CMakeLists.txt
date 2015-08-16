@@ -27,6 +27,7 @@ set(SRC_LIST
     src/util.cc
     src/MainFrame.cc
     src/MainApp.cc
+    src/RecentManager.cc
 )
 configure_file("${PROJECT_SOURCE_DIR}/src/config.hh.in"
     "${PROJECT_BINARY_DIR}/include/config.hh")
