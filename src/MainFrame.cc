@@ -56,57 +56,57 @@ void MainFrame::SetupMenu()
 {
     menubar = new wxMenuBar();
     wxMenu *menu_file = new wxMenu();
-    menu_file->Append(wxID_NEW, "&New");
+    menu_file->Append(wxID_NEW, "New\tCtrl-N");
     menu_file->AppendSeparator();
-    menu_file->Append(wxID_OPEN, "&Open...");
+    menu_file->Append(wxID_OPEN, "Open\tCtrl-O");
     menu_file->AppendSeparator();
-    menu_file->Append(wxID_SAVE, "&Save");
-    menu_file->Append(wxID_SAVE_AS, "Save As...");
+    menu_file->Append(wxID_SAVE, "Save\tCtrl-S");
+    menu_file->Append(wxID_SAVE_AS, "Save As\tShift-Ctrl-S");
     menu_file->AppendSeparator();
     menu_file->Append(wxID_SAVE_HTML, "Download HTML");
     menu_file->AppendSeparator();
     menu_file->Append(wxID_PROPERTIES, "Properties...");
     menu_file->AppendSeparator();
-    menu_file->Append(wxID_EXIT, "&Quit");
-    menubar->Append(menu_file, "&File");
+    menu_file->Append(wxID_EXIT, "Quit\tCtrl-Q");
+    menubar->Append(menu_file, "File");
 
     wxMenu *menu_edit = new wxMenu();
-    menu_edit->Append(wxID_CUT, "Cut cell");
-    menu_edit->Append(wxID_COPY, "Copy cell");
-    menu_edit->Append(wxID_PASTE, "Paste cell below");
+    menu_edit->Append(wxID_CUT, "Cut cell\tCtrl-X");
+    menu_edit->Append(wxID_COPY, "Copy cell\tCtrl-C");
+    menu_edit->Append(wxID_PASTE, "Paste cell below\tCtrl-V");
     menu_edit->AppendSeparator();
-    menu_edit->Append(wxID_INSERT, "Insert cell below");
+    menu_edit->Append(wxID_INSERT, "Insert cell below\tCtrl-=");
     menu_edit->AppendSeparator();
-    menu_edit->Append(wxID_DELETE, "Delete cell");
-    menu_edit->Append(wxID_UNDELETE, "Undelete cell");
+    menu_edit->Append(wxID_DELETE, "Delete cell\tCtrl-Shift-D");
+    menu_edit->Append(wxID_UNDELETE, "Undelete cell\tCtrl-Shift-U");
     menu_edit->AppendSeparator();
-    menu_edit->Append(wxID_SPLIT, "Split cell");
-    menu_edit->Append(wxID_MERGE, "Merge cell below");
+    menu_edit->Append(wxID_SPLIT, "Split cell\tCtrl--");
+    menu_edit->Append(wxID_MERGE, "Merge cell below\tCtrl-Shift--");
     menu_edit->AppendSeparator();
-    menu_edit->Append(wxID_MOVE_UP, "Move cell up");
-    menu_edit->Append(wxID_MOVE_DOWN, "Move cell down");
-    menubar->Append(menu_edit, "&Edit");
+    menu_edit->Append(wxID_MOVE_UP, "Move cell up\tCtrl-Shift-O");
+    menu_edit->Append(wxID_MOVE_DOWN, "Move cell down\tCtrl-Shift-L");
+    menubar->Append(menu_edit, "Edit");
 
     wxMenu *menu_cell = new wxMenu();
-    menu_cell->Append(wxID_RUN, "Run");
+    menu_cell->Append(wxID_RUN, "Run\tCtrl-Enter");
     menu_cell->AppendSeparator();
-    menu_cell->Append(wxID_RUN_ALL, "Run all");
+    menu_cell->Append(wxID_RUN_ALL, "Run all\tCtrl-Shift-Enter");
     menu_cell->Append(wxID_RUN_ALL_ABOVE, "Run all above");
     menu_cell->Append(wxID_RUN_ALL_BELOW, "Run all below");
     {
         wxMenu *menu_type = new wxMenu();
-        menu_type->Append(wxID_CELL_CODE, "Code");
-        menu_type->Append(wxID_CELL_MARKDOWN, "Markdown");
-        menu_type->Append(wxID_CELL_RAW, "Raw");
+        menu_type->Append(wxID_CELL_CODE, "Code\tCtrl-Y");
+        menu_type->Append(wxID_CELL_MARKDOWN, "Markdown\tCtrl-M");
+        menu_type->Append(wxID_CELL_RAW, "Raw\tCtrl-R");
         menu_cell->AppendSubMenu(menu_type, "Cell type");
     }
-    menubar->Append(menu_cell, "&Cell");
+    menubar->Append(menu_cell, "Cell");
 
     wxMenu *menu_kernel = new wxMenu();
-    menu_kernel->Append(wxID_KERNEL_INTERRUPT, "Interrupt");
-    menu_kernel->Append(wxID_KERNEL_RESTART, "Restart");
+    menu_kernel->Append(wxID_KERNEL_INTERRUPT, "Interrupt\tCtrl-I");
+    menu_kernel->Append(wxID_KERNEL_RESTART, "Restart\tCtrl-0");
     menu_kernel->Append(wxID_KERNEL_RECONNECT, "Reconnect");
-    menubar->Append(menu_kernel, "&Kernel");
+    menubar->Append(menu_kernel, "Kernel");
 
     wxMenu *menu_help = new wxMenu();
     menu_help->Append(wxID_HELP_KEYBOARD, "Keyboard shortcuts");
@@ -114,9 +114,9 @@ void MainFrame::SetupMenu()
     menu_help->Append(wxID_HELP_NOTEBOOK, "Notebook");
     menu_help->Append(wxID_HELP_MARKDOWN, "Markdown");
     menu_help->AppendSeparator();
-    menu_help->Append(wxID_ABOUT, "&About");
+    menu_help->Append(wxID_ABOUT, "About");
     menu_help->AppendSeparator();
-    menubar->Append(menu_help, "&Help");
+    menubar->Append(menu_help, "Help");
     
     SetMenuBar(menubar);
 }
@@ -235,10 +235,10 @@ void MainFrame::SetupBindings()
     bind_goto_url(wxID_HELP_MARKDOWN, "https://help.github.com/articles/markdown-basics/");
 
     /// Bind custom menu items
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnNew, this, wxID_NEW);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnOpen, this, wxID_OPEN);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnNew, wxID_NEW);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnOpen, wxID_OPEN);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSaveAs, this, wxID_SAVE_AS);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnAbout, this, wxID_ABOUT);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainApp::OnAbout, wxID_ABOUT);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnMenuClose, this, wxID_EXIT);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnProperties, this, wxID_PROPERTIES);
 
@@ -371,7 +371,7 @@ void MainFrame::OnNew(wxCommandEvent &/* event */)
 
 void MainFrame::OnOpen(wxCommandEvent &/* event */)
 {
-    wxFileDialog dialog(this, "Open Notebook file", "", "",
+    wxFileDialog dialog(nullptr, "Open Notebook file", "", "",
         "Notebook files (*.ipynb)|*.ipynb", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     
     if (dialog.ShowModal() == wxID_CANCEL) return;
@@ -454,16 +454,6 @@ void MainFrame::OnTitleChanged(wxWebViewEvent &event)
     }
     // Otherwise actually change the title
     SetLabel(config::title_prefix + title);
-}
-
-void MainFrame::OnAbout(wxCommandEvent &/* event */)
-{
-    std::stringstream ss;
-    ss << config::version_full << "\n\n";
-    ss << "Copyright (c) 2015 Nathan Whitehead\n\n";
-    ss << wxGetLibraryVersionInfo().ToString() << "\n";
-    ss << "Icons are from: https://icons8.com/" << std::endl; 
-    wxMessageBox(ss.str(), "About", wxOK | wxICON_INFORMATION);
 }
 
 void MainFrame::OnProperties(wxCommandEvent &/* event */)

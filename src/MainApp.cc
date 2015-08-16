@@ -11,6 +11,7 @@
     #include <wx/wx.h>
 #endif
 #include <wx/app.h>
+#include <wx/menu.h>
 #include <wx/process.h>
 #include <wx/webview.h>
 
@@ -32,6 +33,25 @@ bool MainApp::OnInit()
 
     // Initialize image handlers so we can load toolbar bitmaps
     wxInitAllImageHandlers();
+
+    // On Mac, allow no frames
+#if defined(__APPLE__)
+    SetExitOnFrameDelete(false);
+    wxMenuBar *menubar = new wxMenuBar();
+    wxMenu *menu = new wxMenu();
+    menu->Append(wxID_ABOUT, "About");
+    menu->Append(wxID_NEW, "New\tCtrl-N");
+    menu->Append(wxID_OPEN, "Open\tCtrl-O");
+    menu->AppendSeparator();
+    menubar->Append(menu, "File");
+
+    wxMenuBar::MacSetCommonMenuBar(menubar);
+
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnNew, wxID_NEW);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnOpen, wxID_OPEN);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainApp::OnAbout, wxID_ABOUT);
+
+#endif
 
     // See if we can load most recently used file
     std::string filename(recently_used.Get());
@@ -74,4 +94,14 @@ int MainApp::OnExit()
 void MainApp::OnSubprocessTerminate(wxProcessEvent &/* event */)
 {
     std::cout << "SUBPROCESS TERMINATED" << std::endl;
+}
+
+void MainApp::OnAbout(wxCommandEvent &/* event */)
+{
+    std::stringstream ss;
+    ss << config::version_full << "\n\n";
+    ss << "Copyright (c) 2015 Nathan Whitehead\n\n";
+    ss << wxGetLibraryVersionInfo().ToString() << "\n";
+    ss << "Icons are from: https://icons8.com/" << std::endl; 
+    wxMessageBox(ss.str(), "About", wxOK | wxICON_INFORMATION);
 }

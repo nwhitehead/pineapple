@@ -14,6 +14,7 @@ public:
     virtual bool OnInit();
     virtual int OnExit();
     void OnSubprocessTerminate(wxProcessEvent &event);
+    static void OnAbout(wxCommandEvent &event);
 
     wxProcess *server;
     MainFrame *frame;

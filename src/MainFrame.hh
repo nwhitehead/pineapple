@@ -47,10 +47,9 @@ public:
     void OnSubprocessTerminate(wxProcessEvent &event);
     void OnTitleChanged(wxWebViewEvent &event);
 
-    void OnNew(wxCommandEvent &event);
-    void OnOpen(wxCommandEvent &event);
+    static void OnNew(wxCommandEvent &event);
+    static void OnOpen(wxCommandEvent &event);
     void OnSaveAs(wxCommandEvent &event);
-    void OnAbout(wxCommandEvent &event);
     void OnProperties(wxCommandEvent &event);
     void OnMenuClose(wxCommandEvent &event);
 
