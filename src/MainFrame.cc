@@ -68,6 +68,7 @@ void MainFrame::SetupMenu()
     menu_file->Append(wxID_PROPERTIES, "Properties...");
     menu_file->AppendSeparator();
     menu_file->Append(wxID_CLOSE, "Close\tCtrl-W");
+    menu_file->Append(wxID_CLOSE_ALL, "Close All\tShift-Ctrl-W");
     menu_file->AppendSeparator();
     menu_file->Append(wxID_EXIT, "Quit\tCtrl-Q");
     menubar->Append(menu_file, "File");
@@ -245,6 +246,7 @@ void MainFrame::SetupBindings()
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnOpen, wxID_OPEN);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSaveAs, this, wxID_SAVE_AS);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnMenuClose, this, wxID_CLOSE);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnMenuCloseAll, this, wxID_CLOSE_ALL);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainApp::OnAbout, wxID_ABOUT);
     MainApp *theApp = &wxGetApp();
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainApp::OnQuit, theApp, wxID_EXIT);
@@ -485,4 +487,9 @@ void MainFrame::OnProperties(wxCommandEvent &/* event */)
 void MainFrame::OnMenuClose(wxCommandEvent &/* event */)
 {
     Close(false);
+}
+
+void MainFrame::OnMenuCloseAll(wxCommandEvent &/* event */)
+{
+    wxGetApp().CloseAll();
 }

@@ -16,7 +16,7 @@ class MainFrame: public wxFrame
 {
     enum {
         wxID_SAVE_HTML = 10000,
-        wxID_CLOSE,
+        wxID_CLOSE, wxID_CLOSE_ALL,
         wxID_SAVE_AS, wxID_PROPERTIES,
         wxID_INSERT, wxID_DELETE, wxID_UNDELETE,
         wxID_SPLIT, wxID_MERGE,
@@ -53,6 +53,7 @@ public:
     void OnSaveAs(wxCommandEvent &event);
     void OnProperties(wxCommandEvent &event);
     void OnMenuClose(wxCommandEvent &event);
+    void OnMenuCloseAll(wxCommandEvent &event);
 
     void SetupMenu();
     void SetupToolbar();

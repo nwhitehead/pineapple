@@ -94,6 +94,15 @@ int MainApp::OnExit()
     return(0);
 }
 
+void MainApp::CloseAll()
+{
+    for (auto it : frames) {
+        if (it) {
+            it->Close();
+        }
+    }
+}
+
 void MainApp::OnSubprocessTerminate(wxProcessEvent &/* event */)
 {
     std::cout << "SUBPROCESS TERMINATED" << std::endl;
@@ -116,11 +125,7 @@ void MainApp::OnQuit(wxCommandEvent &/* event */)
     // and notice waiting_to_quit
     waiting_to_quit = true;
     if (frames.size() > 0) {
-        for (auto it : frames) {
-            if (it) {
-                it->Close();
-            }
-        }
+        CloseAll();
     } else {
         ExitMainLoop();
     }
