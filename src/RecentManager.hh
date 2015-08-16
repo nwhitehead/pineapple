@@ -21,13 +21,10 @@ public:
             wxMkdir(dir);
         }
         backing_file = std::string(wxFileName(dir, config::recent_files_filename).GetFullPath());
-        std::cout << "RECENT FILES filename is " << backing_file << std::endl;
         state = read_file_lines(backing_file);
     }
     ~RecentManager() {
-//        std::cout << "RECENT FILES writing [" << backing_file << "]" << std::endl;
-//        write_file_lines(backing_file, state);
-//        std::cout << "RECENT FILES DONE writing [" << backing_file << "]" << std::endl;
+        write_file_lines(backing_file, state);
     }
     std::string GetMostRecent() {
         return state[state.size() - 1];
