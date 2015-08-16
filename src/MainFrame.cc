@@ -68,7 +68,10 @@ void MainFrame::SetupMenu()
     menu_file->Append(wxID_PROPERTIES, "Properties...");
     menu_file->AppendSeparator();
     menu_file->Append(wxID_CLOSE, "Close\tCtrl-W");
+    // Close All only makes sense on mac
+#if defined(__APPLE__)
     menu_file->Append(wxID_CLOSE_ALL, "Close All\tShift-Ctrl-W");
+#endif
     menu_file->AppendSeparator();
     menu_file->Append(wxID_EXIT, "Quit\tCtrl-Q");
     menubar->Append(menu_file, "File");
