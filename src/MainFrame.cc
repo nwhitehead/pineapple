@@ -384,13 +384,23 @@ void MainFrame::eval_js_event(std::string expression, std::string evtname, Callb
     CallbackHandler::token id = handler.fresh_id();
     handler.register_callback(id, AsyncResult::Success, continuation);
     std::stringstream ss;
-    ss << "require('base/js/events').on(\"" << evtname << "\"";
-    ss << ", function(evt) {";
+
+    // Register callback
+    ss << "{";
+    ss << "  var success = function(evt) {";
+    ss << "    var old = document.title;";
+    ss << "    document.title = \"" << config::protocol_prefix << id << "|1\";";
+    ss << "    document.title = old;";
+    ss << "  };";
+    ss << "  var failure = function(evt) {";
     ss << "    var old = document.title;";
     ss << "    document.title = \"" << config::protocol_prefix << id << "|0\";";
     ss << "    document.title = old;";
-    ss << "  }";
-    ss << ");";
+    ss << "  };";
+    ss << "  require('base/js/events').on(\"" << evtname << "\"";
+    ss << "  , success);";
+    ss << "}";
+    // Evaluate expression
     ss << expression;
     std::cout << "Trying to eval " << ss.str() << std::endl;
     webview->RunScript(ss.str());
