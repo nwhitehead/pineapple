@@ -106,7 +106,7 @@ void MainApp::MacOpenFile(const wxString &filename)
 {
     std::string fname(filename);
     wxGetApp().recently_used.Add(fname);
-    MainFrame::Spawn(url_from_filename(fname), fname, false);
+    MainFrame::Spawn(url_from_filename(fname), fname, true);
 }
 
 int MainApp::OnExit()
