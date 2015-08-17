@@ -20,6 +20,7 @@ class MainFrame: public wxFrame
         wxID_INSERT, wxID_DELETE, wxID_UNDELETE,
         wxID_SPLIT, wxID_MERGE,
         wxID_MOVE_UP, wxID_MOVE_DOWN,
+        wxID_TRUST,
         wxID_RUN, wxID_RUN_NEXT, wxID_RUN_ALL, wxID_RUN_ALL_ABOVE, wxID_RUN_ALL_BELOW,
         wxID_CELL_CODE, wxID_CELL_MARKDOWN, wxID_CELL_RAW,
         wxID_KERNEL_INTERRUPT, wxID_KERNEL_RESTART, wxID_KERNEL_RECONNECT,

@@ -64,6 +64,7 @@ void MainFrame::SetupMenu()
     menu_file->Append(wxID_SAVEAS, "Save As\tShift-Ctrl-S");
     menu_file->AppendSeparator();
     menu_file->Append(wxID_SAVE_HTML, "Download HTML");
+    menu_file->Append(wxID_TRUST, "Trust notebook");
     menu_file->AppendSeparator();
     menu_file->Append(wxID_PROPERTIES, "Properties...");
     menu_file->AppendSeparator();
@@ -216,6 +217,7 @@ void MainFrame::SetupBindings()
     };
 
     /// Bind simple menu items (simple Jupyter functions on the cell)
+    bind_jupyter_click_cell(wxID_TRUST, "trust_notebook");
     bind_jupyter_click_cell(wxID_CUT, "cut_cell");
     bind_jupyter_click_cell(wxID_COPY, "copy_cell");
     bind_jupyter_click_cell(wxID_PASTE, "paste_cell_below");
