@@ -75,17 +75,9 @@ add_dependencies(${PROJECT_NAME} venv)
 file(COPY "scripts/pineapple-server" DESTINATION "${PROJECT_BINARY_DIR}/scripts/")
 file(COPY "scripts/pineapple-server.spec" DESTINATION "${PROJECT_BINARY_DIR}/scripts/")
 
-### Demo files
-
-file(COPY "demo/" DESTINATION "${PROJECT_BINARY_DIR}/demo/")
-
 ### Resources
 
-file(COPY "data/loading.html" DESTINATION "${PROJECT_BINARY_DIR}/data/")
-file(COPY "data/blank.ipynb" DESTINATION "${PROJECT_BINARY_DIR}/data/")
-file(COPY "images/" DESTINATION "${PROJECT_BINARY_DIR}/images/")
-file(COPY "custom/custom.css" DESTINATION "${PROJECT_BINARY_DIR}/notebook/notebook/static/custom/")
-file(COPY "custom/custom.js" DESTINATION "${PROJECT_BINARY_DIR}/notebook/notebook/static/custom/")
+file(COPY "data/" DESTINATION "${PROJECT_BINARY_DIR}/data/")
 
 ### Testing targets
 
