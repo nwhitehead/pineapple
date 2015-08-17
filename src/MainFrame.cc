@@ -270,10 +270,6 @@ void MainFrame::SetupBindings()
             }
         },
         CallbackType::Infinite);
-
-    register_jupyter_event_callback("notebook_saved.Notebook", [](std::string) {
-        wxMessageBox("Notebook saved");
-    });
 }
 
 void MainFrame::LoadDocument(bool indirect_load)
@@ -380,11 +376,32 @@ void MainFrame::eval_js(std::string expression, Callback::t continuation)
     webview->RunScript(ss.str());
 }
 
+/// Evaluate JavaScript expression
+/// Ignore local expression value
+/// Callback gets called when Jupyter event is triggered
+void MainFrame::eval_js_event(std::string expression, std::string evtname, Callback::t continuation)
+{
+    CallbackHandler::token id = handler.fresh_id();
+    handler.register_callback(id, AsyncResult::Success, continuation);
+    std::stringstream ss;
+    ss << "require('base/js/events').on(\"" << evtname << "\"";
+    ss << ", function(evt) {";
+    ss << "    var old = document.title;";
+    ss << "    document.title = \"" << config::protocol_prefix << id << "|0\";";
+    ss << "    document.title = old;";
+    ss << "  }";
+    ss << ");";
+    ss << expression;
+    std::cout << "Trying to eval " << ss.str() << std::endl;
+    webview->RunScript(ss.str());
+}
+
 std::string MainFrame::jupyter_click_code(std::string id)
 {
     return std::string("Jupyter.menubar.element.find('#" + id + "').click(); true");
 }
 
+/*
 /// Register an event, call our code when it happens
 void MainFrame::register_jupyter_event_callback(std::string name, Callback::t continuation)
 {
@@ -392,16 +409,17 @@ void MainFrame::register_jupyter_event_callback(std::string name, Callback::t co
     handler.register_callback(id, AsyncResult::Success, continuation);
     std::stringstream ss;
     ss << "require('base/js/events').on(\"" << name << "\", function (evt) { "
-    << "alert(\"saved\");"
-/*
+    << "alert(\"saved\"); });";
+
     << "var old = document.title;"
     << "document.title = \"" << config::protocol_prefix << id << "|0\";"
     << "document.title = old;"
-*/
     << "});";
+
     std::cout << "REGISTER Trying to eval " << ss.str() << std::endl;
     webview->RunScript(ss.str());
 }
+*/
 
 void MainFrame::Save()
 {
@@ -410,7 +428,8 @@ void MainFrame::Save()
 
 void MainFrame::Save(Callback::t continuation)
 {
-    eval_js(jupyter_click_code("save_checkpoint"), continuation);
+    // call continuation when saved
+    eval_js_event(jupyter_click_code("save_checkpoint"), "notebook_saved.Notebook", continuation);
 }
 
 

@@ -66,7 +66,7 @@ public:
     void Save(Callback::t continuation);
     void eval_js(std::string expression);
     void eval_js(std::string expression, Callback::t success);
+    void eval_js_event(std::string expression, std::string evtname, Callback::t continuation);
 
     std::string jupyter_click_code(std::string id);
-    void register_jupyter_event_callback(std::string id, Callback::t continuation);
 };
