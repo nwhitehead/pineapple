@@ -84,8 +84,6 @@ file(COPY "demo/" DESTINATION "${PROJECT_BINARY_DIR}/demo/")
 file(COPY "data/loading.html" DESTINATION "${PROJECT_BINARY_DIR}/data/")
 file(COPY "data/blank.ipynb" DESTINATION "${PROJECT_BINARY_DIR}/data/")
 file(COPY "images/" DESTINATION "${PROJECT_BINARY_DIR}/images/")
-file(COPY "notebook/notebook/static/" DESTINATION "${PROJECT_BINARY_DIR}/notebook/notebook/static/")
-file(COPY "notebook/notebook/templates/" DESTINATION "${PROJECT_BINARY_DIR}/notebook/notebook/templates/")
 file(COPY "custom/custom.css" DESTINATION "${PROJECT_BINARY_DIR}/notebook/notebook/static/custom/")
 file(COPY "custom/custom.js" DESTINATION "${PROJECT_BINARY_DIR}/notebook/notebook/static/custom/")
 
