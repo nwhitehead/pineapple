@@ -68,4 +68,5 @@ public:
     void eval_js(std::string expression, Callback::t success);
 
     std::string jupyter_click_code(std::string id);
+    void register_jupyter_event_callback(std::string id, Callback::t continuation);
 };

@@ -270,6 +270,10 @@ void MainFrame::SetupBindings()
             }
         },
         CallbackType::Infinite);
+
+    register_jupyter_event_callback("notebook_saved.Notebook", [](std::string) {
+        wxMessageBox("Notebook saved");
+    });
 }
 
 void MainFrame::LoadDocument(bool indirect_load)
@@ -365,8 +369,7 @@ void MainFrame::eval_js(std::string expression)
 /// Evaluate JavaScript expression,  setup callback to get answer (JSON text)
 void MainFrame::eval_js(std::string expression, Callback::t continuation)
 {
-    static CallbackHandler::token id = 0;
-    id++;
+    CallbackHandler::token id = handler.fresh_id();
     handler.register_callback(id, AsyncResult::Success, continuation);
     std::stringstream ss;
     ss << "try { document.title=\"" << config::protocol_prefix << id
@@ -380,6 +383,24 @@ void MainFrame::eval_js(std::string expression, Callback::t continuation)
 std::string MainFrame::jupyter_click_code(std::string id)
 {
     return std::string("Jupyter.menubar.element.find('#" + id + "').click(); true");
+}
+
+/// Register an event, call our code when it happens
+void MainFrame::register_jupyter_event_callback(std::string name, Callback::t continuation)
+{
+    CallbackHandler::token id = handler.fresh_id();
+    handler.register_callback(id, AsyncResult::Success, continuation);
+    std::stringstream ss;
+    ss << "require('base/js/events').on(\"" << name << "\", function (evt) { "
+    << "alert(\"saved\");"
+/*
+    << "var old = document.title;"
+    << "document.title = \"" << config::protocol_prefix << id << "|0\";"
+    << "document.title = old;"
+*/
+    << "});";
+    std::cout << "REGISTER Trying to eval " << ss.str() << std::endl;
+    webview->RunScript(ss.str());
 }
 
 void MainFrame::Save()

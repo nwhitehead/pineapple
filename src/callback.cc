@@ -12,6 +12,13 @@ void Callback::debug(argument x) {
     std::cout << "Argument: " << x << std::endl;
 }
 
+CallbackHandler::token CallbackHandler::gid = 0;
+
+CallbackHandler::token CallbackHandler::fresh_id()
+{
+    return gid++; // need to protect this if we have multiple threads
+}
+
 bool CallbackHandler::register_callback(token id, AsyncResult c, Callback::t cb, CallbackType kind)
 {
     key k(id, c);

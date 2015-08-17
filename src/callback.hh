@@ -30,8 +30,12 @@ public:
 
     /// Call a previously registered callback for the id and type
     void call(token id, AsyncResult c, Callback::argument x);
+    
+    /// Get a globally fresh id
+    static token fresh_id();
 private:
     using key = std::pair<token, AsyncResult>;
     using value = std::pair<Callback::t, CallbackType>;
     std::map<key, value> map;
+    static token gid;
 };
