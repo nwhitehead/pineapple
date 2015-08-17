@@ -23,7 +23,10 @@ include(${wxWidgets_USE_FILE})
 ### Pineapple app
 
 if(APPLE)
-    set(ICON_FILE "${PROJECT_SOURCE_DIR}/images/Pineapple.icns")
+    set(ICONS 
+        ${PROJECT_SOURCE_DIR}/images/Pineapple.icns
+        ${PROJECT_SOURCE_DIR}/images/swift-source_Icon.icns
+    )
 endif()
 
 ## General
@@ -35,10 +38,9 @@ set(SRC_LIST
     src/MainFrame.cc
     src/MainApp.cc
     src/RecentManager.cc
-    ${ICON_FILE}
+    ${ICONS}
 )
-configure_file("${PROJECT_SOURCE_DIR}/src/config.hh.in"
-    "${PROJECT_BINARY_DIR}/include/config.hh")
+configure_file("${PROJECT_SOURCE_DIR}/src/config.hh.in" "${PROJECT_BINARY_DIR}/include/config.hh")
 include_directories("${PROJECT_BINARY_DIR}/include")
 add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${SRC_LIST})
 target_link_libraries(${PROJECT_NAME} ${wxWidgets_LIBRARIES})
@@ -46,18 +48,11 @@ target_link_libraries(${PROJECT_NAME} ${wxWidgets_LIBRARIES})
 ## Mac OS X specific information
 
 if(APPLE)
-    set(MACOSX_BUNDLE_DISPLAY_NAME "${PROJECT_NAME}")
-    set(MACOSX_BUNDLE_NAME "${PROJECT_NAME}")
-    set(MACOSX_BUNDLE_BUNDLE_NAME "${PROJECT_NAME}")
-    set(MACOSX_BUNDLE_ICON_FILE "Pineapple.icns")
-    set(MACOSX_BUNDLE_COPYRIGHT "Copyright (c) 2015 Nathan Whitehead")
-    set(MACOSX_BUNDLE_GUI_IDENTIFIER "com.nathanwhitehead.mango")
-    set(MACOSX_BUNDLE_BUNDLE_VERSION "${VERSION_MAJOR}.${VERSION_MINOR}")
     set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_NAME}.${VERSION_MAJOR}.${VERSION_MINOR}")
     set(MACOSX_BUNDLE_LONG_VERSION_STRING "${PROJECT_NAME}.${VERSION_MAJOR}.${VERSION_MINOR}")
     configure_file("${PROJECT_SOURCE_DIR}/cmake/Pineapple.plist.in"
         "${PROJECT_BINARY_DIR}/cmake/Pineapple.plist")
-    set_source_files_properties("${ICON_FILE}" PROPERTIES
+    set_source_files_properties(${ICONS} PROPERTIES
         MACOSX_PACKAGE_LOCATION Resources)
     set_target_properties(${PROJECT_NAME} PROPERTIES
         MACOSX_BUNDLE_INFO_PLIST "${PROJECT_BINARY_DIR}/cmake/Pineapple.plist")
