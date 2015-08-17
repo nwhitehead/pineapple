@@ -322,8 +322,7 @@ void MainFrame::CreateNew(bool indirect_load)
     }
 
     std::stringstream ss;
-    ss << "Could not create new untitled notebook in ";
-    ss << wxStandardPaths::Get().GetAppDocumentsDir() << "\n\n";
+    ss << "Could not create new untitled notebook";
     ss << "Last attempt was to create " << std::string(fullname.GetFullPath()) << std::endl;
     wxMessageBox(ss.str(), "ERROR", wxOK | wxICON_ERROR);
 }

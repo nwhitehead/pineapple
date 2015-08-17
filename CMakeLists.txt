@@ -81,19 +81,15 @@ file(COPY "data/" DESTINATION "${PROJECT_BINARY_DIR}/data/")
 
 ### Testing targets
 
-add_custom_target(notebook_install
+add_custom_target(notebook_install ALL
     DEPENDS venv
-#    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/notebook"
-#    COMMAND "${VENV_DIR}/bin/python" "${PROJECT_SOURCE_DIR}/notebook/setup.py" install
-    # Copy custom files for local testing
-    COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/custom/custom.css" "${VENV_DIR}/lib/python2.7/site-packages/notebook/static/custom/"
-    COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/custom/custom.js" "${VENV_DIR}/lib/python2.7/site-packages/notebook/static/custom/"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/custom" "${VENV_DIR}/lib/python2.7/site-packages/notebook/static/custom/"
 )
 
 set (ENV{PINEAPPLE_SERVER}
     "${VENV_DIR}/bin/python ${PROJECT_BINARY_DIR}/scripts/pineapple-server")
 
-add_custom_target(localtest
+add_custom_target(localtest ALL
     DEPENDS ${PROJECT_NAME} venv notebook_install
     COMMAND "${PROJECT_NAME}"
 )
