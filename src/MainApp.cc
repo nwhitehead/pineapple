@@ -62,6 +62,7 @@ bool MainApp::OnInit()
         for (int i = 1; i < argc; ++i) {
             std::string arg(argv[i]);
             wxFileName fname(arg);
+            fname.MakeAbsolute();
             if (fname.FileExists()) {
                 std::string filename(fname.GetFullPath());
                 MainFrame::Spawn(url_from_filename(filename), filename, true);
