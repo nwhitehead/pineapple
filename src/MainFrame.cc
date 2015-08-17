@@ -134,42 +134,42 @@ void MainFrame::SetupToolbar()
 {
     toolbar = CreateToolBar(config::toolbar_style);
 
-    toolbar->AddTool(wxID_SAVE, "Save", toolbar_icon("images/Save-50.png"), "Save");
+    toolbar->AddTool(wxID_SAVE, "Save", toolbar_icon("Save-50.png"), "Save");
 
     toolbar->AddSeparator();
 
-    toolbar->AddTool(wxID_INSERT, "Insert", toolbar_icon("images/Plus-50.png"), "Insert below");
-    toolbar->AddTool(wxID_DELETE, "Delete", toolbar_icon("images/Delete-50.png"), "Delete cell");
+    toolbar->AddTool(wxID_INSERT, "Insert", toolbar_icon("Plus-50.png"), "Insert below");
+    toolbar->AddTool(wxID_DELETE, "Delete", toolbar_icon("Delete-50.png"), "Delete cell");
 
     toolbar->AddSeparator();
 
-    toolbar->AddTool(wxID_CUT, "Cut", toolbar_icon("images/Cut-50.png"), "Cut cell");
-    toolbar->AddTool(wxID_COPY, "Copy", toolbar_icon("images/Copy-50.png"), "Copy cell");
-    toolbar->AddTool(wxID_PASTE, "Paste", toolbar_icon("images/Paste-50.png"), "Paste cell");
+    toolbar->AddTool(wxID_CUT, "Cut", toolbar_icon("Cut-50.png"), "Cut cell");
+    toolbar->AddTool(wxID_COPY, "Copy", toolbar_icon("Copy-50.png"), "Copy cell");
+    toolbar->AddTool(wxID_PASTE, "Paste", toolbar_icon("Paste-50.png"), "Paste cell");
 
     toolbar->AddSeparator();
 
-    toolbar->AddTool(wxID_MOVE_UP, "Move up", toolbar_icon("images/Up-50.png"), "Move cell up");
-    toolbar->AddTool(wxID_MOVE_DOWN, "Move down", toolbar_icon("images/Down-50.png"), "Move cell down");
+    toolbar->AddTool(wxID_MOVE_UP, "Move up", toolbar_icon("Up-50.png"), "Move cell up");
+    toolbar->AddTool(wxID_MOVE_DOWN, "Move down", toolbar_icon("Down-50.png"), "Move cell down");
 
     toolbar->AddSeparator();
 
-    toolbar->AddTool(wxID_RUN_NEXT, "Run", toolbar_icon("images/Play-50.png"), "Run cell");
-    toolbar->AddTool(wxID_RUN_ALL, "Run all", toolbar_icon("images/FastForward-50.png"), "Run all cells");
-    toolbar->AddTool(wxID_KERNEL_INTERRUPT, "Stop", toolbar_icon("images/Stop-50.png"), "Interrupt kernel");
-    toolbar->AddTool(wxID_KERNEL_RESTART, "Restart", toolbar_icon("images/Synchronize-50.png"), "Restart kernel");
+    toolbar->AddTool(wxID_RUN_NEXT, "Run", toolbar_icon("Play-50.png"), "Run cell");
+    toolbar->AddTool(wxID_RUN_ALL, "Run all", toolbar_icon("FastForward-50.png"), "Run all cells");
+    toolbar->AddTool(wxID_KERNEL_INTERRUPT, "Stop", toolbar_icon("Stop-50.png"), "Interrupt kernel");
+    toolbar->AddTool(wxID_KERNEL_RESTART, "Restart", toolbar_icon("Synchronize-50.png"), "Restart kernel");
 
     toolbar->AddSeparator();
 
-    toolbar->AddTool(wxID_CELL_CODE, "Code", toolbar_icon("images/Edit-50.png"), "Cell type code");
-    toolbar->AddTool(wxID_CELL_MARKDOWN, "Markdown", toolbar_icon("images/Pen-50.png"), "Cell type markdown");
-    toolbar->AddTool(wxID_CELL_RAW, "Raw", toolbar_icon("images/Fantasy-50.png"), "Cell type raw");
+    toolbar->AddTool(wxID_CELL_CODE, "Code", toolbar_icon("Edit-50.png"), "Cell type code");
+    toolbar->AddTool(wxID_CELL_MARKDOWN, "Markdown", toolbar_icon("Pen-50.png"), "Cell type markdown");
+    toolbar->AddTool(wxID_CELL_RAW, "Raw", toolbar_icon("Fantasy-50.png"), "Cell type raw");
 
     toolbar->AddSeparator();
 
     toolbar->AddTool(wxID_KERNEL_BUSY, "Busy",
-        toolbar_icon("images/Led-Yellow-On-1632.png"),
-        toolbar_icon("images/Led-Yellow-Off-1632.png"),
+        toolbar_icon("Led-Yellow-On-1632.png"),
+        toolbar_icon("Led-Yellow-Off-1632.png"),
         wxITEM_NORMAL, "Kernel busy");
     toolbar->EnableTool(wxID_KERNEL_BUSY, false);
 

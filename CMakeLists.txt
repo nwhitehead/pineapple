@@ -78,13 +78,13 @@ file(COPY "scripts/pineapple-server.spec" DESTINATION "${PROJECT_BINARY_DIR}/scr
 ### Resources
 
 file(COPY "data/" DESTINATION "${PROJECT_BINARY_DIR}/data/")
-
-### Testing targets
-
 add_custom_target(notebook_install ALL
     DEPENDS venv
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/custom" "${VENV_DIR}/lib/python2.7/site-packages/notebook/static/custom/"
 )
+
+
+### Testing targets
 
 set (ENV{PINEAPPLE_SERVER}
     "${VENV_DIR}/bin/python ${PROJECT_BINARY_DIR}/scripts/pineapple-server")

@@ -11,6 +11,7 @@
 /// Load an image file and process it into an appropriate toolbar icon
 wxBitmap toolbar_icon(std::string filename)
 {
+    filename = "data/images/" + filename;
     return wxBitmap(wxImage(filename).Rescale(config::toolbar_width, config::toolbar_height, wxIMAGE_QUALITY_BICUBIC));
 }
 
