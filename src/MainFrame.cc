@@ -261,14 +261,13 @@ void MainFrame::SetupBindings()
 
     /// Setup permanent handler for kernel busy/idle updates
     handler.register_callback(config::token_kernel_busy, AsyncResult::Success,
-        [this](Callback::argument x) -> bool {
+        [this](Callback::argument x) {
             if (x == std::string("true")) {
                 this->toolbar->EnableTool(wxID_KERNEL_BUSY, true);
             }
             if (x == std::string("false")) {
                 this->toolbar->EnableTool(wxID_KERNEL_BUSY, false);
             }
-            return false; // keep handler alive permanently
         },
         CallbackType::Infinite);
 }
