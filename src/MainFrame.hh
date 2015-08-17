@@ -42,6 +42,7 @@ public:
     std::string url;
     std::string local_filename;
     CallbackHandler handler;
+    bool jupyter_ready;
 
     void OnClose(wxCloseEvent &event);
     void OnPageLoad(wxWebViewEvent &event);

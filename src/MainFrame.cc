@@ -41,7 +41,7 @@ MainFrame::MainFrame(std::string url0, std::string filename,
     const wxString &title, const wxPoint &pos, const wxSize &size,
     bool indirect_load)
         : wxFrame(nullptr, wxID_ANY, title, pos, size),
-          url(url0), local_filename(filename)
+          url(url0), local_filename(filename), jupyter_ready(false)
 {
     SetupMenu();
     SetupToolbar();
@@ -497,7 +497,8 @@ void MainFrame::OnSaveAs(wxCommandEvent &/* event */)
 
 void MainFrame::OnClose(wxCloseEvent &event)
 {
-    if (event.CanVeto()) {
+    // Skip saving if we haven't loaded Jupyter yet
+    if (event.CanVeto() && jupyter_ready) {
         // Always save to disk, there is no choice
         // Once save is finished, close for real
         Save([this](Callback::argument /* x */) {
@@ -525,8 +526,11 @@ void MainFrame::OnClose(wxCloseEvent &event)
 void MainFrame::OnPageLoad(wxWebViewEvent &/* event */)
 {
     std::cout << "PAGE LOAD" << std::endl;
-    eval_js("if (Jupyter) { 1 } else { 0 }", [](std::string) {
-        std::cout << "PAGE LOAD - Jupyter" << std::endl;
+    eval_js("if (Jupyter) { 1 } else { 0 }", [this](std::string x) {
+        if (x == std::string("1")) {
+            jupyter_ready = true;
+        }
+        std::cout << "PAGE LOAD - Jupyter = " << jupyter_ready << std::endl;
     });
 }
 
