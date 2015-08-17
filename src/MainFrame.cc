@@ -257,6 +257,7 @@ void MainFrame::SetupBindings()
 
     /// Bind other events
     Bind(wxEVT_WEBVIEW_TITLE_CHANGED, &MainFrame::OnTitleChanged, this, wxID_ANY);
+    Bind(wxEVT_WEBVIEW_LOADED, &MainFrame::OnPageLoad, this, wxID_ANY);
     Bind(wxEVT_CLOSE_WINDOW, &MainFrame::OnClose, this, wxID_ANY);
 
     /// Setup permanent handler for kernel busy/idle updates
@@ -519,6 +520,14 @@ void MainFrame::OnClose(wxCloseEvent &event)
     if (wxGetApp().waiting_to_quit && wxGetApp().frames.size() == 0) {
         wxGetApp().ExitMainLoop();
     }
+}
+
+void MainFrame::OnPageLoad(wxWebViewEvent &/* event */)
+{
+    std::cout << "PAGE LOAD" << std::endl;
+    eval_js("if (Jupyter) { 1 } else { 0 }", [](std::string) {
+        std::cout << "PAGE LOAD - Jupyter" << std::endl;
+    });
 }
 
 void MainFrame::OnTitleChanged(wxWebViewEvent &event)

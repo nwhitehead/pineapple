@@ -44,6 +44,7 @@ public:
     CallbackHandler handler;
 
     void OnClose(wxCloseEvent &event);
+    void OnPageLoad(wxWebViewEvent &event);
     void OnSubprocessTerminate(wxProcessEvent &event);
     void OnTitleChanged(wxWebViewEvent &event);
 
