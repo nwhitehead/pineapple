@@ -237,7 +237,6 @@ void MainFrame::SetupBindings()
     bind_jupyter_click_cell(wxID_KERNEL_INTERRUPT, "int_kernel");
     bind_jupyter_click_cell(wxID_KERNEL_RESTART, "restart_kernel");
     bind_jupyter_click_cell(wxID_KERNEL_RECONNECT, "reconnect_kernel");
-    bind_jupyter_click_cell(wxID_SAVE, "save_checkpoint");
     bind_jupyter_click_cell(wxID_HELP_KEYBOARD, "keyboard_shortcuts");
 
     /// Bind url opens in default browser
@@ -247,6 +246,7 @@ void MainFrame::SetupBindings()
     /// Bind custom menu items
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnNew, wxID_NEW);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnOpen, wxID_OPEN);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSave, this, wxID_SAVE);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnSaveAs, this, wxID_SAVEAS);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnMenuClose, this, wxID_CLOSE);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnMenuCloseAll, this, wxID_CLOSE_ALL);
@@ -269,8 +269,8 @@ void MainFrame::SetupBindings()
                 this->toolbar->EnableTool(wxID_KERNEL_BUSY, false);
             }
             return false; // keep handler alive permanently
-        }
-    );
+        },
+        CallbackType::Infinite);
 }
 
 void MainFrame::LoadDocument(bool indirect_load)
@@ -358,16 +358,40 @@ bool MainFrame::FindNewFileName(wxFileName &fullname)
  * JavaScript integration
  */
 
-void MainFrame::eval_javascript(std::string expression, Callback::t success, Callback::t failure)
+/// Evaluate JavaScript expression, do not setup callback for result
+void MainFrame::eval_js(std::string expression)
+{
+    webview->RunScript(expression);
+}
+
+/// Evaluate JavaScript expression,  setup callback to get answer (JSON text)
+void MainFrame::eval_js(std::string expression, Callback::t continuation)
 {
     static CallbackHandler::token id = 0;
     id++;
-    handler.register_callback(id, AsyncResult::Success, success);
-    handler.register_callback(id, AsyncResult::Failure, failure);
+    handler.register_callback(id, AsyncResult::Success, continuation);
     std::stringstream ss;
-    ss << "document.title=\"" << config::protocol_prefix << id << "|\"+JSON.stringify(" << expression << ");";
+    ss << "try { document.title=\"" << config::protocol_prefix << id
+        << "|\"+JSON.stringify(eval(\"" << expression << "\")); } "
+        << "catch(e) { document.title = \"" << config::protocol_prefix << id
+        << "|exception\"; }";
     std::cout << "Trying to eval " << ss.str() << std::endl;
     webview->RunScript(ss.str());
+}
+
+std::string MainFrame::jupyter_click_code(std::string id)
+{
+    return std::string("Jupyter.menubar.element.find('#" + id + "').click(); true");
+}
+
+void MainFrame::Save()
+{
+    eval_js(jupyter_click_code("save_checkpoint"));
+}
+
+void MainFrame::Save(Callback::t continuation)
+{
+    eval_js(jupyter_click_code("save_checkpoint"), continuation);
 }
 
 
@@ -391,6 +415,11 @@ void MainFrame::OnOpen(wxCommandEvent &/* event */)
     std::cout << "OPEN " << filename << std::endl;
     wxGetApp().recently_used.Add(filename);
     Spawn(url_from_filename(filename), filename, false);
+}
+
+void MainFrame::OnSave(wxCommandEvent &/* event */)
+{
+    Save();
 }
 
 void MainFrame::OnSaveAs(wxCommandEvent &/* event */)
@@ -421,16 +450,12 @@ void MainFrame::OnClose(wxCloseEvent &event)
 {
     if (event.CanVeto()) {
         // Always save to disk, there is no choice
-        jupyter_click_cell(webview, "save_checkpoint");
-    
-        /// Setup handler to catch save finished
-        handler.register_callback(config::token_final_save, AsyncResult::Success,
-            [this](Callback::argument /* x */) -> bool {
+        // Once save is finished, close for real
+        Save([this](Callback::argument /* x */) {
                 Close(true); // unvetoable
                 // Make sure this event gets through without blocking
                 // (Stops on Ubuntu)
                 wxGetApp().WakeUpIdle();
-                return true;
             }
         );
         // Don't close yet, wait for final save to finish
@@ -477,9 +502,8 @@ void MainFrame::OnTitleChanged(wxWebViewEvent &event)
 
 void MainFrame::OnProperties(wxCommandEvent &/* event */)
 {
-    eval_javascript(std::string("2+2"), [](Callback::argument x) -> bool {
+    eval_js(std::string("2+2"), [](Callback::argument x) {
         std::cout << "Result of 2+2 is " << x << std::endl;
-        return true;
     });
 
     std::stringstream ss;

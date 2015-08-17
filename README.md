@@ -49,3 +49,9 @@ is actually running npm and installing many packages with no output.
 
 To rebuilt JavaScript/CSS static sources, from notebook directory do:
 `python setup.py css js install`
+
+### OS X
+
+If you want to change the icon images, you'll need to regenerate the icns files.
+I did this using [https://iconverticons.com] because the command-line tools
+I found were out of date and I didn't want to hassle with automating it.

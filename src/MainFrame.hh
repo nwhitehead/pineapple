@@ -49,6 +49,7 @@ public:
 
     static void OnNew(wxCommandEvent &event);
     static void OnOpen(wxCommandEvent &event);
+    void OnSave(wxCommandEvent &event);
     void OnSaveAs(wxCommandEvent &event);
     void OnProperties(wxCommandEvent &event);
     void OnMenuClose(wxCommandEvent &event);
@@ -61,5 +62,10 @@ public:
     void SetupBindings();
     void LoadDocument(bool indirect_load=true);
 
-    void eval_javascript(std::string expression, Callback::t success, Callback::t failure=Callback::debug);
+    void Save();
+    void Save(Callback::t continuation);
+    void eval_js(std::string expression);
+    void eval_js(std::string expression, Callback::t success);
+
+    std::string jupyter_click_code(std::string id);
 };

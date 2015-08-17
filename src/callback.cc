@@ -4,43 +4,36 @@
 #include <iostream>
 #include <map>
 
-bool Callback::ignore(argument /* x */) {
-    return true;
+void Callback::ignore(argument /* x */) {
+    // nop
 }
 
-bool Callback::ignore_infinite(argument /* x */) {
-    return false;
-}
-
-bool Callback::debug(argument x) {
+void Callback::debug(argument x) {
     std::cout << "Argument: " << x << std::endl;
-    return true;
 }
 
-bool Callback::debug_infinite(argument x) {
-    std::cout << "Argument: " << x << std::endl;
-    return false;
-}
-
-bool CallbackHandler::register_callback(token id, AsyncResult c, Callback::t cb)
+bool CallbackHandler::register_callback(token id, AsyncResult c, Callback::t cb, CallbackType kind)
 {
-    std::pair<token, AsyncResult> key(id, c);
-    bool filled = (map.find(key) != map.end());
-    map[key] = cb;
+    key k(id, c);
+    value v(cb, kind);
+    bool filled = (map.find(k) != map.end());
+    map[k] = v;
     return filled;
 }
 
 void CallbackHandler::call(token id, AsyncResult c, Callback::argument x)
 {
-    std::pair<token, AsyncResult> key(id, c);
-    auto it = map.find(key);
+    key k(id, c);
+    auto it = map.find(k);
     if (it == map.end()) {
         std::cerr << "CALLBACK KEY NOT FOUND " << id << " - " << static_cast<int>(c) << std::endl;
         return;
     }
     std::cout << "CALLING CALLBACK id=" << id << std::endl;
-    if (map[key](x)) {
-        // true result means remove it
+    value v(map[k]);
+    v.first(x);
+    if (v.second == CallbackType::Single) {
+        // One-shot so remove it
         map.erase(it);
     }
 }

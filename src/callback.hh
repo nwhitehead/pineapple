@@ -10,15 +10,14 @@
 class Callback {
 public:
     using argument = std::string;
-    using t = std::function<bool (argument)>;
-    static bool ignore(argument x);
-    static bool ignore_infinite(argument x);
-    static bool debug(argument x);
-    static bool debug_infinite(argument x);
+    using t = std::function<void (argument)>;
+    static void ignore(argument x);
+    static void debug(argument x);
 };
 
 /// What can happen to an async call
 enum class AsyncResult { Success, Failure, Timeout };
+enum class CallbackType { Single, Infinite };
 
 /// Handle callbacks, associate tokens with callback actions
 class CallbackHandler
@@ -26,12 +25,13 @@ class CallbackHandler
 public:
     using token = int;
 
-    /// Register a callback of the given type with a token
-    bool register_callback(token id, AsyncResult c, Callback::t cb);
+    /// Register a callback of the given type with a token (one shot)
+    bool register_callback(token id, AsyncResult c, Callback::t cb, CallbackType kind=CallbackType::Single);
 
     /// Call a previously registered callback for the id and type
-    /// remove means unregister it after we do the call
     void call(token id, AsyncResult c, Callback::argument x);
 private:
-    std::map<std::pair<token, AsyncResult>, Callback::t> map;
+    using key = std::pair<token, AsyncResult>;
+    using value = std::pair<Callback::t, CallbackType>;
+    std::map<key, value> map;
 };
