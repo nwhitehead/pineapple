@@ -14,6 +14,7 @@ class MainApp: public wxApp
 public:
     virtual bool OnInit();
     virtual int OnExit();
+    virtual void MacOpenFile(const wxString &filename);
     void CloseAll();
     void OnQuit(wxCommandEvent &event);
     void OnSubprocessTerminate(wxProcessEvent &event);
