@@ -86,24 +86,29 @@ file(COPY "data/blank.ipynb" DESTINATION "${PROJECT_BINARY_DIR}/data/")
 file(COPY "images/" DESTINATION "${PROJECT_BINARY_DIR}/images/")
 file(COPY "notebook/notebook/static/" DESTINATION "${PROJECT_BINARY_DIR}/notebook/notebook/static/")
 file(COPY "notebook/notebook/templates/" DESTINATION "${PROJECT_BINARY_DIR}/notebook/notebook/templates/")
+file(COPY "custom/custom.css" DESTINATION "${PROJECT_BINARY_DIR}/notebook/notebook/static/custom/")
+file(COPY "custom/custom.js" DESTINATION "${PROJECT_BINARY_DIR}/notebook/notebook/static/custom/")
 
 ### Testing targets
+
+add_custom_target(notebook_install
+    DEPENDS venv
+#    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/notebook"
+#    COMMAND "${VENV_DIR}/bin/python" "${PROJECT_SOURCE_DIR}/notebook/setup.py" install
+    # Copy custom files for local testing
+    COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/custom/custom.css" "${VENV_DIR}/lib/python2.7/site-packages/notebook/static/custom/"
+    COMMAND ${CMAKE_COMMAND} -E copy "${PROJECT_SOURCE_DIR}/custom/custom.js" "${VENV_DIR}/lib/python2.7/site-packages/notebook/static/custom/"
+)
 
 set (ENV{PINEAPPLE_SERVER}
     "${VENV_DIR}/bin/python ${PROJECT_BINARY_DIR}/scripts/pineapple-server")
 
 add_custom_target(localtest
-    DEPENDS ${PROJECT_NAME} venv
+    DEPENDS ${PROJECT_NAME} venv notebook_install
     COMMAND "${PROJECT_NAME}"
 )
 
 ### Production targets
-
-add_custom_target(notebook_install
-    DEPENDS venv
-    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/notebook"
-    COMMAND "${VENV_DIR}/bin/python" "${PROJECT_SOURCE_DIR}/notebook/setup.py" install
-)
 
 add_custom_target(server
     DEPENDS venv notebook_install

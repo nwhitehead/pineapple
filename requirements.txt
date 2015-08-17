@@ -7,6 +7,7 @@ jupyter_client
 nbconvert
 nbformat
 ipykernel
+notebook
 pyzmq
 terminado
 alabaster
@@ -14,5 +15,4 @@ sphinx
 sphinx_rtd_theme
 -e ../pyinstaller/
 -e ../path.py/
--e ../notebook/
 numpy
