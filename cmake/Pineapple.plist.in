@@ -22,7 +22,7 @@
                                                 <array>
                                                     <string>ipynb</string>
                                                 </array>
-            <key>CFBundleTypeIconFile</key>    <string>Pineapple.icns</string>
+            <key>CFBundleTypeIconFile</key>    <string>Pineapple-Doc.icns</string>
             <key>LSIsAppleDefaultForType</key> <true/>
             <key>LSTypeIsPackage</key>         <false/>
         </dict>

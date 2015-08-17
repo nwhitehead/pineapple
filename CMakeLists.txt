@@ -25,7 +25,7 @@ include(${wxWidgets_USE_FILE})
 if(APPLE)
     set(ICONS 
         ${PROJECT_SOURCE_DIR}/images/Pineapple.icns
-        ${PROJECT_SOURCE_DIR}/images/swift-source_Icon.icns
+        ${PROJECT_SOURCE_DIR}/images/Pineapple-Doc.icns
     )
 endif()
 
