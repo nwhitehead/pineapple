@@ -57,15 +57,31 @@ bool MainApp::OnInit()
 
 #endif
 
-    // See if we can load most recently used file
-    std::string filename(recently_used.Get());
-
-    if (filename.empty()) {
-        // If no recently used, create fresh new file
-        MainFrame::CreateNew(true);
+    int loaded = 0;
+    if (argc > 1) {
+        for (int i = 1; i < argc; ++i) {
+            std::string arg(argv[i]);
+            wxFileName fname(arg);
+            if (fname.FileExists()) {
+                std::string filename(fname.GetFullPath());
+                MainFrame::Spawn(url_from_filename(filename), filename, true);
+                loaded++;
+            } else {
+                wxMessageBox("Could not open " + arg);
+            }
+        }
+        if (loaded == 0) return false;
     } else {
-        // Open most recently used
-        MainFrame::Spawn(url_from_filename(filename), filename, true);
+        // See if we can load most recently used file
+        std::string filename(recently_used.Get());
+
+        if (filename.empty()) {
+            // If no recently used, create fresh new file
+            MainFrame::CreateNew(true);
+        } else {
+            // Open most recently used
+            MainFrame::Spawn(url_from_filename(filename), filename, true);
+        }
     }
 
     wxString server_script;
