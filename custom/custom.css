@@ -5,60 +5,42 @@ FONTS
 
 @font-face {
     font-family: 'myslab';
-    src: url('fonts/bitter-regular-webfont.eot');
-    src: url('fonts/bitter-regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('fonts/bitter-regular-webfont.woff2') format('woff2'),
-         url('fonts/bitter-regular-webfont.woff') format('woff'),
-         url('fonts/bitter-regular-webfont.ttf') format('truetype'),
-         url('fonts/bitter-regular-webfont.svg#bitterregular') format('svg');
+    src: url('fonts/bitter-regular-webfont.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'myslab';
-    src: url('fonts/bitter-italic-webfont.eot');
-    src: url('fonts/bitter-italic-webfont.eot?#iefix') format('embedded-opentype'),
-         url('fonts/bitter-italic-webfont.woff2') format('woff2'),
-         url('fonts/bitter-italic-webfont.woff') format('woff'),
-         url('fonts/bitter-italic-webfont.ttf') format('truetype'),
-         url('fonts/bitter-italic-webfont.svg#bitteritalic') format('svg');
+    src: url('fonts/bitter-italic-webfont.ttf') format('truetype');
     font-weight: normal;
     font-style: italic;
 }
 
 @font-face {
     font-family: 'myslab';
-    src: url('fonts/bitter-bold-webfont.eot');
-    src: url('fonts/bitter-bold-webfont.eot?#iefix') format('embedded-opentype'),
-         url('fonts/bitter-bold-webfont.woff2') format('woff2'),
-         url('fonts/bitter-bold-webfont.woff') format('woff'),
-         url('fonts/bitter-bold-webfont.ttf') format('truetype'),
-         url('fonts/bitter-bold-webfont.svg#bitterbold') format('svg');
+    src: url('fonts/bitter-bold-webfont.ttf') format('truetype');
     font-weight: bold;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'myslab';
-    src: url('fonts/bitter-bolditalic-webfont.eot');
-    src: url('fonts/bitter-bolditalic-webfont.eot?#iefix') format('embedded-opentype'),
-         url('fonts/bitter-bolditalic-webfont.woff2') format('woff2'),
-         url('fonts/bitter-bolditalic-webfont.woff') format('woff'),
-         url('fonts/bitter-bolditalic-webfont.ttf') format('truetype'),
-         url('fonts/bitter-bolditalic-webfont.svg#bitterbold_italic') format('svg');
+    src: url('fonts/bitter-bolditalic-webfont.ttf') format('truetype');
     font-weight: bold;
     font-style: italic;
 }
 
 @font-face {
     font-family: 'mymono';
-    src: url('fonts/ptm55ft-webfont.eot');
-    src: url('fonts/ptm55ft-webfont.eot?#iefix') format('embedded-opentype'),
-         url('fonts/ptm55ft-webfont.woff2') format('woff2'),
-         url('fonts/ptm55ft-webfont.woff') format('woff'),
-         url('fonts/ptm55ft-webfont.ttf') format('truetype'),
-         url('fonts/ptm55ft-webfont.svg#pt_monoregular') format('svg');
+    src: url('fonts/ptm55ft-webfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('fonts/Roboto-Regular-webfont.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
@@ -69,7 +51,9 @@ CSS
 
 /* Use font */
 body {
-    font-family: 'myslab';
+/* font-family: 'myslab'; */
+/*    font-family: 'Roboto';*/
+    font-family: Helvetica;
 }
 
 /*
