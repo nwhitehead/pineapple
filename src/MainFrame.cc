@@ -182,7 +182,7 @@ void MainFrame::SetupWebView()
     webview = wxWebView::New(this, wxID_ANY);
     // Turn off right-click as much as possible
     webview->EnableContextMenu(false);
-    webview->SetZoom(wxWEBVIEW_ZOOM_LARGE);
+//    webview->SetZoom(wxWEBVIEW_ZOOM_LARGE);
 }
 
 void MainFrame::SetupLayout(const wxPoint &/* pos */, const wxSize &size)

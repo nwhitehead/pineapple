@@ -45,15 +45,33 @@ FONTS
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'Roboto';
+    src: url('fonts/Roboto-Bold-webfont.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('fonts/Roboto-ThinItalic-webfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('fonts/Roboto-BoldItalic-webfont.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
 /*******************
 CSS
 ********************/
 
 /* Use font */
 body {
-/* font-family: 'myslab'; */
-/*    font-family: 'Roboto';*/
-    font-family: Helvetica;
 }
 
 /*
@@ -106,18 +124,22 @@ div#notebook-container {
 }
 
 div#notebook {
-    background: url('images/cream-dust.png');
+    background: #ffffff;
+    font-size: 16px;
 }
 
 /* input/output prompt is stone color */
 div.input_prompt {
-    color: #5D523C;
-    background: url('images/blue-mocha-grunge-reversed.jpg');
-    border-radius: 3px;
+    color: #4f9fcf;
 }
 div.output_prompt {
     border-radius: 3px;
-    color: #A59573;
+    color: #93a7b3;
+}
+
+/* Off black for text in markdown areas */
+div.rendered_html {
+    color: #222222;
 }
 
 /* Break up long words if we need to */
@@ -125,31 +147,50 @@ div.rendered_html p {
     word-wrap: break-word;
 }
 
-/* Original bg color #eee, then made more brown with #e0dad0
-   then lightened one step to #ebe7e0, then another to #f5f3ef
-Darkened 3 steps: D7CFC1 CDC3B1 B9AC92 A59573 7C6E50 5D523C
+/*
+Idea for colors:
+Bootstrap for off-black bg (but #333333 was too much)
+Link color #4f9fcf looked nice,
+mixed with white to get edf5fa
+mixed with gray to get output prompt
 */
+
 /* Change codemirror bg */
 div.input_area {
-    background-color: #faf9f7;
+      background-color: #edf5fa;
+}
+
+div.rendered_html h1 {
+    font-size: 48px;
+    font-weight: bold;
+    border-bottom: solid 1px #eeeeee;
+}
+
+div.rendered_html h2 {
+    font-size: 32px;
 }
 
 /* Backticks in markdown and actual code get more distinct bg */
 div.rendered_html code {
-    background-color: #ebe7e0;
-    padding: 0.3em;
+    background-color: #c5f5ff;
+    padding-left: 0.3em;
+    padding-right: 0.3em;
     border-radius: 3px;
 }
 
 /* Allow code blocks */
 div.rendered_html pre code {
-    background-color: #f5f3ef;
+    background-color: #92c2e0;
     display: block;
 }
 
 /* Turn off paragraph thingies */
 div.rendered_html a.anchor-link {
     visibility: hidden;
+}
+
+.cm-s-ipython {
+    font-size: 16px;
 }
 
 /* CodeMirror neat theme */
