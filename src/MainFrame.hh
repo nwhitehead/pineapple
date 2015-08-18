@@ -15,7 +15,8 @@
 class MainFrame: public wxFrame
 {
     enum {
-        wxID_SAVE_HTML = 10000,
+        wxID_EXPORT_PYTHON = 10000, wxID_EXPORT_MARKDOWN,
+        wxID_EXPORT_PDF, wxID_EXPORT_HTML,
         wxID_CLOSE_ALL, wxID_PROPERTIES,
         wxID_INSERT, wxID_DELETE, wxID_UNDELETE,
         wxID_SPLIT, wxID_MERGE,
@@ -71,6 +72,7 @@ public:
     void eval_js(std::string expression);
     void eval_js(std::string expression, Callback::t success);
     void eval_js_event(std::string expression, std::string evtname, Callback::t continuation);
+    void Export(std::string format);
 
     std::string jupyter_click_code(std::string id);
 };

@@ -25,6 +25,12 @@ std::vector<std::string> read_file_lines(std::string filename)
     return v;
 }
 
+void write_file(std::string filename, std::string contents)
+{
+    std::ofstream ofs(filename);
+    ofs << contents;
+}
+
 void write_file_lines(std::string filename, std::vector<std::string> v)
 {
     std::ofstream ofs;
@@ -54,4 +60,10 @@ std::string url_from_filename(std::string filename)
 {
     std::string uri(filename);
     return std::string(config::base_url) + std::string(config::path_url) + uri;
+}
+
+std::string export_url_from_filename(std::string filename, std::string format)
+{
+    std::string uri(filename);
+    return std::string(config::base_url) + std::string(config::nbconvert_url) + std::string("/") + format + uri;
 }

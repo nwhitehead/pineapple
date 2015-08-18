@@ -17,6 +17,9 @@ std::string read_all_file(std::string filename);
 /// Read all contents of a file into a vector of strings (per line)
 std::vector<std::string> read_file_lines(std::string filename);
 
+/// Write string to file
+void write_file(std::string filename, std::string contents);
+
 /// Write vector of strings into a file
 void write_file_lines(std::string filename, std::vector<std::string> v);
 
@@ -32,3 +35,6 @@ std::vector<std::string> split(const std::string &s, char delimiter);
 
 /// Create URL to visit from local filename
 std::string url_from_filename(std::string filename);
+
+/// Create URL for nbconvert from local filename
+std::string export_url_from_filename(std::string filename, std::string format);

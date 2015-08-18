@@ -23,6 +23,7 @@
 #include <wx/stream.h>
 #include <wx/toolbar.h>
 #include <wx/txtstrm.h>
+#include <wx/url.h>
 #include <wx/utils.h>
 #include <wx/webview.h>
 
@@ -63,7 +64,14 @@ void MainFrame::SetupMenu()
     menu_file->Append(wxID_SAVE, "Save\tCtrl-S");
     menu_file->Append(wxID_SAVEAS, "Save As\tShift-Ctrl-S");
     menu_file->AppendSeparator();
-    menu_file->Append(wxID_SAVE_HTML, "Download HTML");
+
+    {
+        wxMenu *menu_export = new wxMenu();
+        menu_export->Append(wxID_EXPORT_PYTHON, "Python");
+        menu_export->Append(wxID_EXPORT_MARKDOWN, "Markdown");
+        menu_file->AppendSubMenu(menu_export, "Export as");
+    }
+
     menu_file->Append(wxID_TRUST, "Trust notebook");
     menu_file->AppendSeparator();
     menu_file->Append(wxID_PROPERTIES, "Properties...");
@@ -217,6 +225,15 @@ void MainFrame::SetupBindings()
 
     };
 
+    auto bind_export = [this](int id, std::string format) -> void {
+
+        Bind(wxEVT_COMMAND_MENU_SELECTED,
+            [this, format](wxCommandEvent &/* event */)->void {
+                Export(format);
+            }, id);
+
+    };
+
     /// Bind simple menu items (simple Jupyter functions on the cell)
     bind_jupyter_click_cell(wxID_TRUST, "trust_notebook");
     bind_jupyter_click_cell(wxID_CUT, "cut_cell");
@@ -257,6 +274,9 @@ void MainFrame::SetupBindings()
     MainApp *theApp = &wxGetApp();
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainApp::OnQuit, theApp, wxID_EXIT);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnProperties, this, wxID_PROPERTIES);
+
+    bind_export(wxID_EXPORT_PYTHON, "python");
+    bind_export(wxID_EXPORT_MARKDOWN, "markdown");
 
     /// Bind other events
     Bind(wxEVT_WEBVIEW_TITLE_CHANGED, &MainFrame::OnTitleChanged, this, wxID_ANY);
@@ -570,4 +590,49 @@ void MainFrame::OnMenuClose(wxCommandEvent &/* event */)
 void MainFrame::OnMenuCloseAll(wxCommandEvent &/* event */)
 {
     wxGetApp().CloseAll();
+}
+
+void MainFrame::Export(std::string format)
+{
+    std::string msg, desc;
+    if (format == std::string("python")) {
+        msg = "Save Python file";
+        desc = "Python files (*.py)|*.py";
+    }
+    else if (format == std::string("html")) {
+        msg = "Save HTML file";
+        desc = "HTML files (*.html)|*.html";
+    } else if (format == std::string("markdown")) {
+        msg = "Save Markdown ZIP archive";
+        desc = "ZIP files (*.zip)|*.zip";
+    }
+    wxFileDialog dialog(this, msg, "", "", desc,
+        wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+    if (dialog.ShowModal() == wxID_CANCEL) return;
+
+    std::string new_filename = std::string(dialog.GetPath());
+    std::string url(export_url_from_filename(local_filename, format));
+    std::cout << "EXPORT " << format << local_filename << " -> " << new_filename << " - " << url << std::endl;
+    wxURL wurl(url);
+    std::string contents;
+    if (wurl.GetError() == wxURL_NOERR) {
+        wxInputStream *in = wurl.GetInputStream();
+        if (in && in->IsOk()) {
+            while(!in->Eof()) {
+                wxByte buf[1024];
+                in->Read(&buf, 1024);
+                contents.append(buf, buf+in->LastRead());
+            }
+            write_file(new_filename, contents);
+            std::stringstream ss;
+            ss << "Wrote " << contents.size() << " bytes." << std::endl;
+            wxMessageBox(ss.str());
+        } else {
+            wxMessageBox("There was a problem generating the file.");
+        }
+        delete in;
+    } else {
+        wxMessageBox("There was a problem generating the file.");
+    }
 }

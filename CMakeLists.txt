@@ -17,7 +17,7 @@ endif()
 ### wxWidgets
 
 set(wxWidgets_CONFIGURATION mswu)
-find_package(wxWidgets REQUIRED core base webview)
+find_package(wxWidgets REQUIRED core base net webview)
 include(${wxWidgets_USE_FILE})
 
 ### Pineapple app
