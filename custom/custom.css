@@ -128,13 +128,12 @@ div#notebook {
     font-size: 16px;
 }
 
-/* input/output prompt is stone color */
 div.input_prompt {
     color: #4f9fcf;
 }
 div.output_prompt {
     border-radius: 3px;
-    color: #93a7b3;
+    color: #a0b4c0;
 }
 
 /* Off black for text in markdown areas */
@@ -172,7 +171,7 @@ div.rendered_html h2 {
 
 /* Backticks in markdown and actual code get more distinct bg */
 div.rendered_html code {
-    background-color: #c5f5ff;
+    background-color: #dcecf5;
     padding-left: 0.3em;
     padding-right: 0.3em;
     border-radius: 3px;
@@ -180,7 +179,7 @@ div.rendered_html code {
 
 /* Allow code blocks */
 div.rendered_html pre code {
-    background-color: #92c2e0;
+    background-color: #dcecf5;
     display: block;
 }
 
