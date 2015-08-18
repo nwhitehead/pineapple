@@ -158,6 +158,8 @@ mixed with gray to get output prompt
 div.input_area {
       background-color: #edf5fa;
 }
+c7254e
+f9f2f4
 
 div.rendered_html h1 {
     font-size: 48px;
@@ -171,14 +173,18 @@ div.rendered_html h2 {
 
 /* Backticks in markdown and actual code get more distinct bg */
 div.rendered_html code {
-    background-color: #dcecf5;
+    color: #b32146;
+    background-color: #f9f2f4;
     padding-left: 0.3em;
     padding-right: 0.3em;
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
     border-radius: 3px;
 }
 
 /* Allow code blocks */
 div.rendered_html pre code {
+    color: #333333;
     background-color: #dcecf5;
     display: block;
 }
