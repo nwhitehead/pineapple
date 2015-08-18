@@ -49,6 +49,7 @@ public:
     void OnPageLoad(wxWebViewEvent &event);
     void OnSubprocessTerminate(wxProcessEvent &event);
     void OnTitleChanged(wxWebViewEvent &event);
+    void OnNewWindow(wxWebViewEvent &event);
 
     static void OnNew(wxCommandEvent &event);
     static void OnOpen(wxCommandEvent &event);

@@ -261,6 +261,7 @@ void MainFrame::SetupBindings()
     /// Bind other events
     Bind(wxEVT_WEBVIEW_TITLE_CHANGED, &MainFrame::OnTitleChanged, this, wxID_ANY);
     Bind(wxEVT_WEBVIEW_LOADED, &MainFrame::OnPageLoad, this, wxID_ANY);
+    Bind(wxEVT_WEBVIEW_NEWWINDOW, &MainFrame::OnNewWindow, this, wxID_ANY);
     Bind(wxEVT_CLOSE_WINDOW, &MainFrame::OnClose, this, wxID_ANY);
 
     /// Setup permanent handler for kernel busy/idle updates
@@ -415,26 +416,6 @@ std::string MainFrame::jupyter_click_code(std::string id)
     return std::string("Jupyter.menubar.element.find('#" + id + "').click(); true");
 }
 
-/*
-/// Register an event, call our code when it happens
-void MainFrame::register_jupyter_event_callback(std::string name, Callback::t continuation)
-{
-    CallbackHandler::token id = handler.fresh_id();
-    handler.register_callback(id, AsyncResult::Success, continuation);
-    std::stringstream ss;
-    ss << "require('base/js/events').on(\"" << name << "\", function (evt) { "
-    << "alert(\"saved\"); });";
-
-    << "var old = document.title;"
-    << "document.title = \"" << config::protocol_prefix << id << "|0\";"
-    << "document.title = old;"
-    << "});";
-
-    std::cout << "REGISTER Trying to eval " << ss.str() << std::endl;
-    webview->RunScript(ss.str());
-}
-*/
-
 void MainFrame::Save()
 {
     eval_js(jupyter_click_code("save_checkpoint"));
@@ -535,6 +516,12 @@ void MainFrame::OnPageLoad(wxWebViewEvent &/* event */)
         }
         std::cout << "PAGE LOAD - Jupyter = " << jupyter_ready << std::endl;
     });
+}
+
+void MainFrame::OnNewWindow(wxWebViewEvent &event)
+{
+    std::cout << "NEW WINDOWS - " << event.GetURL() << std::endl;
+    wxLaunchDefaultBrowser(event.GetURL());
 }
 
 void MainFrame::OnTitleChanged(wxWebViewEvent &event)
