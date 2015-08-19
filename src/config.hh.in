@@ -35,6 +35,8 @@ constexpr char recent_files_filename[] = "recent";
 
 /// Local baseurl
 constexpr char base_url[] = "http://localhost:8888";
+/// Export version is specific to http
+constexpr char export_base_url[] = "localhost:8888";
 /// Where to look for full path filenames
 constexpr char path_url[] = "/tree";
 /// How to get to nbconvert

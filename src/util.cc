@@ -65,5 +65,5 @@ std::string url_from_filename(std::string filename)
 std::string export_url_from_filename(std::string filename, std::string format)
 {
     std::string uri(filename);
-    return std::string(config::base_url) + std::string(config::nbconvert_url) + std::string("/") + format + uri;
+    return std::string(config::nbconvert_url) + std::string("/") + format + uri;
 }

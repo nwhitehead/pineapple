@@ -614,10 +614,12 @@ void MainFrame::Export(std::string format)
     std::string new_filename = std::string(dialog.GetPath());
     std::string url(export_url_from_filename(local_filename, format));
     std::cout << "EXPORT " << format << local_filename << " -> " << new_filename << " - " << url << std::endl;
-    wxURL wurl(url);
+    wxHTTP http;
     std::string contents;
-    if (wurl.GetError() == wxURL_NOERR) {
-        wxInputStream *in = wurl.GetInputStream();
+    http.Connect("localhost", 8888);
+    if (http.GetError() == wxPROTO_NOERR) {
+        wxInputStream *in = http.GetInputStream(url);
+        wxMessageBox(http.GetHeader("content-type"));
         if (in && in->IsOk()) {
             while(!in->Eof()) {
                 wxByte buf[1024];
@@ -629,10 +631,10 @@ void MainFrame::Export(std::string format)
             ss << "Wrote " << contents.size() << " bytes." << std::endl;
             wxMessageBox(ss.str());
         } else {
-            wxMessageBox("There was a problem generating the file.");
+            wxMessageBox("There was a problem generating the file.1");
         }
         delete in;
     } else {
-        wxMessageBox("There was a problem generating the file.");
+        wxMessageBox("There was a problem generating the file.2");
     }
 }
