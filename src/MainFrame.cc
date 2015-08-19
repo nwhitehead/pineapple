@@ -76,6 +76,8 @@ void MainFrame::SetupMenu()
     menu_file->AppendSeparator();
     menu_file->Append(wxID_PROPERTIES, "Properties...");
     menu_file->AppendSeparator();
+    menu_file->Append(wxID_PRINT, "Print...");
+    menu_file->AppendSeparator();
     menu_file->Append(wxID_CLOSE, "Close\tCtrl-W");
     // Close All only makes sense on mac
 #if defined(__APPLE__)
@@ -274,6 +276,7 @@ void MainFrame::SetupBindings()
     MainApp *theApp = &wxGetApp();
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainApp::OnQuit, theApp, wxID_EXIT);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnProperties, this, wxID_PROPERTIES);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnPrint, this, wxID_PRINT);
 
     bind_export(wxID_EXPORT_PYTHON, "python");
     bind_export(wxID_EXPORT_MARKDOWN, "markdown");
@@ -590,6 +593,11 @@ void MainFrame::OnMenuClose(wxCommandEvent &/* event */)
 void MainFrame::OnMenuCloseAll(wxCommandEvent &/* event */)
 {
     wxGetApp().CloseAll();
+}
+
+void MainFrame::OnPrint(wxCommandEvent &/* event */)
+{
+    webview->Print();
 }
 
 void MainFrame::Export(std::string format)

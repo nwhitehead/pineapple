@@ -59,6 +59,7 @@ public:
     void OnProperties(wxCommandEvent &event);
     void OnMenuClose(wxCommandEvent &event);
     void OnMenuCloseAll(wxCommandEvent &event);
+    void OnPrint(wxCommandEvent &event);
 
     void SetupMenu();
     void SetupToolbar();

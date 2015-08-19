@@ -113,6 +113,12 @@ div.input {
 }
 */
 
+@media print {
+    div.input, pre {
+        page-break-inside: avoid;
+    }
+}
+
 div.input_area {
     margin-left: 5px;
     border-radius: 3px;
@@ -158,8 +164,6 @@ mixed with gray to get output prompt
 div.input_area {
       background-color: #edf5fa;
 }
-c7254e
-f9f2f4
 
 div.rendered_html h1 {
     font-size: 48px;
@@ -211,8 +215,10 @@ div.rendered_html a.anchor-link {
 .cm-s-ipython span.cm-link { color: #3a3; }
 
 /* Pick nice outline color for cell selection */
-div.cell.selected {
-    border-color: #A59573;
+@media screen  {
+    div.cell.selected {
+        border-color: #A59573;
+    }
 }
 
 /* Make the cell pop with a shadow when editing */
