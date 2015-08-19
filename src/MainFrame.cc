@@ -68,6 +68,7 @@ void MainFrame::SetupMenu()
     {
         wxMenu *menu_export = new wxMenu();
         menu_export->Append(wxID_EXPORT_PYTHON, "Python");
+        menu_export->Append(wxID_EXPORT_HTML, "HTML");
         menu_export->Append(wxID_EXPORT_MARKDOWN, "Markdown");
         menu_file->AppendSubMenu(menu_export, "Export as");
     }
@@ -279,6 +280,7 @@ void MainFrame::SetupBindings()
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnPrint, this, wxID_PRINT);
 
     bind_export(wxID_EXPORT_PYTHON, "python");
+    bind_export(wxID_EXPORT_HTML, "html");
     bind_export(wxID_EXPORT_MARKDOWN, "markdown");
 
     /// Bind other events
@@ -636,6 +638,10 @@ void MainFrame::Export(std::string format)
     else if (content_type == std::string("text/markdown; charset=utf-8")) {
         msg = "Save Markdown file";
         desc = "Markdown files (*.md)|*.md";
+    }
+    else if (content_type == std::string("text/html; charset=utf-8")) {
+        msg = "Save HTML file";
+        desc = "HTML files (*.html)|*.html";
     } else if (content_type == std::string("application/zip")) {
         msg = "Save Markdown ZIP archive";
         desc = "ZIP files (*.zip)|*.zip";
