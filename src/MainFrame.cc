@@ -89,9 +89,13 @@ void MainFrame::SetupMenu()
     menubar->Append(menu_file, "File");
 
     wxMenu *menu_edit = new wxMenu();
-    menu_edit->Append(wxID_CUT, "Cut cell\tCtrl-X");
-    menu_edit->Append(wxID_COPY, "Copy cell\tCtrl-C");
-    menu_edit->Append(wxID_PASTE, "Paste cell below\tCtrl-V");
+    menu_edit->Append(wxID_CUT, "Cut\tCtrl-X");
+    menu_edit->Append(wxID_COPY, "Copy\tCtrl-C");
+    menu_edit->Append(wxID_PASTE, "Paste\tCtrl-V");
+    menu_edit->AppendSeparator();
+    menu_edit->Append(wxID_CELL_CUT, "Cut cell\tShift-Ctrl-X");
+    menu_edit->Append(wxID_CELL_COPY, "Copy cell\tShift-Ctrl-C");
+    menu_edit->Append(wxID_CELL_PASTE, "Paste cell below\tShift-Ctrl-V");
     menu_edit->AppendSeparator();
     menu_edit->Append(wxID_INSERT, "Insert cell below\tCtrl-=");
     menu_edit->AppendSeparator();
@@ -155,9 +159,9 @@ void MainFrame::SetupToolbar()
 
     toolbar->AddSeparator();
 
-    toolbar->AddTool(wxID_CUT, "Cut", toolbar_icon("Cut-50.png"), "Cut cell");
-    toolbar->AddTool(wxID_COPY, "Copy", toolbar_icon("Copy-50.png"), "Copy cell");
-    toolbar->AddTool(wxID_PASTE, "Paste", toolbar_icon("Paste-50.png"), "Paste cell");
+    toolbar->AddTool(wxID_CELL_CUT, "Cut", toolbar_icon("Cut-50.png"), "Cut cell");
+    toolbar->AddTool(wxID_CELL_COPY, "Copy", toolbar_icon("Copy-50.png"), "Copy cell");
+    toolbar->AddTool(wxID_CELL_PASTE, "Paste", toolbar_icon("Paste-50.png"), "Paste cell");
 
     toolbar->AddSeparator();
 
@@ -239,9 +243,9 @@ void MainFrame::SetupBindings()
 
     /// Bind simple menu items (simple Jupyter functions on the cell)
     bind_jupyter_click_cell(wxID_TRUST, "trust_notebook");
-    bind_jupyter_click_cell(wxID_CUT, "cut_cell");
-    bind_jupyter_click_cell(wxID_COPY, "copy_cell");
-    bind_jupyter_click_cell(wxID_PASTE, "paste_cell_below");
+    bind_jupyter_click_cell(wxID_CELL_CUT, "cut_cell");
+    bind_jupyter_click_cell(wxID_CELL_COPY, "copy_cell");
+    bind_jupyter_click_cell(wxID_CELL_PASTE, "paste_cell_below");
     bind_jupyter_click_cell(wxID_INSERT, "insert_cell_below");
     bind_jupyter_click_cell(wxID_DELETE, "delete_cell");
     bind_jupyter_click_cell(wxID_UNDELETE, "undelete_cell");

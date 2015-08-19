@@ -18,7 +18,7 @@ class MainFrame: public wxFrame
         wxID_EXPORT_PYTHON = 10000, wxID_EXPORT_MARKDOWN,
         wxID_EXPORT_PDF, wxID_EXPORT_HTML,
         wxID_CLOSE_ALL, wxID_PROPERTIES,
-        wxID_CUT, wxID_COPY, wxID_PASTE,
+        wxID_CELL_CUT, wxID_CELL_COPY, wxID_CELL_PASTE,
         wxID_INSERT, wxID_DELETE, wxID_UNDELETE,
         wxID_SPLIT, wxID_MERGE,
         wxID_MOVE_UP, wxID_MOVE_DOWN,
