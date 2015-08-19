@@ -594,15 +594,41 @@ void MainFrame::OnMenuCloseAll(wxCommandEvent &/* event */)
 
 void MainFrame::Export(std::string format)
 {
+    // Export data first, then prompt user
+    std::string url(export_url_from_filename(local_filename, format));
+    std::cout << "EXPORT " << format << " " << local_filename << " " << url << std::endl;
+    wxHTTP http;
+    std::string contents;
+    std::string content_type;
+    http.Connect(config::hostname, config::portnumber);
+    if (http.GetError() == wxPROTO_NOERR) {
+        wxInputStream *in = http.GetInputStream(url);
+        content_type = http.GetHeader("content-type");
+        if (in && in->IsOk()) {
+            while(!in->Eof()) {
+                wxByte buf[1024];
+                in->Read(&buf, 1024);
+                contents.append(buf, buf+in->LastRead());
+            }
+        } else {
+            wxMessageBox("There was a problem generating the file.1");
+            return;
+        }
+        delete in;
+    } else {
+        wxMessageBox("There was a problem generating the file.2");
+        return;
+    }
+
     std::string msg, desc;
-    if (format == std::string("python")) {
+    if (content_type == std::string("text/x-python; charset=utf-8")) {
         msg = "Save Python file";
         desc = "Python files (*.py)|*.py";
     }
-    else if (format == std::string("html")) {
-        msg = "Save HTML file";
-        desc = "HTML files (*.html)|*.html";
-    } else if (format == std::string("markdown")) {
+    else if (content_type == std::string("text/markdown; charset=utf-8")) {
+        msg = "Save Markdown file";
+        desc = "Markdown files (*.md)|*.md";
+    } else if (content_type == std::string("application/zip")) {
         msg = "Save Markdown ZIP archive";
         desc = "ZIP files (*.zip)|*.zip";
     }
@@ -612,29 +638,9 @@ void MainFrame::Export(std::string format)
     if (dialog.ShowModal() == wxID_CANCEL) return;
 
     std::string new_filename = std::string(dialog.GetPath());
-    std::string url(export_url_from_filename(local_filename, format));
-    std::cout << "EXPORT " << format << local_filename << " -> " << new_filename << " - " << url << std::endl;
-    wxHTTP http;
-    std::string contents;
-    http.Connect("localhost", 8888);
-    if (http.GetError() == wxPROTO_NOERR) {
-        wxInputStream *in = http.GetInputStream(url);
-        wxMessageBox(http.GetHeader("content-type"));
-        if (in && in->IsOk()) {
-            while(!in->Eof()) {
-                wxByte buf[1024];
-                in->Read(&buf, 1024);
-                contents.append(buf, buf+in->LastRead());
-            }
-            write_file(new_filename, contents);
-            std::stringstream ss;
-            ss << "Wrote " << contents.size() << " bytes." << std::endl;
-            wxMessageBox(ss.str());
-        } else {
-            wxMessageBox("There was a problem generating the file.1");
-        }
-        delete in;
-    } else {
-        wxMessageBox("There was a problem generating the file.2");
-    }
+
+    write_file(new_filename, contents);
+    std::stringstream ss;
+    ss << "Wrote " << contents.size() << " bytes." << std::endl;
+    wxMessageBox(ss.str());
 }

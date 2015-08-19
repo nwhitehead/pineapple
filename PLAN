@@ -16,6 +16,7 @@ bug: mac version you need to quit twice
 bug: when interrupt,restart kernel, sometimes lose connection, cannot restart
 bug: intermittent leftover python kernels sometimes
 bug: big output causes pineapple to hang while rendering (eg recursion f x = f x)
+bug: need to save before export, otherwise won't get latest changes
 
 Competitors:
 
