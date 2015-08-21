@@ -42,7 +42,7 @@ set(SRC_LIST
 )
 configure_file("${PROJECT_SOURCE_DIR}/src/config.hh.in" "${PROJECT_BINARY_DIR}/include/config.hh")
 include_directories("${PROJECT_BINARY_DIR}/include")
-add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${SRC_LIST})
+add_executable(${PROJECT_NAME} ${SRC_LIST})
 target_link_libraries(${PROJECT_NAME} ${wxWidgets_LIBRARIES})
 
 ## Mac OS X specific information
@@ -55,6 +55,7 @@ if(APPLE)
     set_source_files_properties(${ICONS} PROPERTIES
         MACOSX_PACKAGE_LOCATION Resources)
     set_target_properties(${PROJECT_NAME} PROPERTIES
+        MACOSX_BUNDLE 1
         MACOSX_BUNDLE_INFO_PLIST "${PROJECT_BINARY_DIR}/cmake/Pineapple.plist")
 endif()
 
@@ -65,6 +66,7 @@ add_custom_command(
     OUTPUT "${VENV_DIR}/bin/activate"
     COMMAND virtualenv "${VENV_DIR}"
     COMMAND "${VENV_DIR}/bin/pip" install -r "${PROJECT_SOURCE_DIR}/requirements.txt"
+    COMMAND virtualenv --relocatable "${VENV_DIR}"
     COMMENT "Setting up virtualenv"
 )
 add_custom_target(venv DEPENDS "${VENV_DIR}/bin/activate")
@@ -78,7 +80,7 @@ file(COPY "scripts/pineapple-server.spec" DESTINATION "${PROJECT_BINARY_DIR}/scr
 ### Resources
 
 file(COPY "data/" DESTINATION "${PROJECT_BINARY_DIR}/data/")
-add_custom_target(notebook_install ALL
+add_custom_target(notebook_install
     DEPENDS venv
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/custom" "${VENV_DIR}/lib/python2.7/site-packages/notebook/static/custom/"
 )
@@ -89,10 +91,12 @@ add_custom_target(notebook_install ALL
 set (ENV{PINEAPPLE_SERVER}
     "${VENV_DIR}/bin/python ${PROJECT_BINARY_DIR}/scripts/pineapple-server")
 
-add_custom_target(localtest ALL
+add_custom_target(localtest
     DEPENDS ${PROJECT_NAME} venv notebook_install
     COMMAND "${PROJECT_NAME}"
 )
+set_target_properties(localtest PROPERTIES
+    EXCLUDE_FROM_ALL 1)
 
 ### Production targets
 
@@ -115,8 +119,10 @@ install (TARGETS ${PROJECT_NAME}
 ### CPACK
 
 include (InstallRequiredSystemLibraries)
+set (CPACK_PACKAGE_VENDOR "Nathan Whitehead")
 set (CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
+set (CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/README.md")
 set (CPACK_PACKAGE_VERSION_MAJOR "${VERSION_MAJOR}")
 set (CPACK_PACKAGE_VERSION_MINOR "${VERSION_MINOR}")
+set (CPACK_PACKAGE_EXECUTABLES "Pineapple" "Pineapple")
 include (CPack)
-
