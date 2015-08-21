@@ -110,11 +110,15 @@ add_custom_target(server
 
 ### Install
 
-install (TARGETS ${PROJECT_NAME}
-    RUNTIME DESTINATION bin
-    BUNDLE DESTINATION data
-    COMPONENT applications)
-#install (FILES "${PROJECT_BINARY_DIR}/data" DESTINATION bin)
+if(APPLE)
+    install (TARGETS ${PROJECT_NAME}
+        DESTINATION ".")
+else()
+    install (TARGETS ${PROJECT_NAME}
+        RUNTIME DESTINATION bin
+        BUNDLE DESTINATION data
+        COMPONENT applications)
+endif()
 
 ### CPACK
 
