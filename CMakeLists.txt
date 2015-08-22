@@ -25,6 +25,7 @@ include(${wxWidgets_USE_FILE})
 
 ## General
 
+set(EMPTY data/empty)
 set(DATAFILES
     data/loading.html
     data/blank.ipynb
@@ -106,8 +107,8 @@ add_custom_target(notebook_install
 ### Testing targets
 
 add_custom_target(localtest
-    DEPENDS ${PROJECT_NAME} venv notebook_install
-    COMMAND ${CMAKE_COMMAND} -E env "PINEAPPLE_SERVER=venv/bin/python --version" "bin/${PROJECT_NAME}"
+    DEPENDS ${PROJECT_NAME} venv notebook_install bin/${PROJECT_NAME}
+    COMMAND ${CMAKE_COMMAND} -E env "PINEAPPLE_SERVER=venv/bin/python scripts/pineapple-server" "bin/${PROJECT_NAME}"
 )
 set_target_properties(localtest PROPERTIES
     EXCLUDE_FROM_ALL 1)
@@ -136,6 +137,12 @@ else()
         DESTINATION "share/${VERSION_NAME}")
     install (DIRECTORY ${PROJECT_BINARY_DIR}/dist/pineapple-server/
         DESTINATION "share/${VERSION_NAME}/pineapple-server")
+    install (PROGRAMS ${PROJECT_BINARY_DIR}/dist/pineapple-server/pineapple-server
+        DESTINATION "share/${VERSION_NAME}/pineapple-server")
+    install (FILES ${EMPTY}
+        DESTINATION "share/${VERSION_NAME}/pineapple-server/tcl")
+    install (FILES ${EMPTY}
+        DESTINATION "share/${VERSION_NAME}/pineapple-server/tk")
 endif()
 
 ### CPACK

@@ -90,16 +90,20 @@ bool MainApp::OnInit()
 
     // Startup ipython server subprocess
     wxString server_script;
+    std::string server_command;
     server = nullptr;
     if (!wxGetEnv(config::server_script_env, &server_script)) {
         server_script = config::server_script_default;
+        server_command = resource_filename(std::string(server_script));
+    } else {
+        server_command = std::string(server_script);
     }
 
     server = nullptr;
     Bind(wxEVT_END_PROCESS, &MainApp::OnSubprocessTerminate, this, wxID_ANY);
 
     server = new wxProcess(frame);
-    wxExecute(server_script,
+    wxExecute(server_command,
         wxEXEC_ASYNC | wxEXEC_HIDE_CONSOLE | wxEXEC_MAKE_GROUP_LEADER,
         server);
     // Set handler to kill process if we die
