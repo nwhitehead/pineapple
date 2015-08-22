@@ -5,7 +5,7 @@
 namespace config {
 
 /// Version info
-constexpr char app_name [] = "${PROJECT_NAME}";
+constexpr char app_name [] = "${VERSION_NAME}";
 constexpr char version_name [] = "${VERSION_NAME}";
 constexpr char version_major [] = "${VERSION_MAJOR}";
 constexpr char version_minor [] = "${VERSION_MINOR}";
@@ -13,7 +13,7 @@ constexpr char version [] = "${VERSION_MAJOR}" "." "${VERSION_MINOR}" ;
 constexpr char version_full [] = "${VERSION_NAME}-${VERSION_MAJOR}" "." "${VERSION_MINOR}" ;
 
 /// Environment variable to pass server path
-constexpr char server_script_env[] = "${PROJECT_NAME}_SERVER";
+constexpr char server_script_env[] = "${UPPERCASE_VERSION_NAME}_SERVER";
 /// Default server script if none given
 constexpr char server_script_default[] = "venv/bin/python scripts/pineapple-server";
 
@@ -50,7 +50,7 @@ constexpr char nbconvert_url[] = "/nbconvert";
 constexpr int max_num_untitled = 50;
 
 /// Title prefix
-constexpr char title[] = "${PROJECT_NAME}";
+constexpr char title[] = "${VERSION_NAME}";
 /// Special protocol prefix
 constexpr char protocol_prefix[] = "$$$$";
 /// Page that shows loading animation and loads actual page

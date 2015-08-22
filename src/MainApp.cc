@@ -95,6 +95,7 @@ bool MainApp::OnInit()
         server_script = config::server_script_default;
     }
 
+    server = nullptr;
     Bind(wxEVT_END_PROCESS, &MainApp::OnSubprocessTerminate, this, wxID_ANY);
 
     server = new wxProcess(frame);
@@ -103,6 +104,9 @@ bool MainApp::OnInit()
         server);
     // Set handler to kill process if we die
     signal(SIGINT, signal_handler);
+
+    std::cout << "END OF MAIN OnInit" << std::endl;
+
     return true;
 }
 
@@ -115,7 +119,9 @@ void MainApp::MacOpenFile(const wxString &filename)
 
 int MainApp::OnExit()
 {
+    std::cout << "APP OnExit" << std::endl;
     if (server) {
+        std::cout << "KILLING" << std::endl;
         server->Kill(static_cast<int>(server->GetPid()), wxSIGTERM, wxKILL_CHILDREN);
     }
     return(0);

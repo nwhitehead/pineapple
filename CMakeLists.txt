@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 2.8)
 ### Version info
 
 set(VERSION_NAME "Pineapple")
+set(UPPERCASE_VERSION_NAME "PINEAPPLE")
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 1)
 
@@ -66,8 +67,8 @@ target_link_libraries(${PROJECT_NAME} ${wxWidgets_LIBRARIES})
 ## Mac OS X specific information
 
 if(APPLE)
-    set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_NAME}.${VERSION_MAJOR}.${VERSION_MINOR}")
-    set(MACOSX_BUNDLE_LONG_VERSION_STRING "${PROJECT_NAME}.${VERSION_MAJOR}.${VERSION_MINOR}")
+    set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${VERSION_NAME}.${VERSION_MAJOR}.${VERSION_MINOR}")
+    set(MACOSX_BUNDLE_LONG_VERSION_STRING "${VERSION_NAME}.${VERSION_MAJOR}.${VERSION_MINOR}")
     configure_file("${PROJECT_SOURCE_DIR}/cmake/Pineapple.plist.in"
         "${PROJECT_BINARY_DIR}/cmake/Pineapple.plist")
     set_source_files_properties(${DATAFILES} PROPERTIES
@@ -97,27 +98,21 @@ file(COPY "scripts/pineapple-server.spec" DESTINATION "${PROJECT_BINARY_DIR}/scr
 
 ### Resources
 
-#file(COPY "${DATAFILES}" DESTINATION "${PROJECT_BINARY_DIR}/")
 add_custom_target(notebook_install
     DEPENDS venv
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/custom" "${VENV_DIR}/lib/python2.7/site-packages/notebook/static/custom/"
 )
 
-
 ### Testing targets
-
-set (ENV{PINEAPPLE_SERVER}
-    "${VENV_DIR}/bin/python ${PROJECT_BINARY_DIR}/scripts/pineapple-server")
 
 add_custom_target(localtest
     DEPENDS ${PROJECT_NAME} venv notebook_install
-#    COMMAND "WX_PINEAPPLE_DATA_DIR=data" "./${PROJECT_NAME}"
-    COMMAND "bin/${PROJECT_NAME}"
+    COMMAND ${CMAKE_COMMAND} -E env "PINEAPPLE_SERVER=venv/bin/python --version" "bin/${PROJECT_NAME}"
 )
 set_target_properties(localtest PROPERTIES
     EXCLUDE_FROM_ALL 1)
 
-### Production targets
+### Server targets
 
 add_custom_target(server
     DEPENDS venv notebook_install
@@ -138,7 +133,9 @@ else()
         BUNDLE DESTINATION data
         COMPONENT applications)
     install (FILES ${DATAFILES}
-        DESTINATION "share/${PROJECT_NAME}")
+        DESTINATION "share/${VERSION_NAME}")
+    install (DIRECTORY ${PROJECT_BINARY_DIR}/dist/pineapple-server/
+        DESTINATION "share/${VERSION_NAME}/pineapple-server")
 endif()
 
 ### CPACK
@@ -150,4 +147,10 @@ set (CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/README.md")
 set (CPACK_PACKAGE_VERSION_MAJOR "${VERSION_MAJOR}")
 set (CPACK_PACKAGE_VERSION_MINOR "${VERSION_MINOR}")
 set (CPACK_PACKAGE_EXECUTABLES "Pineapple" "Pineapple")
+
+if(APPLE)
+else()
+    set (CPACK_GENERATOR "ZIP")
+endif()
+
 include (CPack)
