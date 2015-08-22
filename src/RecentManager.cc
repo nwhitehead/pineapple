@@ -28,14 +28,14 @@ RecentManager::RecentManager()
     state.erase(
         std::remove_if( state.begin(), state.end(), 
             [](std::string x) -> bool {
-                std::cout << "RECENT CHECK " << x << " = " << wxFileExists(x) << std::endl;
                 return !wxFileExists(x);
             }
         ),
         state.end()
     );
-    for (auto x : state) {
-        std::cout << "RECENT " << x << std::endl;
+    // Remove elements from front to make size small enough
+    while (state.size() > config::recent_number) {
+        state.erase(state.begin());
     }
 }
 

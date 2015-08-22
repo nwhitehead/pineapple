@@ -24,6 +24,7 @@ constexpr char untitled_suffix[] = ".ipynb";
 
 /// Filename of config file to store recent files
 constexpr char recent_files_filename[] = "recent";
+constexpr int recent_number = 10;
 
 /// Default size of main window on startup
 #if defined(__LINUX__)
