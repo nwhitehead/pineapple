@@ -13,6 +13,7 @@ terminado
 alabaster
 sphinx
 sphinx_rtd_theme
+path.py
 -e ../pyinstaller/
 numpy
 matplotlib
