@@ -86,6 +86,7 @@ bool MainApp::OnInit()
         }
     }
 
+    // Startup ipython server subprocess
     wxString server_script;
     server = nullptr;
     if (!wxGetEnv(config::server_script_env, &server_script)) {
