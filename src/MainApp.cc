@@ -29,7 +29,6 @@ static void signal_handler(int /* signum */)
 
 bool MainApp::OnInit()
 {
-    SetAppName(wxString(config::app_name));
     waiting_to_quit = false;
 
     // Load blank notebook so we can do "New"

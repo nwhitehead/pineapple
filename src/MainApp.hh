@@ -6,12 +6,16 @@
 #include <wx/app.h>
 #include <wx/process.h>
 
+#include "config.hh"
 #include "MainFrame.hh"
 #include "RecentManager.hh"
 
 class MainApp: public wxApp
 {
 public:
+    MainApp() : recently_used((SetAppName(wxString(config::app_name)), RecentManager()))
+    { }
+
     virtual bool OnInit();
     virtual int OnExit();
     virtual void MacOpenFile(const wxString &filename);
