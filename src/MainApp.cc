@@ -103,9 +103,12 @@ bool MainApp::OnInit()
     Bind(wxEVT_END_PROCESS, &MainApp::OnSubprocessTerminate, this, wxID_ANY);
 
     server = new wxProcess(frame);
-    wxExecute(server_command,
+    if (0 != wxExecute(server_command,
         wxEXEC_ASYNC | wxEXEC_HIDE_CONSOLE | wxEXEC_MAKE_GROUP_LEADER,
-        server);
+        server)) {
+        wxMessageBox("Could not start subprocess, exiting");
+        exit(wxGetApp().OnExit());
+    }
     // Set handler to kill process if we die
     signal(SIGINT, signal_handler);
 

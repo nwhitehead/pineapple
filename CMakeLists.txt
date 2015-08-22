@@ -168,6 +168,7 @@ set (CPACK_PACKAGE_VERSION_MINOR "${VERSION_MINOR}")
 set (CPACK_PACKAGE_EXECUTABLES "Pineapple" "Pineapple")
 
 if(APPLE)
+    set (CPACK_GENERATOR "DragNDrop")
 else()
     set (CPACK_GENERATOR "ZIP")
 endif()
