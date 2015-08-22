@@ -29,7 +29,24 @@ set(DATAFILES
     data/blank.ipynb
     data/images/Pineapple.icns
     data/images/Pineapple-Doc.icns
-    data/images/
+    data/images/Copy-50.png
+    data/images/Cut-50.png
+    data/images/Delete-50.png
+    data/images/Down-50.png
+    data/images/Edit-50.png
+    data/images/Fantasy-50.png
+    data/images/FastForward-50.png
+    data/images/Led-Blue-On-1632.png
+    data/images/Led-Blue-Off-1632.png
+    data/images/Paste-50.png
+    data/images/Pen-50.png
+    data/images/Play-50.png
+    data/images/Plus-50.png
+    data/images/Save-50.png
+    data/images/SaveAs-50.png
+    data/images/Stop-50.png
+    data/images/Synchronize-50.png
+    data/images/Up-50.png
 )
 
 set(SRC_LIST

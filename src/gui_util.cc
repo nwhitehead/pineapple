@@ -33,6 +33,7 @@ wxBitmap toolbar_icon(std::string filename)
     wfname.AppendDir("data");
     wfname.AppendDir("images");
     std::string fname(resource_filename(std::string(wfname.GetFullPath())));
+    std::cout << "LOADING " << fname << std::endl;
     if (fname.empty()) {
         return wxArtProvider::GetBitmap(wxART_QUESTION);
     }
