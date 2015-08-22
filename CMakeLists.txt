@@ -22,14 +22,15 @@ include(${wxWidgets_USE_FILE})
 
 ### Pineapple app
 
-if(APPLE)
-    set(ICONS 
-        ${PROJECT_SOURCE_DIR}/data/images/Pineapple.icns
-        ${PROJECT_SOURCE_DIR}/data/images/Pineapple-Doc.icns
-    )
-endif()
-
 ## General
+
+set(DATAFILES
+    data/loading.html
+    data/blank.ipynb
+    data/images/Pineapple.icns
+    data/images/Pineapple-Doc.icns
+    data/images/
+)
 
 set(SRC_LIST
     src/callback.cc
@@ -38,7 +39,7 @@ set(SRC_LIST
     src/MainFrame.cc
     src/MainApp.cc
     src/RecentManager.cc
-    ${ICONS}
+    ${DATAFILES}
 )
 configure_file("${PROJECT_SOURCE_DIR}/src/config.hh.in" "${PROJECT_BINARY_DIR}/include/config.hh")
 include_directories("${PROJECT_BINARY_DIR}/include")
@@ -52,7 +53,7 @@ if(APPLE)
     set(MACOSX_BUNDLE_LONG_VERSION_STRING "${PROJECT_NAME}.${VERSION_MAJOR}.${VERSION_MINOR}")
     configure_file("${PROJECT_SOURCE_DIR}/cmake/Pineapple.plist.in"
         "${PROJECT_BINARY_DIR}/cmake/Pineapple.plist")
-    set_source_files_properties(${ICONS} PROPERTIES
+    set_source_files_properties(${DATAFILES} PROPERTIES
         MACOSX_PACKAGE_LOCATION Resources)
     set_target_properties(${PROJECT_NAME} PROPERTIES
         MACOSX_BUNDLE 1
@@ -93,7 +94,7 @@ set (ENV{PINEAPPLE_SERVER}
 
 add_custom_target(localtest
     DEPENDS ${PROJECT_NAME} venv notebook_install
-    COMMAND "${PROJECT_NAME}"
+    COMMAND "WX_PINEAPPLE_DATA_DIR=data" "./${PROJECT_NAME}"
 )
 set_target_properties(localtest PROPERTIES
     EXCLUDE_FROM_ALL 1)

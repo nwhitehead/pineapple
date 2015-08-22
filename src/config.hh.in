@@ -5,6 +5,7 @@
 namespace config {
 
 /// Version info
+constexpr char app_name [] = "${PROJECT_NAME}";
 constexpr char version_name [] = "${VERSION_NAME}";
 constexpr char version_major [] = "${VERSION_MAJOR}";
 constexpr char version_minor [] = "${VERSION_MINOR}";
@@ -12,7 +13,7 @@ constexpr char version [] = "${VERSION_MAJOR}" "." "${VERSION_MINOR}" ;
 constexpr char version_full [] = "${VERSION_NAME}-${VERSION_MAJOR}" "." "${VERSION_MINOR}" ;
 
 /// Environment variable to pass server path
-constexpr char server_script_env[] = "PINEAPPLE_SERVER";
+constexpr char server_script_env[] = "${PROJECT_NAME}_SERVER";
 /// Default server script if none given
 constexpr char server_script_default[] = "venv/bin/python scripts/pineapple-server";
 
@@ -48,13 +49,13 @@ constexpr char nbconvert_url[] = "/nbconvert";
 constexpr int max_num_untitled = 50;
 
 /// Title prefix
-constexpr char title[] = "Pineapple";
+constexpr char title[] = "${PROJECT_NAME}";
 /// Special protocol prefix
 constexpr char protocol_prefix[] = "$$$$";
 /// Page that shows loading animation and loads actual page
 constexpr char loading_html_filename[] = "data/loading.html";
 /// What to put at beginning of window title
-constexpr char title_prefix[] = "Pineapple - ";
+constexpr char title_prefix[] = "${PROJECT_NAME} - ";
 /// Blank notebook location
 constexpr char blank_notebook_filename[] = "data/blank.ipynb";
 

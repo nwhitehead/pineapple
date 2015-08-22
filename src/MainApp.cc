@@ -13,6 +13,7 @@
 #include <wx/app.h>
 #include <wx/menu.h>
 #include <wx/process.h>
+#include <wx/stdpaths.h>
 #include <wx/webview.h>
 
 #include "config.hh"
@@ -28,6 +29,7 @@ static void signal_handler(int /* signum */)
 
 bool MainApp::OnInit()
 {
+    SetAppName(wxString(config::app_name));
     waiting_to_quit = false;
 
     // Load blank notebook so we can do "New"
