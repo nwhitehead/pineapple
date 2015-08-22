@@ -106,10 +106,14 @@ add_custom_target(notebook_install
 
 ### Testing targets
 
+if (APPLE)
+    set (TESTNAME "Pineapple.app/Contents/MacOS/Pineapple")
+else()
+    set (TESTNAME "bin/${PROJECT_NAME}")
+endif()
 add_custom_target(localtest
     DEPENDS ${PROJECT_NAME} venv notebook_install bin/${PROJECT_NAME}
-    COMMAND ${CMAKE_COMMAND} -E env "PINEAPPLE_SERVER=venv/bin/python scripts/pineapple-server" "bin/${PROJECT_NAME}"
-)
+    COMMAND ${CMAKE_COMMAND} -E env "PINEAPPLE_SERVER=venv/bin/python scripts/pineapple-server" "${TESTNAME}")
 set_target_properties(localtest PROPERTIES
     EXCLUDE_FROM_ALL 1)
 
@@ -128,6 +132,14 @@ add_custom_target(server
 if(APPLE)
     install (TARGETS ${PROJECT_NAME}
         DESTINATION ".")
+    install (DIRECTORY ${PROJECT_BINARY_DIR}/dist/pineapple-server/
+        DESTINATION "Pineapple.app/Contents/Resources/pineapple-server")
+    install (PROGRAMS ${PROJECT_BINARY_DIR}/dist/pineapple-server/pineapple-server
+        DESTINATION "Pineapple.app/Contents/Resources/pineapple-server")
+    install (FILES ${EMPTY}
+        DESTINATION "Pineapple.app/Contents/Resources/pineapple-server/tcl")
+    install (FILES ${EMPTY}
+        DESTINATION "Pineapple.app/Contents/Resources/pineapple-server/tk")
 else()
     install (TARGETS ${PROJECT_NAME}
         RUNTIME DESTINATION bin
