@@ -30,8 +30,6 @@ std::string resource_filename(std::string filename)
 wxBitmap toolbar_icon(std::string filename)
 {
     wxFileName wfname(filename);
-    wfname.AppendDir("data");
-    wfname.AppendDir("images");
     std::string fname(resource_filename(std::string(wfname.GetFullPath())));
     std::cout << "LOADING " << fname << std::endl;
     if (fname.empty()) {

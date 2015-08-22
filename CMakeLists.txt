@@ -97,7 +97,7 @@ file(COPY "scripts/pineapple-server.spec" DESTINATION "${PROJECT_BINARY_DIR}/scr
 
 ### Resources
 
-file(COPY "data/" DESTINATION "${PROJECT_BINARY_DIR}/data/")
+#file(COPY "${DATAFILES}" DESTINATION "${PROJECT_BINARY_DIR}/")
 add_custom_target(notebook_install
     DEPENDS venv
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/custom" "${VENV_DIR}/lib/python2.7/site-packages/notebook/static/custom/"
@@ -111,7 +111,8 @@ set (ENV{PINEAPPLE_SERVER}
 
 add_custom_target(localtest
     DEPENDS ${PROJECT_NAME} venv notebook_install
-    COMMAND "WX_PINEAPPLE_DATA_DIR=data" "./${PROJECT_NAME}"
+#    COMMAND "WX_PINEAPPLE_DATA_DIR=data" "./${PROJECT_NAME}"
+    COMMAND "bin/${PROJECT_NAME}"
 )
 set_target_properties(localtest PROPERTIES
     EXCLUDE_FROM_ALL 1)
@@ -136,6 +137,8 @@ else()
         RUNTIME DESTINATION bin
         BUNDLE DESTINATION data
         COMPONENT applications)
+    install (FILES ${DATAFILES}
+        DESTINATION "share/${PROJECT_NAME}")
 endif()
 
 ### CPACK

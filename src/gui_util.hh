@@ -5,6 +5,9 @@
 #include <wx/bitmap.h>
 #include <wx/webview.h>
 
+/// Get filename for an app resource
+std::string resource_filename(std::string filename);
+
 /// Load an image file and process it into an appropriate toolbar icon
 wxBitmap toolbar_icon(std::string filename);
 

@@ -54,11 +54,11 @@ constexpr char title[] = "${PROJECT_NAME}";
 /// Special protocol prefix
 constexpr char protocol_prefix[] = "$$$$";
 /// Page that shows loading animation and loads actual page
-constexpr char loading_html_filename[] = "data/loading.html";
+constexpr char loading_html_filename[] = "loading.html";
 /// What to put at beginning of window title
 constexpr char title_prefix[] = "${PROJECT_NAME} - ";
 /// Blank notebook location
-constexpr char blank_notebook_filename[] = "data/blank.ipynb";
+constexpr char blank_notebook_filename[] = "blank.ipynb";
 
 /// Special tokens for permanent handlers
 constexpr int token_kernel_busy = -1;

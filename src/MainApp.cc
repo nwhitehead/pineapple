@@ -17,6 +17,7 @@
 #include <wx/webview.h>
 
 #include "config.hh"
+#include "gui_util.hh"
 #include "util.hh"
 #include "MainFrame.hh"
 
@@ -32,7 +33,8 @@ bool MainApp::OnInit()
     waiting_to_quit = false;
 
     // Load blank notebook so we can do "New"
-    blank_notebook = read_all_file(config::blank_notebook_filename);
+    blank_notebook = read_all_file(resource_filename(
+        config::blank_notebook_filename));
 
     // Initialize image handlers so we can load toolbar bitmaps
     wxInitAllImageHandlers();
@@ -101,7 +103,6 @@ bool MainApp::OnInit()
         server);
     // Set handler to kill process if we die
     signal(SIGINT, signal_handler);
-
     return true;
 }
 

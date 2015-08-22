@@ -55,3 +55,16 @@ To rebuilt JavaScript/CSS static sources, from notebook directory do:
 If you want to change the icon images, you'll need to regenerate the icns files.
 I did this using [https://iconverticons.com] because the command-line tools
 I found were out of date and I didn't want to hassle with automating it.
+
+## Development Builds
+
+It can be convenient to build and run locally. To do this, configure CMake
+to use the build directory as the install location.
+
+```
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX:PATH=. ..
+make install
+make localtest
+```

@@ -42,7 +42,10 @@ void write_file_lines(std::string filename, std::vector<std::string> v)
 
 std::string replace_one(std::string &s, std::string mud, std::string gold)
 {
-    return s.replace(s.find(mud), mud.length(), gold);
+    if (s.find(mud)) {
+        return s.replace(s.find(mud), mud.length(), gold);
+    }
+    return s;
 }
 
 std::vector<std::string> split(const std::string &s, char delimiter)
