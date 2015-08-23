@@ -43,6 +43,7 @@ coll = COLLECT(exe,
                Tree('venv/lib/python2.7/site-packages/notebook/templates', prefix='notebook/templates'),
                Tree('venv/lib/python2.7/site-packages/nbformat/v3', prefix='nbformat/v3'),
                Tree('venv/lib/python2.7/site-packages/nbformat/v4', prefix='nbformat/v4'),
+               Tree('venv/lib/python2.7/site-packages/nbconvert/templates', prefix='nbconvert/templates'),
                strip=None,
                upx=True,
                name='pineapple-server')

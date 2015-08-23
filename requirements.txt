@@ -4,7 +4,7 @@ ipython_genutils
 traitlets
 jupyter_core
 jupyter_client
-nbconvert
+-e git://github.com/nwhitehead/nbconvert@f31a2714a62b91954305772ed8256dca3436af48#egg=nbconvert_nwhitehead-dev
 nbformat
 ipykernel
 notebook
@@ -14,6 +14,6 @@ alabaster
 sphinx
 sphinx_rtd_theme
 path.py
--e ../pyinstaller/
+-e git://github.com/pyinstaller/pyinstaller@9d0e0ad4c1c02964bbff86edbf7400cd40958b1a#egg=pyinstaller-dev
 numpy
 matplotlib
