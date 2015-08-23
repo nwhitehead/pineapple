@@ -1,6 +1,6 @@
 pycurl
--e git://github.com/nwhitehead/nbconvert@e007bf08fafc80316de0b600aeef95e535cc823a#egg=nbconvert_nwhitehead-dev
--e git://github.com/pyinstaller/pyinstaller@9d0e0ad4c1c02964bbff86edbf7400cd40958b1a#egg=pyinstaller-dev
+-e git+git://github.com/nwhitehead/nbconvert@e007bf08fafc80316de0b600aeef95e535cc823a#egg=nbconvert-dev
+-e git+git://github.com/pyinstaller/pyinstaller@9d0e0ad4c1c02964bbff86edbf7400cd40958b1a#egg=pyinstaller-dev
 Jinja2
 tornado
 ipython_genutils
@@ -12,9 +12,6 @@ ipykernel
 notebook
 pyzmq
 terminado
-alabaster
-sphinx
-sphinx_rtd_theme
 path.py
 numpy
 matplotlib

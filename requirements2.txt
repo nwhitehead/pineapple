@@ -1,9 +1,6 @@
-alabaster==0.7.6
-Babel==2.0
 backports.ssl-match-hostname==3.4.0.2
 certifi==2015.4.28
 decorator==4.0.2
-docutils==0.12
 funcsigs==0.4
 functools32==3.2.3.post2
 ipykernel==4.0.3
@@ -15,14 +12,14 @@ jupyter-client==4.0.0
 jupyter-core==4.0.4
 MarkupSafe==0.23
 matplotlib==1.4.3
-mistune==0.7
+mistune==0.7.1
 mock==1.3.0
--e git://github.com/nwhitehead/nbconvert@f31a2714a62b91954305772ed8256dca3436af48#egg=nbconvert-master
+-e git://github.com/nwhitehead/nbconvert@e007bf08fafc80316de0b600aeef95e535cc823a#egg=nbconvert-master
 nbformat==4.0.0
 nose==1.3.7
-notebook==4.0.2
+notebook==4.0.4
 numpy==1.9.2
-path.py==7.6.1
+path.py==7.7
 pbr==1.5.0
 pexpect==3.3
 pickleshare==0.5
@@ -36,9 +33,6 @@ pytz==2015.4
 pyzmq==14.7.0
 simplegeneric==0.8.1
 six==1.9.0
-snowballstemmer==1.2.0
-Sphinx==1.3.1
-sphinx-rtd-theme==0.1.8
 terminado==0.5
 tornado==4.2.1
 traitlets==4.0.0

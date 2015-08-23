@@ -25,6 +25,12 @@ a = Analysis(['scripts/pineapple-server'],
              runtime_hooks=None,
              excludes=None,
              cipher=block_cipher)
+
+for ind in reversed(range(len(a.datas))):
+    if a.datas[ind][0].startswith('..'):
+        olddata = a.datas.pop(ind)
+        print 'Removing %s from a.datas'%(olddata[0])
+
 pyz = PYZ(a.pure,
              cipher=block_cipher)
 exe = EXE(pyz,
@@ -43,7 +49,7 @@ coll = COLLECT(exe,
                Tree('venv/lib/python2.7/site-packages/notebook/templates', prefix='notebook/templates'),
                Tree('venv/lib/python2.7/site-packages/nbformat/v3', prefix='nbformat/v3'),
                Tree('venv/lib/python2.7/site-packages/nbformat/v4', prefix='nbformat/v4'),
-               Tree('venv/src/nbconvert-nwhitehead/nbconvert/templates', prefix='nbconvert/templates'),
+               Tree('venv/src/nbconvert/nbconvert/templates', prefix='nbconvert/templates'),
                strip=None,
                upx=True,
                name='pineapple-server')
