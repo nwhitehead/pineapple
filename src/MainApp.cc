@@ -114,8 +114,8 @@ bool MainApp::OnInit()
         wxLogDebug("MainApp::OnInit Started subprocess");
     } else {
         wxLogDebug("MainApp::OnInit Could not start subprocess");
-        wxSafeShowMessage("Error", "Could not start subprocess, exiting");
-        exit(wxGetApp().OnExit());
+        wxLogFatalError("Error", "Could not start subprocess, exiting");
+        return false;
     }
     // Set handler to kill process if we die
     signal(SIGINT, signal_handler);
