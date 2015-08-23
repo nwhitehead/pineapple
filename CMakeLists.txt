@@ -140,6 +140,12 @@ if(APPLE)
         DESTINATION "Pineapple.app/Contents/Resources/pineapple-server/tcl")
     install (FILES ${EMPTY}
         DESTINATION "Pineapple.app/Contents/Resources/pineapple-server/tk")
+    set (APPS "${CMAKE_INSTALL_PREFIX}/Pineapple.app")
+    set (DIRS "")
+    install (CODE "
+        include(BundleUtilities)
+        fixup_bundle(\"${APPS}\"    \"\"    \"${DIRS}\")
+    ")
 else()
     install (TARGETS ${PROJECT_NAME}
         RUNTIME DESTINATION bin
