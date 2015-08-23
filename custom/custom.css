@@ -4,66 +4,17 @@ FONTS
 ********************/
 
 @font-face {
-    font-family: 'myslab';
-    src: url('fonts/bitter-regular-webfont.ttf') format('truetype');
+    font-family: 'RobotoSlab';
+    src: url('fonts/RobotoSlab-Regular-webfont.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'myslab';
-    src: url('fonts/bitter-italic-webfont.ttf') format('truetype');
-    font-weight: normal;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'myslab';
-    src: url('fonts/bitter-bold-webfont.ttf') format('truetype');
+    font-family: 'RobotoSlab';
+    src: url('fonts/RobotoSlab-Bold-webfont.ttf') format('truetype');
     font-weight: bold;
     font-style: normal;
-}
-
-@font-face {
-    font-family: 'myslab';
-    src: url('fonts/bitter-bolditalic-webfont.ttf') format('truetype');
-    font-weight: bold;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'mymono';
-    src: url('fonts/ptm55ft-webfont.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Roboto';
-    src: url('fonts/Roboto-Regular-webfont.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Roboto';
-    src: url('fonts/Roboto-Bold-webfont.ttf') format('truetype');
-    font-weight: bold;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Roboto';
-    src: url('fonts/Roboto-ThinItalic-webfont.ttf') format('truetype');
-    font-weight: normal;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'Roboto';
-    src: url('fonts/Roboto-BoldItalic-webfont.ttf') format('truetype');
-    font-weight: bold;
-    font-style: italic;
 }
 
 /*******************
@@ -166,12 +117,15 @@ div.input_area {
 }
 
 div.rendered_html h1 {
+    font-family: "RobotoSlab";
     font-size: 48px;
-    font-weight: bold;
+    font-weight: normal;
     border-bottom: solid 1px #eeeeee;
 }
 
 div.rendered_html h2 {
+    font-family: "RobotoSlab";
+    font-weight: normal;
     font-size: 32px;
 }
 
