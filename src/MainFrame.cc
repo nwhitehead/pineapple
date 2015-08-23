@@ -78,8 +78,6 @@ void MainFrame::SetupMenu()
 
     menu_file->Append(wxID_TRUST, "Trust notebook");
     menu_file->AppendSeparator();
-    menu_file->Append(wxID_PROPERTIES, "Properties...");
-    menu_file->AppendSeparator();
     menu_file->Append(wxID_PRINT, "Print...");
     menu_file->AppendSeparator();
     menu_file->Append(wxID_CLOSE, "Close\tCtrl-W");
@@ -282,7 +280,6 @@ void MainFrame::SetupBindings()
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainApp::OnAbout, wxID_ABOUT);
     MainApp *theApp = &wxGetApp();
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainApp::OnQuit, theApp, wxID_EXIT);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnProperties, this, wxID_PROPERTIES);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnPrint, this, wxID_PRINT);
 
     bind_export(wxID_EXPORT_PYTHON, "python");
@@ -580,11 +577,6 @@ void MainFrame::OnTitleChanged(wxWebViewEvent &event)
     }
     // Otherwise actually change the title
     SetLabel(config::title_prefix + title);
-}
-
-void MainFrame::OnProperties(wxCommandEvent &/* event */)
-{
-    wxLogDebug("MainFrame::OnProperties");
 }
 
 void MainFrame::OnMenuClose(wxCommandEvent &/* event */)
