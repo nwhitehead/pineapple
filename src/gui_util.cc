@@ -7,6 +7,7 @@
 #include <wx/bitmap.h>
 #include <wx/filename.h>
 #include <wx/image.h>
+#include <wx/log.h>
 #include <wx/stdpaths.h>
 #include <wx/webview.h>
 
@@ -20,7 +21,7 @@ std::string resource_filename(std::string filename)
     pathList.Add(wxStandardPaths::Get().GetResourcesDir());
     wxString fname(pathList.FindValidPath(filename));
     if (!fname) {
-        std::cout << "NOT FOUND " << filename << std::endl;
+        wxLogError("Resource not found: %s", filename);
         return std::string();
     }
     return std::string(fname);
@@ -31,7 +32,7 @@ wxBitmap toolbar_icon(std::string filename)
 {
     wxFileName wfname(filename);
     std::string fname(resource_filename(std::string(wfname.GetFullPath())));
-    std::cout << "LOADING " << fname << std::endl;
+    wxLogDebug("gui_util toolbar_icon Loading filename=[%s]", fname);
     if (fname.empty()) {
         return wxArtProvider::GetBitmap(wxART_QUESTION);
     }

@@ -11,6 +11,7 @@
     #include <wx/wx.h>
 #endif
 #include <wx/app.h>
+#include <wx/log.h>
 #include <wx/menu.h>
 #include <wx/process.h>
 #include <wx/stdpaths.h>
@@ -25,6 +26,7 @@ wxIMPLEMENT_APP(MainApp);
 
 static void signal_handler(int /* signum */)
 {
+    // Do nothing except exit cleanly on Ctrl-C signal
     exit(wxGetApp().OnExit());
 }
 
@@ -71,7 +73,7 @@ bool MainApp::OnInit()
                 MainFrame::Spawn(url_from_filename(filename), filename, true);
                 loaded++;
             } else {
-                wxMessageBox("Could not open " + arg);
+                wxLogError("Could not open file: %s", arg);
             }
         }
         if (loaded == 0) return false;
@@ -102,17 +104,21 @@ bool MainApp::OnInit()
     server = nullptr;
     Bind(wxEVT_END_PROCESS, &MainApp::OnSubprocessTerminate, this, wxID_ANY);
 
+    wxLogDebug("MainApp::OnInit Starting process [%s]", server_command);
     server = new wxProcess(frame);
-    if (0 != wxExecute(server_command,
+    long res;
+    if ((res = wxExecute(server_command,
         wxEXEC_ASYNC | wxEXEC_HIDE_CONSOLE | wxEXEC_MAKE_GROUP_LEADER,
-        server)) {
-        wxMessageBox("Could not start subprocess, exiting");
+        server))) {
+        // Nonzero result means we started the subprocess successfully
+        wxLogDebug("MainApp::OnInit Started subprocess");
+    } else {
+        wxLogDebug("MainApp::OnInit Could not start subprocess");
+        wxSafeShowMessage("Error", "Could not start subprocess, exiting");
         exit(wxGetApp().OnExit());
     }
     // Set handler to kill process if we die
     signal(SIGINT, signal_handler);
-
-    std::cout << "END OF MAIN OnInit" << std::endl;
 
     return true;
 }
@@ -126,9 +132,9 @@ void MainApp::MacOpenFile(const wxString &filename)
 
 int MainApp::OnExit()
 {
-    std::cout << "APP OnExit" << std::endl;
+    wxLogDebug("MainApp::OnExit");
     if (server) {
-        std::cout << "KILLING" << std::endl;
+        wxLogDebug("MainApp::OnExit Killing server process");
         server->Kill(static_cast<int>(server->GetPid()), wxSIGTERM, wxKILL_CHILDREN);
     }
     return(0);
@@ -145,7 +151,7 @@ void MainApp::CloseAll()
 
 void MainApp::OnSubprocessTerminate(wxProcessEvent &/* event */)
 {
-    std::cout << "SUBPROCESS TERMINATED" << std::endl;
+    wxLogDebug("MainApp::OnSubprocessTerminate");
 }
 
 void MainApp::OnAbout(wxCommandEvent &/* event */)

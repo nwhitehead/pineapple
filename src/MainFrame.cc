@@ -15,6 +15,7 @@
 #include <wx/filefn.h>
 #include <wx/filename.h>
 #include <wx/image.h>
+#include <wx/log.h>
 #include <wx/menu.h>
 #include <wx/msgdlg.h>
 #include <wx/process.h>
@@ -44,6 +45,8 @@ MainFrame::MainFrame(std::string url0, std::string filename,
         : wxFrame(nullptr, wxID_ANY, title, pos, size),
           url(url0), local_filename(filename), jupyter_ready(false)
 {
+    wxLogDebug("MainFrame::MainFrame");
+
     SetupMenu();
     SetupToolbar();
     SetupWebView();
@@ -197,7 +200,6 @@ void MainFrame::SetupWebView()
     webview = wxWebView::New(this, wxID_ANY);
     // Turn off right-click as much as possible
     webview->EnableContextMenu(false);
-//    webview->SetZoom(wxWEBVIEW_ZOOM_LARGE);
 }
 
 void MainFrame::SetupLayout(const wxPoint &/* pos */, const wxSize &size)
@@ -342,7 +344,7 @@ void MainFrame::CreateNew(bool indirect_load)
 {
     wxFileName fullname;
     if (FindNewFileName(fullname)) {
-        std::cout << "FILENAME " << fullname.GetFullPath() << std::endl;
+        wxLogDebug("MainFrame::CreateNew filename=[%s]", fullname.GetFullPath());
         // FIXME: drive must be the same as we mounted for windows!!!
         std::ofstream out(fullname.GetFullPath());
         out << wxGetApp().blank_notebook << std::endl;
@@ -356,10 +358,7 @@ void MainFrame::CreateNew(bool indirect_load)
         return;
     }
 
-    std::stringstream ss;
-    ss << "Could not create new untitled notebook";
-    ss << "Last attempt was to create " << std::string(fullname.GetFullPath()) << std::endl;
-    wxMessageBox(ss.str(), "ERROR", wxOK | wxICON_ERROR);
+    wxLogError("Could not create new untitled notebook\nLast attempt was to creat file: %s", fullname.GetFullPath());
 }
 
 bool MainFrame::FindNewFileName(wxFileName &fullname)
@@ -374,7 +373,7 @@ bool MainFrame::FindNewFileName(wxFileName &fullname)
             ss << config::untitled_prefix << config::untitled_suffix;
         }
         fullname = wxFileName(datadir, ss.str());
-        std::cout << "TRYING " << fullname.GetFullPath() << std::endl;
+        wxLogDebug("MainFrame::FindNewFilName trying filename [%s]", fullname.GetFullPath());
         if (!fullname.IsOk()) break;
         if (fullname.IsOk() && !fullname.FileExists()) break;
         if (n > config::max_num_untitled) break;
@@ -437,7 +436,9 @@ void MainFrame::eval_js_event(std::string expression, std::string evtname, Callb
     ss << "}";
     // Evaluate expression
     ss << expression;
-    std::cout << "Trying to eval " << ss.str() << std::endl;
+
+    wxLogDebug("MainFrame::eval_js_event Trying to eval [%s]", ss.str());
+
     webview->RunScript(ss.str());
 }
 
@@ -475,7 +476,7 @@ void MainFrame::OnOpen(wxCommandEvent &/* event */)
     if (dialog.ShowModal() == wxID_CANCEL) return;
 
     std::string filename = std::string(dialog.GetPath());
-    std::cout << "OPEN " << filename << std::endl;
+    wxLogDebug("MainFrame::OnOpen filename=[%s]", filename);
     wxGetApp().recently_used.Add(filename);
     Spawn(url_from_filename(filename), filename, false);
 }
@@ -493,7 +494,7 @@ void MainFrame::OnSaveAs(wxCommandEvent &/* event */)
     if (dialog.ShowModal() == wxID_CANCEL) return;
 
     std::string new_filename = std::string(dialog.GetPath());
-    std::cout << "SAVE AS " << local_filename << " -> " << new_filename << std::endl;
+    wxLogDebug("MainFrame::OnSaveAs filename=[%s]", new_filename);
 
     // Copy the old file to the new filename
     std::ifstream ifs(local_filename);
@@ -539,25 +540,25 @@ void MainFrame::OnClose(wxCloseEvent &event)
 
 void MainFrame::OnPageLoad(wxWebViewEvent &/* event */)
 {
-    std::cout << "PAGE LOAD" << std::endl;
+    wxLogDebug("MainFrame::OnPageLoad");
     eval_js("if (Jupyter) { 1 } else { 0 }", [this](std::string x) {
         if (x == std::string("1")) {
             jupyter_ready = true;
         }
-        std::cout << "PAGE LOAD - Jupyter = " << jupyter_ready << std::endl;
+        wxLogDebug("MainFrame::OnPageLoad::callback Page loaded jupyter=%s", jupyter_ready ? "true" : "false");
     });
 }
 
 void MainFrame::OnNewWindow(wxWebViewEvent &event)
 {
-    std::cout << "NEW WINDOWS - " << event.GetURL() << std::endl;
+    wxLogDebug("MainFrame::OnNewWindow url=[%s]", event.GetURL());
     wxLaunchDefaultBrowser(event.GetURL());
 }
 
 void MainFrame::OnTitleChanged(wxWebViewEvent &event)
 {
     std::string title = event.GetString().ToStdString();
-    std::cout << "TITLE CHANGED - " << title << std::endl;
+    wxLogDebug("MainFrame::OnTitleChanged [%s]", title);
     // Check if starts with special prefix
     std::string prefix = config::protocol_prefix;
     if (std::equal(prefix.begin(), prefix.end(), title.begin())) {
@@ -571,7 +572,7 @@ void MainFrame::OnTitleChanged(wxWebViewEvent &event)
         try {
             id = std::stoi(items[0]);
         } catch (...) {
-            std::cerr << "SPECIAL TITLE MALFORMED - " << txt << std::endl;
+            wxLogError("Malformed data from page: %s", txt);
             return;
         }
         handler.call(id, AsyncResult::Success, items[1]);
@@ -583,13 +584,7 @@ void MainFrame::OnTitleChanged(wxWebViewEvent &event)
 
 void MainFrame::OnProperties(wxCommandEvent &/* event */)
 {
-    eval_js(std::string("2+2"), [](Callback::argument x) {
-        std::cout << "Result of 2+2 is " << x << std::endl;
-    });
-
-    std::stringstream ss;
-    ss << "Name: " << std::endl;
-    wxMessageBox(ss.str(), "Properties", wxOK | wxICON_INFORMATION);
+    wxLogDebug("MainFrame::OnProperties");
 }
 
 void MainFrame::OnMenuClose(wxCommandEvent &/* event */)
@@ -611,7 +606,8 @@ void MainFrame::Export(std::string format)
 {
     // Export data first, then prompt user
     std::string url(export_url_from_filename(local_filename, format));
-    std::cout << "EXPORT " << format << " " << local_filename << " " << url << std::endl;
+    wxLogDebug("MainFrame::Export format=[%s] local_filename=[%s] url=[%s]", format, local_filename, url);
+
     wxHTTP http;
     std::string contents;
     std::string content_type;
@@ -626,12 +622,12 @@ void MainFrame::Export(std::string format)
                 contents.append(buf, buf+in->LastRead());
             }
         } else {
-            wxMessageBox("There was a problem generating the file.1");
+            wxLogError("There was a problem generating the file.");
             return;
         }
         delete in;
     } else {
-        wxMessageBox("There was a problem generating the file.2");
+        wxLogError("There was a problem generating the file.");
         return;
     }
 

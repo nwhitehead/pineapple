@@ -4,12 +4,14 @@
 #include <iostream>
 #include <map>
 
+#include <wx/log.h>
+
 void Callback::ignore(argument /* x */) {
     // nop
 }
 
 void Callback::debug(argument x) {
-    std::cout << "Argument: " << x << std::endl;
+    wxLogDebug("Callback::debug Argument is [%s]", x);
 }
 
 CallbackHandler::token CallbackHandler::gid = 0;
@@ -33,10 +35,9 @@ void CallbackHandler::call(token id, AsyncResult c, Callback::argument x)
     key k(id, c);
     auto it = map.find(k);
     if (it == map.end()) {
-        std::cerr << "CALLBACK KEY NOT FOUND " << id << " - " << static_cast<int>(c) << std::endl;
+        wxLogDebug("CallbackHandler::call Callback key not found: id = %d  c = %d", id, static_cast<int>(c));
         return;
     }
-    std::cout << "CALLING CALLBACK id=" << id << std::endl;
     value v(map[k]);
     v.first(x);
     if (v.second == CallbackType::Single) {
