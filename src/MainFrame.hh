@@ -17,7 +17,8 @@ class MainFrame: public wxFrame
     enum {
         wxID_EXPORT_PYTHON = 10000, wxID_EXPORT_MARKDOWN,
         wxID_EXPORT_PDF, wxID_EXPORT_HTML,
-        wxID_CLOSE_ALL, wxID_PROPERTIES,
+        wxID_OPEN_EXAMPLE,
+        wxID_CLOSE_ALL,
         wxID_CELL_CUT, wxID_CELL_COPY, wxID_CELL_PASTE,
         wxID_INSERT, wxID_DELETE, wxID_UNDELETE,
         wxID_SPLIT, wxID_MERGE,
@@ -61,6 +62,7 @@ public:
     void OnMenuClose(wxCommandEvent &event);
     void OnMenuCloseAll(wxCommandEvent &event);
     void OnPrint(wxCommandEvent &event);
+    void OnOpenExample(wxCommandEvent &event);
 
     void SetupMenu();
     void SetupToolbar();

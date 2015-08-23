@@ -55,6 +55,7 @@ set(SRC_LIST
     src/callback.cc
     src/gui_util.cc
     src/util.cc
+    src/ExamplesFrame.cc
     src/MainFrame.cc
     src/MainApp.cc
     src/RecentManager.cc

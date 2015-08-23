@@ -32,6 +32,7 @@
 #include "config.hh"
 #include "gui_util.hh"
 #include "util.hh"
+#include "ExamplesFrame.hh"
 #include "MainApp.hh"
 
 
@@ -76,6 +77,9 @@ void MainFrame::SetupMenu()
         menu_file->AppendSubMenu(menu_export, "Export as");
     }
 
+    menu_file->AppendSeparator();
+    menu_file->Append(wxID_OPEN_EXAMPLE, "Open Example...");
+    menu_file->AppendSeparator();
     menu_file->Append(wxID_TRUST, "Trust notebook");
     menu_file->AppendSeparator();
     menu_file->Append(wxID_PRINT, "Print...");
@@ -281,6 +285,7 @@ void MainFrame::SetupBindings()
     MainApp *theApp = &wxGetApp();
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainApp::OnQuit, theApp, wxID_EXIT);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnPrint, this, wxID_PRINT);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnOpenExample, this, wxID_OPEN_EXAMPLE);
 
     bind_export(wxID_EXPORT_PYTHON, "python");
     bind_export(wxID_EXPORT_HTML, "html");
@@ -650,4 +655,13 @@ void MainFrame::Export(std::string format)
     std::stringstream ss;
     ss << "Wrote " << contents.size() << " bytes." << std::endl;
     wxMessageBox(ss.str());
+}
+
+void MainFrame::OnOpenExample(wxCommandEvent &/* event */)
+{
+    wxLogDebug("MainFrame::OnOpenExample grrr");
+
+    ExamplesFrame *examples(new ExamplesFrame(this));
+    wxLogDebug("MainFrame::OneOpenExample %p", examples);
+    examples->Show();
 }

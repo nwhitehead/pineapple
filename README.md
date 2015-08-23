@@ -89,6 +89,7 @@ make
 
 This sets up virtualenv, installs requirements with pip, and builds
 the main application. Do `make localtest` to try it.
+[On Linux, do `make install && make localtest`].
 
 ## Distribution
 
