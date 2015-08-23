@@ -1,13 +1,25 @@
+=======================================================
 Pineapple
+=======================================================
 
-Copyright (c) 2015 Nathan Whitehead
-All rights reserved
+Copyright (C) 2015, Nathan Whitehead. All rights reserved.
+
+This product is a combination of COMMERCIAL and FREE software;
+redistribution is only allowed under the terms of this license.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 
 This software includes code with the following licenses.
 
-==============================================================================
+=======================================================
 Python 2.7
-==============================================================================
+=======================================================
 
 A. HISTORY OF THE SOFTWARE
 ==========================
@@ -625,5 +637,11 @@ Pineapple icon
 ==============================================================================
 Based on a black&white original by Marianna Nardella under this license:
 http://creativecommons.org/licenses/by/3.0/us/
+
+==============================================================================
+Roboto Slab font
+==============================================================================
+By Christian Robertson
+http://www.apache.org/licenses/LICENSE-2.0.html
 
 ==============================================================================
