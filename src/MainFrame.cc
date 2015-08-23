@@ -606,7 +606,7 @@ void MainFrame::Export(std::string format)
 {
     // Export data first, then prompt user
     std::string url(export_url_from_filename(local_filename, format));
-    wxLogError("MainFrame::Export format=[%s] local_filename=[%s] url=[%s]", format, local_filename, url);
+    wxLogDebug("MainFrame::Export format=[%s] local_filename=[%s] url=[%s]", format, local_filename, url);
 
     wxHTTP http;
     std::string contents;
@@ -622,12 +622,12 @@ void MainFrame::Export(std::string format)
                 contents.append(buf, buf+in->LastRead());
             }
         } else {
-            wxLogError("There was a problem generating the file. (1)");
+            wxLogError("There was a problem generating the file.");
             return;
         }
         delete in;
     } else {
-        wxLogError("There was a problem generating the file. (2)");
+        wxLogError("There was a problem starting generation of the export file.");
         return;
     }
 
