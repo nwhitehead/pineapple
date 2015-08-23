@@ -1,4 +1,4 @@
-# Eridani
+# Pineapple
 
 This project is a standalone Jupyter environment for doing data science
 using Python and Lua. It aims to include as many useful working libraries
