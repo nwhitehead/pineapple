@@ -517,8 +517,11 @@ void MainFrame::OnTimerEvent(wxTimerEvent &event)
 {
     wxLogDebug("MainFrame::OnTimerEvent");
     if (event.GetId() == m_save_on_close_timer.GetId()) {
-        wxMessageBox("Could not save file before exiting.", "Trouble saving");
-        Close(true);
+        int answer = wxMessageBox("Could not save file before exiting, exit anyway?", "Trouble saving",
+            wxOK | wxCANCEL);
+        if (answer == wxOK) {
+            Close(true);
+        }
     }
 }
 
