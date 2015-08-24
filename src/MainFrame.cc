@@ -22,6 +22,7 @@
 #include <wx/sizer.h>
 #include <wx/stdpaths.h>
 #include <wx/stream.h>
+#include <wx/timer.h>
 #include <wx/toolbar.h>
 #include <wx/txtstrm.h>
 #include <wx/url.h>
@@ -44,7 +45,8 @@ MainFrame::MainFrame(std::string url0, std::string filename,
     const wxString &title, const wxPoint &pos, const wxSize &size,
     bool indirect_load)
         : wxFrame(nullptr, wxID_ANY, title, pos, size),
-          url(url0), local_filename(filename), jupyter_ready(false)
+          url(url0), local_filename(filename), jupyter_ready(false),
+          m_save_on_close_timer(this, wxID_TIMER)
 {
     wxLogDebug("MainFrame::MainFrame");
 
@@ -511,11 +513,23 @@ void MainFrame::OnSaveAs(wxCommandEvent &/* event */)
     webview->LoadURL(url);
 }
 
+void MainFrame::OnTimerEvent(wxTimerEvent &event)
+{
+    wxLogDebug("MainFrame::OnTimerEvent");
+    if (event.GetId() == m_save_on_close_timer.GetId()) {
+        wxMessageBox("Could not save file before exiting.", "Trouble saving");
+        Close(true);
+    }
+}
+
 void MainFrame::OnClose(wxCloseEvent &event)
 {
     // Skip saving if we haven't loaded Jupyter yet
     if (event.CanVeto() && jupyter_ready) {
         // Always save to disk, there is no choice
+        // Set timeout in case of problems saving
+        Bind(wxEVT_TIMER, &MainFrame::OnTimerEvent, this, wxID_ANY);
+        m_save_on_close_timer.StartOnce(config::timeout_delay_ms);
         // Once save is finished, close for real
         Save([this](Callback::argument /* x */) {
                 Close(true); // unvetoable

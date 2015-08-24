@@ -74,4 +74,7 @@ constexpr int token_final_save = -2;
     constexpr int toolbar_height = 25;
 #endif
 
+/// How long to wait for save on close (ms)
+constexpr int timeout_delay_ms = 2000;
+
 } /// namespace config

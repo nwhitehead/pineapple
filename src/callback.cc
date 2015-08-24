@@ -1,8 +1,11 @@
 #include "callback.hh"
 
+#include <chrono>
 #include <functional>
 #include <iostream>
 #include <map>
+#include <mutex>
+#include <thread>
 
 #include <wx/log.h>
 
@@ -23,6 +26,7 @@ CallbackHandler::token CallbackHandler::fresh_id()
 
 bool CallbackHandler::register_callback(token id, AsyncResult c, Callback::t cb, CallbackType kind)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
     key k(id, c);
     value v(cb, kind);
     bool filled = (map.find(k) != map.end());
@@ -32,16 +36,34 @@ bool CallbackHandler::register_callback(token id, AsyncResult c, Callback::t cb,
 
 void CallbackHandler::call(token id, AsyncResult c, Callback::argument x)
 {
+    // Make sure to lock table while modifying
     key k(id, c);
+    m_mutex.lock();
     auto it = map.find(k);
     if (it == map.end()) {
         wxLogDebug("CallbackHandler::call Callback key not found: id = %d  c = %d", id, static_cast<int>(c));
+        m_mutex.unlock();
         return;
     }
     value v(map[k]);
-    v.first(x);
     if (v.second == CallbackType::Single) {
         // One-shot so remove it
         map.erase(it);
     }
+    m_mutex.unlock();
+    // Unlock all mutexes before calling callback, never know what will happen
+    v.first(x);
 }
+
+// Not fully baked yet
+/*
+void CallbackHandler::call_delayed(token id, AsyncResult c, Callback::argument x, int milliseconds)
+{
+    std::thread t([this, id, c, x, milliseconds]() {
+        std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
+        call(id, c, x);
+    });
+    t.detach();
+    // Return asynchronously
+}
+*/

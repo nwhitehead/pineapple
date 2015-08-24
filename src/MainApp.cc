@@ -6,13 +6,10 @@
 #include <signal.h>
 #include <string>
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-    #include <wx/wx.h>
-#endif
 #include <wx/app.h>
 #include <wx/log.h>
 #include <wx/menu.h>
+#include <wx/msgdlg.h>
 #include <wx/process.h>
 #include <wx/stdpaths.h>
 #include <wx/webview.h>

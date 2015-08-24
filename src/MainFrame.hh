@@ -7,6 +7,7 @@
 #include <wx/frame.h>
 #include <wx/menu.h>
 #include <wx/process.h>
+#include <wx/timer.h>
 #include <wx/toolbar.h>
 #include <wx/webview.h>
 
@@ -29,6 +30,7 @@ class MainFrame: public wxFrame
         wxID_KERNEL_INTERRUPT, wxID_KERNEL_RESTART, wxID_KERNEL_RECONNECT,
         wxID_HELP_KEYBOARD, wxID_HELP_NOTEBOOK, wxID_HELP_MARKDOWN,
         wxID_KERNEL_BUSY,
+        wxID_TIMER
     };
 
 public:
@@ -63,6 +65,7 @@ public:
     void OnMenuCloseAll(wxCommandEvent &event);
     void OnPrint(wxCommandEvent &event);
     void OnOpenExample(wxCommandEvent &event);
+    void OnTimerEvent(wxTimerEvent &event);
 
     void SetupMenu();
     void SetupToolbar();
@@ -79,4 +82,5 @@ public:
     void Export(std::string format);
 
     std::string jupyter_click_code(std::string id);
+    wxTimer m_save_on_close_timer;
 };

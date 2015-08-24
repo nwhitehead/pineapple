@@ -1,7 +1,9 @@
 #pragma once
 
+#include <chrono>
 #include <functional>
 #include <map>
+#include <mutex>
 #include <string>
 
 /// This call holds types about callbacks
@@ -30,6 +32,9 @@ public:
 
     /// Call a previously registered callback for the id and type
     void call(token id, AsyncResult c, Callback::argument x);
+
+    /// Call a previously registered callback for the id and type
+    //void call_delayed(token id, AsyncResult c, Callback::argument x, int milliseconds);
     
     /// Get a globally fresh id
     static token fresh_id();
@@ -37,5 +42,6 @@ private:
     using key = std::pair<token, AsyncResult>;
     using value = std::pair<Callback::t, CallbackType>;
     std::map<key, value> map;
+    std::mutex m_mutex;
     static token gid;
 };
