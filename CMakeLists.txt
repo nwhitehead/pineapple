@@ -105,6 +105,11 @@ add_custom_target(notebook_install
     DEPENDS venv
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/custom" "${VENV_DIR}/lib/python2.7/site-packages/notebook/static/custom/"
 )
+# This one is useful to avoid having to do "make server" after css changes
+add_custom_target(custom_reinstall
+    DEPENDS venv notebook_install
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/custom" "${PROJECT_BINARY_DIR}/dist/pineapple-server/notebook/static/custom"
+)
 
 ### Testing targets
 
@@ -114,7 +119,7 @@ else()
     set (TESTNAME "bin/${PROJECT_NAME}")
 endif()
 add_custom_target(localtest
-    DEPENDS ${PROJECT_NAME} venv notebook_install bin/${PROJECT_NAME}
+    DEPENDS ${PROJECT_NAME} venv notebook_install custom_reinstall bin/${PROJECT_NAME}
     COMMAND ${CMAKE_COMMAND} -E env "PINEAPPLE_SERVER=venv/bin/python scripts/pineapple-server" "${TESTNAME}")
 set_target_properties(localtest PROPERTIES
     EXCLUDE_FROM_ALL 1)

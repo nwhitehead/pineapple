@@ -103,6 +103,20 @@ div.rendered_html p {
     word-wrap: break-word;
 }
 
+/* Keyboard shortcut */
+div.rendered_html kbd {
+    color: #000;
+    background-color: #f4f4f4;
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    box-shadow: 0.1em 0.2em 0.3em #ddd;
+    padding: 0.2em 0.4em;
+}
+div.rendered_html span.symbol {
+    font-size: 1.4em;
+    vertical-align: middle;
+}
+
 /*
 Idea for colors:
 Bootstrap for off-black bg (but #333333 was too much)
@@ -153,7 +167,7 @@ div.rendered_html a.anchor-link {
 }
 
 .cm-s-ipython {
-    font-size: 16px;
+/*    font-size: 16px;*/
 }
 
 /* CodeMirror neat theme */
