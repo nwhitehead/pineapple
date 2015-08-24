@@ -49,7 +49,8 @@ set(DATAFILES
     data/images/Stop-50.png
     data/images/Synchronize-50.png
     data/images/Up-50.png
-    data/examples/basics.ipynb
+    data/examples/Basics.ipynb
+    data/examples/Plotting.ipynb
 )
 
 set(SRC_LIST

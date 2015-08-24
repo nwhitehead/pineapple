@@ -31,12 +31,13 @@ using tree_type = std::vector<tree_category_type>;
 
 tree_type tree_data {
     { "Topics", {
-            std::make_tuple("Basics", "basics.ipynb"),
-            std::make_tuple("Editing", "editing.ipynb")
+            std::make_tuple("Basics", "Basics.ipynb"),
+            std::make_tuple("Editing", "Editing.ipynb"),
+            std::make_tuple("Plotting", "Plotting.ipynb")
         }
     },
     { "Examples", {
-            std::make_tuple("Heat diffusion", "heat.ipynb")
+            std::make_tuple("Heat diffusion", "Heat.ipynb")
         }
     }
 };
