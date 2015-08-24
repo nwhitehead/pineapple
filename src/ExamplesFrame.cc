@@ -33,6 +33,7 @@ tree_type tree_data {
     { "Topics", {
             std::make_tuple("Basics", "Basics.ipynb"),
             std::make_tuple("Editing", "Editing.ipynb"),
+            std::make_tuple("Markdown", "Markdown.ipynb"),
             std::make_tuple("Plotting", "Plotting.ipynb"),
             std::make_tuple("Timing", "Timing.ipynb")
         }
