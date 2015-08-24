@@ -21,6 +21,12 @@ constexpr char server_script_default[] = "pineapple-server/pineapple-server";
 constexpr char untitled_prefix[] = "Untitled";
 /// Suffix of new unnamed files
 constexpr char untitled_suffix[] = ".ipynb";
+/// How many times to increment the number before giving up for new
+constexpr int untitled_max_num = 50;
+/// Same for example files
+constexpr char example_prefix[] = "Example";
+constexpr char example_suffix[] = ".ipynb";
+constexpr int example_max_num = 1000;
 
 /// Filename of config file to store recent files
 constexpr char recent_files_filename[] = "recent";
@@ -46,8 +52,6 @@ const std::string base_url = std::string(protocol) + std::string("://") + host_p
 constexpr char path_url[] = "/tree";
 /// How to get to nbconvert
 constexpr char nbconvert_url[] = "/nbconvert";
-/// How many times to increment the number before giving up
-constexpr int max_num_untitled = 50;
 
 /// Title prefix
 constexpr char title[] = "${VERSION_NAME}";

@@ -1,6 +1,7 @@
 #include "gui_util.hh"
 
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #include <wx/artprov.h>
@@ -50,3 +51,33 @@ void jupyter_click_cell(wxWebView *wv, std::string id)
     std::string cmd = "Jupyter.menubar.element.find('#" + id + "').click();";
     wv->RunScript(cmd);
 }
+
+bool FindNewFileName(wxFileName &fullname, std::string prefix,
+                     std::string suffix, int max_num_tries, bool userdata)
+{
+    wxString datadir;
+    if (userdata) {
+        datadir = wxStandardPaths::Get().GetUserDataDir();
+    } else {
+        datadir = wxStandardPaths::Get().GetAppDocumentsDir();
+    }
+    int n = 1;
+    do {
+        std::stringstream ss;
+        if (n > 1) {
+            ss << prefix << n << suffix;
+        } else {
+            ss << prefix << suffix;
+        }
+        fullname = wxFileName(datadir, ss.str());
+        wxLogDebug("MainFrame::FindNewFilName trying filename [%s]", fullname.GetFullPath());
+        if (!fullname.IsOk()) break;
+        if (fullname.IsOk() && !fullname.FileExists()) break;
+        if (n > max_num_tries) break;
+        n++;
+    } while (1);
+    if (fullname.IsOk() && !fullname.FileExists()) {
+        return true;
+    }
+    return false;
+} 

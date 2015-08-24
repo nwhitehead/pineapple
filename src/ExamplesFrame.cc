@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -23,24 +24,25 @@
  * Data structure for keeping track of tree and filenames
  */
 
-using tree_item_type = std::pair<std::string, std::string>;
+using tree_item_type = std::tuple<std::string, std::string>;
 using tree_items_type = std::vector<tree_item_type>;
 using tree_category_type = std::pair<std::string, tree_items_type>;
 using tree_type = std::vector<tree_category_type>;
 
-tree_type tree_data = {
-    { std::string("Topics"), {
-            { "Basics", "basics.ipynb" },
-            { "Editing", "editing.ipynb" }
+tree_type tree_data {
+    { "Topics", {
+            std::make_tuple("Basics", "basics.ipynb"),
+            std::make_tuple("Editing", "editing.ipynb")
         }
     },
-    { std::string("Examples"), {
-            { "Heat diffusion", "heat.ipynb" }
+    { "Examples", {
+            std::make_tuple("Heat diffusion", "heat.ipynb")
         }
     }
 };
 
-std::map<wxTreeItemId, std::string> tree_map;
+/// This is a map from TreeItemId to (Name, filename)
+std::map<wxTreeItemId, tree_item_type> tree_map;
 
 /**
  * ExamplesFrame constructor and associated helpers
@@ -55,35 +57,27 @@ ExamplesFrame::ExamplesFrame(wxWindow */* parent */)
     Show();
 }
 
-void SpawnExample(wxFrame *parent, wxTreeItemId id)
+void SpawnExample(wxFrame */* parent */, wxTreeItemId id)
 {
     // Copy resource .ipynb file to user area
     // (Cannot change files in digitally signed resource area)
-    std::string example_file(tree_map[id]);
+    auto tuple = tree_map[id];
+    std::string prefix(std::get<0>(tuple));
+    std::string example_file(std::get<1>(tuple));
     wxLogDebug("SpawnExample Item selected [%s]", example_file);
     std::string original_filename(resource_filename(example_file));
     wxLogDebug("SpawnExample Filename [%s]", original_filename);
-    std::string prefix(wxStandardPaths::Get().GetUserDataDir());
-    wxFileName wxf(prefix, example_file);
-    std::string new_filename(wxf.GetFullPath());
-    // Overwrite old copy with permission
-    if (wxf.IsOk() && wxf.Exists()) {
-        if (files_different(original_filename, new_filename)) {
-            wxLogDebug("SpawnExample Files different");
-            wxMessageDialog dlg(parent, "Keep your changes to the example?",
-                "Example notebook has changed", wxYES_NO | wxICON_WARNING | wxNO_DEFAULT);
-            if (dlg.ShowModal() == wxID_NO) {
-                wxLogDebug("SpawnExample You picked NO");
-                // Overwrite changes with fresh copy
-                write_file(new_filename, read_all_file(original_filename));
-            }
-        }
-    } else {
+    wxFileName wxs_new_filename;
+    if (FindNewFileName(wxs_new_filename, prefix, config::example_suffix,
+                        config::example_max_num, true)) {
+        std::string new_filename(wxs_new_filename.GetFullPath());
         // Output filename doesn't exist, write it
         write_file(new_filename, read_all_file(original_filename));
+        wxLogDebug("SpawnExample Loading file [%s]", new_filename);
+        MainFrame::Spawn(url_from_filename(new_filename), new_filename, false);
+    } else {
+        wxLogError("Could not create temporary example file");
     }
-    wxLogDebug("SpawnExample Loading file [%s]", new_filename);
-    MainFrame::Spawn(url_from_filename(new_filename), new_filename, false);
 }
 
 void ExamplesFrame::SetupTree()
@@ -95,8 +89,8 @@ void ExamplesFrame::SetupTree()
     for (auto category : tree_data) {
         auto subtree = tree->AppendItem(root, category.first);
         for (auto item : category.second) {
-            auto id = tree->AppendItem(subtree, item.first);
-            tree_map[id] = item.second;
+            auto id = tree->AppendItem(subtree, std::get<0>(item));
+            tree_map[id] = item;
         }
     }
     Bind(wxEVT_TREE_ITEM_ACTIVATED, [this](wxTreeEvent &event) {

@@ -346,7 +346,8 @@ void MainFrame::Spawn(std::string url, std::string filename, bool indirect_load)
 void MainFrame::CreateNew(bool indirect_load)
 {
     wxFileName fullname;
-    if (FindNewFileName(fullname)) {
+    if (FindNewFileName(fullname, config::untitled_prefix, config::untitled_suffix,
+                        config::untitled_max_num, false)) {
         wxLogDebug("MainFrame::CreateNew filename=[%s]", fullname.GetFullPath());
         // FIXME: drive must be the same as we mounted for windows!!!
         std::ofstream out(fullname.GetFullPath());
@@ -363,30 +364,6 @@ void MainFrame::CreateNew(bool indirect_load)
 
     wxLogError("Could not create new untitled notebook\nLast attempt was to creat file: %s", fullname.GetFullPath());
 }
-
-bool MainFrame::FindNewFileName(wxFileName &fullname)
-{
-    wxString datadir = wxStandardPaths::Get().GetAppDocumentsDir();
-    int n = 1;
-    do {
-        std::stringstream ss;
-        if (n > 1) {
-            ss << config::untitled_prefix << n << config::untitled_suffix;
-        } else {
-            ss << config::untitled_prefix << config::untitled_suffix;
-        }
-        fullname = wxFileName(datadir, ss.str());
-        wxLogDebug("MainFrame::FindNewFilName trying filename [%s]", fullname.GetFullPath());
-        if (!fullname.IsOk()) break;
-        if (fullname.IsOk() && !fullname.FileExists()) break;
-        if (n > config::max_num_untitled) break;
-        n++;
-    } while (1);
-    if (fullname.IsOk() && !fullname.FileExists()) {
-        return true;
-    }
-    return false;
-} 
 
 
 /**
