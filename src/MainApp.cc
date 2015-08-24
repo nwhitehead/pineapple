@@ -67,6 +67,7 @@ bool MainApp::OnInit()
             fname.MakeAbsolute();
             if (fname.FileExists()) {
                 std::string filename(fname.GetFullPath());
+                wxLogDebug("MainApp::OnInit Loading file from command line [%s]", filename);
                 MainFrame::Spawn(url_from_filename(filename), filename, true);
                 loaded++;
             } else {

@@ -2,6 +2,7 @@
 
 #include <exception>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -70,6 +71,20 @@ std::vector<std::string> split(const std::string &s, char delimiter)
         items.push_back(item);
     }
     return items;
+}
+
+std::string urlencode(std::string path)
+{
+    std::ostringstream result;
+    result.fill('0');
+    for (auto c : path) {
+        if (std::isalnum(c) || c == '/' || c == '-' || c == '_' || c == '.' || c == '~') {
+            result << c;
+        } else {
+            result << '%' << std::setw(2) << static_cast<int>(c);
+        }
+    }
+    return result.str();
 }
 
 std::string url_from_filename(std::string filename)

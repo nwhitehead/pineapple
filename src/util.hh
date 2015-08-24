@@ -32,6 +32,9 @@ std::string replace_one(std::string &s, std::string mud, std::string gold);
 /// Split a string into a vector based on a delimiter character
 std::vector<std::string> split(const std::string &s, char delimiter);
 
+/// Urlencode a string so it works inside url
+std::string urlencode(std::string path);
+
 /**
  * Specific to app
  */
