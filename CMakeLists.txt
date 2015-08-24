@@ -51,6 +51,7 @@ set(DATAFILES
     data/images/Up-50.png
     data/examples/Basics.ipynb
     data/examples/Plotting.ipynb
+    data/examples/Timing.ipynb
 )
 
 set(SRC_LIST
