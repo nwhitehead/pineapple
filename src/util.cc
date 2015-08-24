@@ -77,6 +77,7 @@ std::string urlencode(std::string path)
 {
     std::ostringstream result;
     result.fill('0');
+    result << std::hex;
     for (auto c : path) {
         if (std::isalnum(c) || c == '/' || c == '-' || c == '_' || c == '.' || c == '~') {
             result << c;
@@ -89,7 +90,7 @@ std::string urlencode(std::string path)
 
 std::string url_from_filename(std::string filename)
 {
-    std::string uri(filename);
+    std::string uri(urlencode(filename));
     return std::string(config::base_url) + std::string(config::path_url) + uri;
 }
 
