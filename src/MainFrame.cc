@@ -68,7 +68,8 @@ void MainFrame::SetupMenu()
     menu_file->Append(wxID_SAVE, "Save\tCtrl-S");
     menu_file->Append(wxID_SAVEAS, "Save As\tShift-Ctrl-S");
     menu_file->AppendSeparator();
-
+    menu_file->Append(wxID_OPEN_EXAMPLE, "Examples...");
+    menu_file->AppendSeparator();
     {
         wxMenu *menu_export = new wxMenu();
         menu_export->Append(wxID_EXPORT_PYTHON, "Python");
@@ -77,8 +78,6 @@ void MainFrame::SetupMenu()
         menu_file->AppendSubMenu(menu_export, "Export as");
     }
 
-    menu_file->AppendSeparator();
-    menu_file->Append(wxID_OPEN_EXAMPLE, "Open Example...");
     menu_file->AppendSeparator();
     menu_file->Append(wxID_TRUST, "Trust notebook");
     menu_file->AppendSeparator();

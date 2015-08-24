@@ -10,12 +10,6 @@
 class ExamplesFrame: public wxFrame
 {
 public:
-
     ExamplesFrame(wxWindow *parent);
-
-    void OnClose(wxCloseEvent &event);
-    void OnChooseItem(wxCommandEvent &event);
-
     void SetupTree();
-    void SetupBindings();
 };

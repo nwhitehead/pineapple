@@ -14,6 +14,9 @@
 /// Read all contents of file into a string
 std::string read_all_file(std::string filename);
 
+/// Check if two files are any different
+bool files_different(std::string filename, std::string other_filename);
+
 /// Read all contents of a file into a vector of strings (per line)
 std::vector<std::string> read_file_lines(std::string filename);
 

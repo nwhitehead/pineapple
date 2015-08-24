@@ -1,5 +1,6 @@
 #include "util.hh"
 
+#include <exception>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -13,6 +14,18 @@ std::string read_all_file(std::string filename)
     std::ifstream ifs(filename);
     return std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
 }
+
+bool files_different(std::string filename, std::string other_filename)
+{
+    try {
+        std::string contents(read_all_file(filename));
+        std::string other_contents(read_all_file(other_filename));
+        return contents != other_contents;
+    } catch(std::exception &e) {
+        return false;
+    }
+}
+
 
 std::vector<std::string> read_file_lines(std::string filename)
 {

@@ -10,25 +10,18 @@
 #include <wx/frame.h>
 #include <wx/log.h>
 #include <wx/menu.h>
+#include <wx/msgdlg.h>
 #include <wx/sizer.h>
+#include <wx/stdpaths.h>
 #include <wx/treectrl.h>
 
+#include "gui_util.hh"
 #include "util.hh"
-
+#include "MainFrame.hh"
 
 /**
- * ExamplesFrame constructor and associated helpers
+ * Data structure for keeping track of tree and filenames
  */
-
-ExamplesFrame::ExamplesFrame(wxWindow */* parent */)
-        : wxFrame(nullptr, wxID_ANY, "Choose example")
-{
-    wxLogDebug("ExamplesFrame::ExamplesFrame");
-
-    SetupTree();
-    SetupBindings();
-    Show();
-}
 
 using tree_item_type = std::pair<std::string, std::string>;
 using tree_items_type = std::vector<tree_item_type>;
@@ -49,6 +42,49 @@ tree_type tree_data = {
 
 std::map<wxTreeItemId, std::string> tree_map;
 
+/**
+ * ExamplesFrame constructor and associated helpers
+ */
+
+ExamplesFrame::ExamplesFrame(wxWindow */* parent */)
+        : wxFrame(nullptr, wxID_ANY, "Choose example")
+{
+    wxLogDebug("ExamplesFrame::ExamplesFrame");
+
+    SetupTree();
+    Show();
+}
+
+void SpawnExample(wxFrame *parent, wxTreeItemId id)
+{
+    // Copy resource .ipynb file to user area
+    // (Cannot change files in digitally signed resource area)
+    std::string example_file(tree_map[id]);
+    wxLogDebug("SpawnExample Item selected [%s]", example_file);
+    std::string original_filename(resource_filename(example_file));
+    wxLogDebug("SpawnExample Filename [%s]", original_filename);
+    std::string prefix(wxStandardPaths::Get().GetUserDataDir());
+    wxFileName wxf(prefix, example_file);
+    std::string new_filename(wxf.GetFullPath());
+    // Overwrite old copy with permission
+    if (wxf.IsOk() && wxf.Exists()) {
+        if (files_different(original_filename, new_filename)) {
+            wxLogDebug("SpawnExample Files different");
+            wxMessageDialog dlg(parent, "Keep your changes to the example?",
+                "Example notebook has changed", wxYES_NO | wxICON_WARNING | wxNO_DEFAULT);
+            if (dlg.ShowModal() == wxID_NO) {
+                wxLogDebug("SpawnExample You picked NO");
+                // Overwrite changes with fresh copy
+                write_file(new_filename, read_all_file(original_filename));
+            }
+        }
+    } else {
+        // Output filename doesn't exist, write it
+        write_file(new_filename, read_all_file(original_filename));
+    }
+    MainFrame::Spawn(url_from_filename(new_filename), new_filename, false);
+}
+
 void ExamplesFrame::SetupTree()
 {
     wxTreeCtrl *tree = new wxTreeCtrl(this, 1, wxDefaultPosition, wxDefaultSize,
@@ -65,27 +101,11 @@ void ExamplesFrame::SetupTree()
     Bind(wxEVT_TREE_ITEM_ACTIVATED, [this](wxTreeEvent &event) {
         wxTreeItemId id(event.GetItem());
         if (tree_map.find(id) != tree_map.end()) {
-            wxLogDebug("ExamplesFrame::Tree Item selected [%s]", tree_map[id]);
-            
+            SpawnExample(this, id);
         }
     }, tree->GetId());
     tree->ExpandAll();
     tree->Show();
     SetSize(wxDefaultCoord, wxDefaultCoord, 400, 400);
-}
-
-void ExamplesFrame::SetupBindings()
-{
-
-}
-
-void ExamplesFrame::OnClose(wxCloseEvent &/* event */)
-{
-
-}
-
-void ExamplesFrame::OnChooseItem(wxCommandEvent &/* event */)
-{
-
 }
 
