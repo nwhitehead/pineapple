@@ -53,6 +53,7 @@ set(DATAFILES
     data/examples/Plotting.ipynb
     data/examples/Timing.ipynb
     data/examples/Markdown.ipynb
+    data/examples/RichOutput.ipynb
 )
 
 set(SRC_LIST
