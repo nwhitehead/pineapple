@@ -108,8 +108,8 @@ void MainFrame::SetupMenu()
     menu_edit->Append(wxID_DELETE, "Delete cell\tCtrl-Shift-D");
     menu_edit->Append(wxID_UNDELETE, "Undelete cell\tCtrl-Shift-U");
     menu_edit->AppendSeparator();
-    menu_edit->Append(wxID_SPLIT, "Split cell\tCtrl--");
-    menu_edit->Append(wxID_MERGE, "Merge cell below\tCtrl-Shift--");
+    menu_edit->Append(wxID_SPLIT, "Split cell\tShift-Ctrl--");
+    menu_edit->Append(wxID_MERGE, "Merge cell below");
     menu_edit->AppendSeparator();
     menu_edit->Append(wxID_MOVE_UP, "Move cell up\tCtrl-Shift-O");
     menu_edit->Append(wxID_MOVE_DOWN, "Move cell down\tCtrl-Shift-L");

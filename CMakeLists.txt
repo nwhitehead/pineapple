@@ -50,6 +50,7 @@ set(DATAFILES
     data/images/Synchronize-50.png
     data/images/Up-50.png
     data/examples/Basics.ipynb
+    data/examples/Editing.ipynb
     data/examples/Plotting.ipynb
     data/examples/Timing.ipynb
     data/examples/Markdown.ipynb
