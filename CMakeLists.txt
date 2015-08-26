@@ -152,7 +152,7 @@ ExternalProject_Add(
     openssl
     URL "${EXTERNAL}/openssl/openssl-1.0.2d.tar.gz"
     PREFIX "${OPENSSL_PREFIX}"
-    CONFIGURE_COMMAND ./config --prefix=${OPENSSL_PREFIX}
+    CONFIGURE_COMMAND ./config --prefix=${OPENSSL_PREFIX} shared
     BUILD_COMMAND make
     BUILD_IN_SOURCE 1
     INSTALL_COMMAND make install
@@ -166,7 +166,7 @@ ExternalProject_Add(
     python2.7
     URL "${EXTERNAL}/python-2.7/Python-2.7.10.tgz"
     PREFIX "${PYTHON_PREFIX}"
-#    PATCH_COMMAND ${CMAKE_COMMAND} -E copy ${EXTERNAL}/python-2.7/Setup.local ${PYTHON_SOURCE}/Modules/
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy ${EXTERNAL}/python-2.7/Setup.local ${PYTHON_SOURCE}/Modules/
     CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env "CPPFLAGS=-I${OPENSSL_PREFIX}" "LDFLAGS=-L${OPENSSL_PREFIX}/lib -L/usr/lib/x86_64-linux-gnu" ./configure --prefix=${PYTHON_PREFIX} --enable-ipv6 --with-system-ffi --with-fpectl no-ssl2
     BUILD_COMMAND make
     BUILD_IN_SOURCE 1
