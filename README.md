@@ -124,3 +124,20 @@ build directory.
 If you want to change the icon images, you'll need to regenerate the icns files.
 I did this using [https://iconverticons.com] because the command-line tools
 I found were out of date and I didn't want to hassle with automating it.
+
+
+# Python Build
+
+Switching to explicit Python build so users can add their own packages,
+overlooked modules are still available from the standard library, etc.
+
+## Ubuntu 14.04
+
+```
+apt-get install build-essential libz-dev 
+    libreadline-dev libssl-dev libncursesw5-dev
+    libgdbm-dev libsqlite3-dev libbz2-dev liblzma-dev
+    libreadline-gplv2-dev
+    libc6-dev
+```
+

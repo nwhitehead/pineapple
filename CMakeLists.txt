@@ -130,6 +130,55 @@ add_custom_target(localtest
 set_target_properties(localtest PROPERTIES
     EXCLUDE_FROM_ALL 1)
 
+### Python (and dependencies)
+
+# Turn on CCACHE
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+    message("CCACHE for the win")
+endif(CCACHE_FOUND)
+
+include(ExternalProject)
+
+# External libraries location
+set(EXTERNAL "${PROJECT_SOURCE_DIR}/external")
+
+# OpenSSL
+set(OPENSSL_PREFIX "${PROJECT_BINARY_DIR}/openssl")
+set(OPENSSL_SOURCE "${PROJECT_BINARY_DIR}/openssl/src/openssl")
+ExternalProject_Add(
+    openssl
+    URL "${EXTERNAL}/openssl/openssl-1.0.2d.tar.gz"
+    PREFIX "${OPENSSL_PREFIX}"
+    CONFIGURE_COMMAND ./config --prefix=${OPENSSL_PREFIX}
+    BUILD_COMMAND make
+    BUILD_IN_SOURCE 1
+    INSTALL_COMMAND make install
+)
+
+# Python
+set(PYTHON_PREFIX "${PROJECT_BINARY_DIR}/python2.7")
+set(PYTHON_SOURCE "${PROJECT_BINARY_DIR}/python2.7/src/python2.7")
+set(PYTHON "${PYTHON_PREFIX}/bin/python2.7")
+ExternalProject_Add(
+    python2.7
+    URL "${EXTERNAL}/python-2.7/Python-2.7.10.tgz"
+    PREFIX "${PYTHON_PREFIX}"
+#    PATCH_COMMAND ${CMAKE_COMMAND} -E copy ${EXTERNAL}/python-2.7/Setup.local ${PYTHON_SOURCE}/Modules/
+    CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env "CPPFLAGS=-I${OPENSSL_PREFIX}" "LDFLAGS=-L${OPENSSL_PREFIX}/lib -L/usr/lib/x86_64-linux-gnu" ./configure --prefix=${PYTHON_PREFIX} --enable-ipv6 --with-system-ffi --with-fpectl no-ssl2
+    BUILD_COMMAND make
+    BUILD_IN_SOURCE 1
+    INSTALL_COMMAND make install
+)
+add_custom_target(python2.7-postinstall
+    DEPENDS python2.7
+    COMMAND ${PYTHON} -m ensurepip
+    COMMENT "Setting up pip"
+)
+
+
 ### Server targets
 
 add_custom_target(server
