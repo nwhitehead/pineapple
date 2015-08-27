@@ -1,13 +1,6 @@
 project(Pineapple)
 cmake_minimum_required(VERSION 2.8)
 
-### Version info
-
-set(VERSION_NAME "Pineapple")
-set(UPPERCASE_VERSION_NAME "PINEAPPLE")
-set(VERSION_MAJOR 0)
-set(VERSION_MINOR 1)
-
 ### General compilation options
 # Use C++14 for everything
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++1y")
@@ -15,11 +8,103 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANG)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-long-long -pedantic -Wconversion -Wsign-conversion -Werror")
 endif()
 
-### wxWidgets
+#### Prerequisites section
+
+# Turn on CCACHE
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+endif(CCACHE_FOUND)
+
+include(ExternalProject)
+
+# External libraries location
+set(EXTERNAL "${PROJECT_SOURCE_DIR}/external")
+
+## OpenSSL
+
+set(OPENSSL_PREFIX "${PROJECT_BINARY_DIR}/openssl-prefix")
+set(OPENSSL_DIR "${PROJECT_BINARY_DIR}/openssl")
+set(OPENSSL_SOURCE "${OPENSSL_PREFIX}/src/openssl")
+ExternalProject_Add(
+    openssl-external
+    URL "${EXTERNAL}/openssl/openssl-1.0.2d.tar.gz"
+    PREFIX "${OPENSSL_PREFIX}"
+    CONFIGURE_COMMAND ./config --prefix=${OPENSSL_DIR} shared
+    BUILD_COMMAND make
+    BUILD_IN_SOURCE 1
+    INSTALL_COMMAND make install
+)
+add_custom_target(openssl DEPENDS openssl-external)
+
+## Python
+
+set(PYTHON_PREFIX "${PROJECT_BINARY_DIR}/python2.7-prefix")
+set(PYTHON_DIR "${PROJECT_BINARY_DIR}/python2.7")
+set(PYTHON_SOURCE "${PYTHON_PREFIX}/src/python2.7-external")
+set(PYTHON "${PYTHON_DIR}/bin/python2.7")
+ExternalProject_Add(
+    python2.7-external
+    URL "${EXTERNAL}/python-2.7/Python-2.7.10.tgz"
+    PREFIX "${PYTHON_PREFIX}"
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy ${EXTERNAL}/python-2.7/Setup.local ${PYTHON_SOURCE}/Modules/
+    CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env "CPPFLAGS=-I${OPENSSL_DIR}" "LDFLAGS=-L${OPENSSL_DIR}/lib -L/usr/lib/x86_64-linux-gnu" ./configure --prefix=${PYTHON_DIR} --enable-ipv6 --with-system-ffi --with-fpectl no-ssl2 --with-threads
+    BUILD_COMMAND make
+    BUILD_IN_SOURCE 1
+    INSTALL_COMMAND make install
+)
+add_custom_target(python2.7 DEPENDS python2.7-external openssl)
+add_custom_target(python2.7-postinstall
+    DEPENDS python2.7
+    COMMAND ${PYTHON} ${EXTERNAL}/python-2.7/get-pip.py
+    COMMENT "Setting up pip"
+)
+set(PIP "${PYTHON_DIR}/bin/pip")
+
+## libcurl
+
+set(CURL_PREFIX "${PROJECT_BINARY_DIR}/curl-prefix")
+set(CURL_DIR "${PROJECT_BINARY_DIR}/curl")
+set(CURL_SOURCE "${PYTHON_PREFIX}/src/curl-external")
+ExternalProject_Add(
+    libcurl-external
+    URL "${EXTERNAL}/curl/curl-7.44.0.zip"
+    PREFIX "${CURL_PREFIX}"
+    CONFIGURE_COMMAND ./configure --with-ssl=${OPENSSL_DIR} --prefix=${CURL_DIR}
+    BUILD_COMMAND make
+    BUILD_IN_SOURCE 1
+    INSTALL_COMMAND make install
+)
+
+## wxWidgets
 
 set(wxWidgets_CONFIGURATION mswu)
 find_package(wxWidgets REQUIRED core base net webview)
 include(${wxWidgets_USE_FILE})
+
+## PIP prerequisites
+
+add_custom_target(requirements_install
+    DEPENDS python2.7 python2.7-postinstall
+    COMMAND ${PIP} install -r ${PROJECT_SOURCE_DIR}/requirements.txt
+)
+# Resources
+add_custom_target(custom_install
+    DEPENDS python2.7
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/custom" "${PYTHON_DIR}/lib/python2.7/site-packages/notebook/static/custom/"
+)
+
+
+
+#### PINEAPPLE
+
+### Version info
+
+set(VERSION_NAME "Pineapple")
+set(UPPERCASE_VERSION_NAME "PINEAPPLE")
+set(VERSION_MAJOR 0)
+set(VERSION_MINOR 1)
 
 ### Pineapple app
 
@@ -87,35 +172,10 @@ if(APPLE)
         MACOSX_BUNDLE_INFO_PLIST "${PROJECT_BINARY_DIR}/cmake/Pineapple.plist")
 endif()
 
-### Rules for virtualenv
-
-set(VENV_DIR "${PROJECT_BINARY_DIR}/venv")
-add_custom_command(
-    OUTPUT "${VENV_DIR}/bin/activate"
-    COMMAND virtualenv "${VENV_DIR}"
-    COMMAND "${VENV_DIR}/bin/pip" install -r "${PROJECT_SOURCE_DIR}/requirements.txt"
-    COMMAND virtualenv --relocatable "${VENV_DIR}"
-    COMMENT "Setting up virtualenv"
-)
-add_custom_target(venv DEPENDS "${VENV_DIR}/bin/activate")
-add_dependencies(${PROJECT_NAME} venv)
-
 ### Server startup script
 
 file(COPY "scripts/pineapple-server" DESTINATION "${PROJECT_BINARY_DIR}/scripts/")
 file(COPY "scripts/pineapple-server.spec" DESTINATION "${PROJECT_BINARY_DIR}/scripts/")
-
-### Resources
-
-add_custom_target(notebook_install
-    DEPENDS venv
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/custom" "${VENV_DIR}/lib/python2.7/site-packages/notebook/static/custom/"
-)
-# This one is useful to avoid having to do "make server" after css changes
-add_custom_target(custom_reinstall
-    DEPENDS venv notebook_install
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/custom" "${PROJECT_BINARY_DIR}/dist/pineapple-server/notebook/static/custom"
-)
 
 ### Testing targets
 
@@ -129,54 +189,6 @@ add_custom_target(localtest
     COMMAND ${CMAKE_COMMAND} -E env "PINEAPPLE_SERVER=venv/bin/python scripts/pineapple-server" "${TESTNAME}")
 set_target_properties(localtest PROPERTIES
     EXCLUDE_FROM_ALL 1)
-
-### Python (and dependencies)
-
-# Turn on CCACHE
-find_program(CCACHE_FOUND ccache)
-if(CCACHE_FOUND)
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
-    message("CCACHE for the win")
-endif(CCACHE_FOUND)
-
-include(ExternalProject)
-
-# External libraries location
-set(EXTERNAL "${PROJECT_SOURCE_DIR}/external")
-
-# OpenSSL
-set(OPENSSL_PREFIX "${PROJECT_BINARY_DIR}/openssl")
-set(OPENSSL_SOURCE "${PROJECT_BINARY_DIR}/openssl/src/openssl")
-ExternalProject_Add(
-    openssl
-    URL "${EXTERNAL}/openssl/openssl-1.0.2d.tar.gz"
-    PREFIX "${OPENSSL_PREFIX}"
-    CONFIGURE_COMMAND ./config --prefix=${OPENSSL_PREFIX} shared
-    BUILD_COMMAND make
-    BUILD_IN_SOURCE 1
-    INSTALL_COMMAND make install
-)
-
-# Python
-set(PYTHON_PREFIX "${PROJECT_BINARY_DIR}/python2.7")
-set(PYTHON_SOURCE "${PROJECT_BINARY_DIR}/python2.7/src/python2.7")
-set(PYTHON "${PYTHON_PREFIX}/bin/python2.7")
-ExternalProject_Add(
-    python2.7
-    URL "${EXTERNAL}/python-2.7/Python-2.7.10.tgz"
-    PREFIX "${PYTHON_PREFIX}"
-    PATCH_COMMAND ${CMAKE_COMMAND} -E copy ${EXTERNAL}/python-2.7/Setup.local ${PYTHON_SOURCE}/Modules/
-    CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env "CPPFLAGS=-I${OPENSSL_PREFIX}" "LDFLAGS=-L${OPENSSL_PREFIX}/lib -L/usr/lib/x86_64-linux-gnu" ./configure --prefix=${PYTHON_PREFIX} --enable-ipv6 --with-system-ffi --with-fpectl no-ssl2
-    BUILD_COMMAND make
-    BUILD_IN_SOURCE 1
-    INSTALL_COMMAND make install
-)
-add_custom_target(python2.7-postinstall
-    DEPENDS python2.7
-    COMMAND ${PYTHON} -m ensurepip
-    COMMENT "Setting up pip"
-)
 
 
 ### Server targets
