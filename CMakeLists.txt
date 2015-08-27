@@ -218,40 +218,33 @@ set_target_properties(local-retest PROPERTIES EXCLUDE_FROM_ALL 1)
 
 ### Install
 
+file (GLOB binprogs "${PROJECT_BINARY_DIR}/python2.7/bin/*")
 if(APPLE)
-    install (TARGETS ${PROJECT_NAME}
-        DESTINATION ".")
-    install (DIRECTORY ${PROJECT_BINARY_DIR}/dist/pineapple-server/
-        DESTINATION "Pineapple.app/Contents/Resources/pineapple-server")
-    install (PROGRAMS ${PROJECT_BINARY_DIR}/dist/pineapple-server/pineapple-server
-        DESTINATION "Pineapple.app/Contents/Resources/pineapple-server")
-    install (FILES ${EMPTY}
-        DESTINATION "Pineapple.app/Contents/Resources/pineapple-server/tcl")
-    install (FILES ${EMPTY}
-        DESTINATION "Pineapple.app/Contents/Resources/pineapple-server/tk")
+    set (APP_BIN ".")
+    set (APP_RES "Pineapple.app/Contents/Resources")
+else()
+    set (APP_BIN "bin")
+    set (APP_RES "share/${VERSION_NAME}")
+endif()
+
+install (TARGETS ${PROJECT_NAME}
+    RUNTIME DESTINATION ${APP_BIN})
+install (FILES ${DATAFILES}
+    DESTINATION "${APP_RES}")
+install (DIRECTORY "${PROJECT_BINARY_DIR}/python2.7/"
+    DESTINATION "${APP_RES}/python2.7")
+install (PROGRAMS ${binprogs}
+    DESTINATION "${APP_RES}/python2.7/bin")
+install (FILES "scripts/pineapple-server"
+    DESTINATION "${APP_RES}")
+if(APPLE)
     set (APPS "${CMAKE_INSTALL_PREFIX}/Pineapple.app")
-    set (DIRS "")
     install (CODE "
         include(BundleUtilities)
-        fixup_bundle(\"${APPS}\"    \"\"    \"${DIRS}\")
+        fixup_bundle(\"${APPS}\"    \"\"    \"\")
         execute_process(COMMAND codesign -s \"Nathan Whitehead\" \"Pineapple.app/Contents/MacOS/libwx_osx_cocoau-3.1.dylib\")
         execute_process(COMMAND codesign -s \"Nathan Whitehead\" \"Pineapple.app\")
     ")
-else()
-    install (TARGETS ${PROJECT_NAME}
-        RUNTIME DESTINATION bin
-        BUNDLE DESTINATION data
-        COMPONENT applications)
-    install (FILES ${DATAFILES}
-        DESTINATION "share/${VERSION_NAME}")
-    install (DIRECTORY ${PROJECT_BINARY_DIR}/dist/pineapple-server/
-        DESTINATION "share/${VERSION_NAME}/pineapple-server")
-    install (PROGRAMS ${PROJECT_BINARY_DIR}/dist/pineapple-server/pineapple-server
-        DESTINATION "share/${VERSION_NAME}/pineapple-server")
-    install (FILES ${EMPTY}
-        DESTINATION "share/${VERSION_NAME}/pineapple-server/tcl")
-    install (FILES ${EMPTY}
-        DESTINATION "share/${VERSION_NAME}/pineapple-server/tk")
 endif()
 
 ### CPACK
