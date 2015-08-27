@@ -49,7 +49,7 @@ ExternalProject_Add(
     URL "${EXTERNAL}/python-2.7/Python-2.7.10.tgz"
     PREFIX "${PYTHON_PREFIX}"
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy ${EXTERNAL}/python-2.7/Setup.local ${PYTHON_SOURCE}/Modules/
-    CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env "CPPFLAGS=-I${OPENSSL_DIR}" "LDFLAGS=-L${OPENSSL_DIR}/lib -L/usr/lib/x86_64-linux-gnu" ./configure --prefix=${PYTHON_DIR} --enable-ipv6 --with-system-ffi --with-fpectl no-ssl2 --with-threads
+    CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env "CPPFLAGS=-I${OPENSSL_DIR}" "LDFLAGS=-L${OPENSSL_DIR}/lib -L/usr/lib/x86_64-linux-gnu" ./configure --prefix=${PYTHON_DIR} --enable-ipv6 --with-system-ffi --with-fpectl no-ssl2 --with-threads --enable-unicode=ucs4
     BUILD_COMMAND make
     BUILD_IN_SOURCE 1
     INSTALL_COMMAND make install
