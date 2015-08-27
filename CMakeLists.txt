@@ -31,7 +31,7 @@ ExternalProject_Add(
     openssl-external
     URL "${EXTERNAL}/openssl/openssl-1.0.2d.tar.gz"
     PREFIX "${OPENSSL_PREFIX}"
-    CONFIGURE_COMMAND ./config --prefix=${OPENSSL_DIR} shared no-idea no-mdc2 no-rc5 no-dh
+    CONFIGURE_COMMAND ./config --prefix=${OPENSSL_DIR} shared no-idea no-mdc2 no-rc5
     BUILD_COMMAND make
     BUILD_IN_SOURCE 1
     INSTALL_COMMAND make install
@@ -89,9 +89,10 @@ ExternalProject_Add(
     PREFIX "${PYCURL_PREFIX}"
     CONFIGURE_COMMAND ""
     BUILD_IN_SOURCE 1
-    BUILD_COMMAND ${PYTHON} ${PYCURL_SOURCE}/setup.py install --curl-config=${CURL_DIR}/bin/curl-config --with-ssl --static-libs
+    BUILD_COMMAND ${PYTHON} ${PYCURL_SOURCE}/setup.py install --curl-config=${CURL_DIR}/bin/curl-config --with-ssl
     INSTALL_COMMAND ""
 )
+add_custom_target(pycurl DEPENDS pycurl-external)
 
 ## wxWidgets
 
@@ -102,7 +103,7 @@ include(${wxWidgets_USE_FILE})
 ## PIP prerequisites
 
 add_custom_target(requirements_install
-    DEPENDS python2.7 python2.7-postinstall
+    DEPENDS python2.7 python2.7-postinstall openssl libcurl pycurl
     COMMAND ${CMAKE_COMMAND} -E env LD_LIBRARY_PATH=${SSL_DIR}/lib:${CURL_DIR}/lib ${PIP} install -r ${PROJECT_SOURCE_DIR}/requirements.txt
 )
 # Resources
