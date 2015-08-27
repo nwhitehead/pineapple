@@ -31,7 +31,7 @@ ExternalProject_Add(
     openssl-external
     URL "${EXTERNAL}/openssl/openssl-1.0.2d.tar.gz"
     PREFIX "${OPENSSL_PREFIX}"
-    CONFIGURE_COMMAND ./config --prefix=${OPENSSL_DIR} shared
+    CONFIGURE_COMMAND ./config --prefix=${OPENSSL_DIR} shared no-idea no-mdc2 no-rc5 no-dh
     BUILD_COMMAND make
     BUILD_IN_SOURCE 1
     INSTALL_COMMAND make install
@@ -66,15 +66,31 @@ set(PIP "${PYTHON_DIR}/bin/pip")
 
 set(CURL_PREFIX "${PROJECT_BINARY_DIR}/curl-prefix")
 set(CURL_DIR "${PROJECT_BINARY_DIR}/curl")
-set(CURL_SOURCE "${PYTHON_PREFIX}/src/curl-external")
 ExternalProject_Add(
     libcurl-external
     URL "${EXTERNAL}/curl/curl-7.44.0.zip"
     PREFIX "${CURL_PREFIX}"
-    CONFIGURE_COMMAND ./configure --with-ssl=${OPENSSL_DIR} --prefix=${CURL_DIR}
+    CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env "CPPFLAGS=-I${OPENSSL_DIR}" "LDFLAGS=-L${OPENSSL_DIR}/lib" ./configure --with-ssl=${OPENSSL_DIR} --prefix=${CURL_DIR}
     BUILD_COMMAND make
     BUILD_IN_SOURCE 1
     INSTALL_COMMAND make install
+)
+add_custom_target(libcurl DEPENDS libcurl-external)
+
+## pycurl
+
+set(PYCURL_PREFIX "${PROJECT_BINARY_DIR}/pycurl-prefix")
+set(PYCURL_DIR "${PROJECT_BINARY_DIR}/pycurl")
+set(PYCURL_SOURCE "${PYCURL_PREFIX}/src/pycurl-external")
+ExternalProject_Add(
+    pycurl-external
+    DEPENDS python2.7 libcurl
+    URL "${EXTERNAL}/pycurl/pycurl-7.19.5.tar.gz"
+    PREFIX "${PYCURL_PREFIX}"
+    CONFIGURE_COMMAND ""
+    BUILD_IN_SOURCE 1
+    BUILD_COMMAND ${PYTHON} ${PYCURL_SOURCE}/setup.py install --curl-config=${CURL_DIR}/bin/curl-config --with-ssl --static-libs
+    INSTALL_COMMAND ""
 )
 
 ## wxWidgets
@@ -87,7 +103,7 @@ include(${wxWidgets_USE_FILE})
 
 add_custom_target(requirements_install
     DEPENDS python2.7 python2.7-postinstall
-    COMMAND ${PIP} install -r ${PROJECT_SOURCE_DIR}/requirements.txt
+    COMMAND ${CMAKE_COMMAND} -E env LD_LIBRARY_PATH=${SSL_DIR}/lib:${CURL_DIR}/lib ${PIP} install -r ${PROJECT_SOURCE_DIR}/requirements.txt
 )
 # Resources
 add_custom_target(custom_install
