@@ -1,3 +1,5 @@
+set (CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/dist") # install locally
+
 project(Pineapple)
 cmake_minimum_required(VERSION 2.8)
 
@@ -102,15 +104,15 @@ include(${wxWidgets_USE_FILE})
 
 ## PIP prerequisites
 
-add_custom_target(requirements_install
+add_custom_target(requirements-install
     DEPENDS python2.7 python2.7-postinstall openssl libcurl pycurl
     COMMAND ${CMAKE_COMMAND} -E env LD_LIBRARY_PATH=${SSL_DIR}/lib:${CURL_DIR}/lib ${PIP} install -r ${PROJECT_SOURCE_DIR}/requirements.txt
 )
-# Resources
-add_custom_target(custom_install
-    DEPENDS python2.7
+# Server resources
+add_custom_target(custom-reinstall
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/custom" "${PYTHON_DIR}/lib/python2.7/site-packages/notebook/static/custom/"
 )
+add_custom_target(custom-install DEPENDS requirements-install custom-reinstall)
 
 
 
@@ -192,31 +194,27 @@ endif()
 ### Server startup script
 
 file(COPY "scripts/pineapple-server" DESTINATION "${PROJECT_BINARY_DIR}/scripts/")
-file(COPY "scripts/pineapple-server.spec" DESTINATION "${PROJECT_BINARY_DIR}/scripts/")
+set(SERVER "${PROJECT_BINARY_DIR}/scripts/pineapple-server")
+
+### Resources for testing
+
+file(COPY ${DATAFILES} DESTINATION "${PROJECT_BINARY_DIR}")
 
 ### Testing targets
 
 if (APPLE)
     set (TESTNAME "Pineapple.app/Contents/MacOS/Pineapple")
 else()
-    set (TESTNAME "bin/${PROJECT_NAME}")
+    set (TESTNAME "${PROJECT_BINARY_DIR}/${PROJECT_NAME}")
 endif()
-add_custom_target(localtest
-    DEPENDS ${PROJECT_NAME} venv notebook_install custom_reinstall bin/${PROJECT_NAME}
-    COMMAND ${CMAKE_COMMAND} -E env "PINEAPPLE_SERVER=venv/bin/python scripts/pineapple-server" "${TESTNAME}")
-set_target_properties(localtest PROPERTIES
-    EXCLUDE_FROM_ALL 1)
-
-
-### Server targets
-
-add_custom_target(server
-    DEPENDS venv notebook_install
-    WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
-    COMMAND "${VENV_DIR}/bin/pyinstaller" -y "${PROJECT_BINARY_DIR}/scripts/pineapple-server.spec"
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/dist/pineapple-server/tcl"
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/dist/pineapple-server/tk"
+add_custom_target(local-retest
+    DEPENDS ${PROJECT_NAME} custom-reinstall bin/${PROJECT_NAME}
+    COMMAND ${CMAKE_COMMAND} -E env "PINEAPPLE_SERVER=${PYTHON} ${SERVER}" ${TESTNAME}
 )
+add_custom_target(local-test DEPENDS custom-install local-retest)
+set_target_properties(local-test PROPERTIES EXCLUDE_FROM_ALL 1)
+set_target_properties(local-retest PROPERTIES EXCLUDE_FROM_ALL 1)
+
 
 ### Install
 
