@@ -254,7 +254,7 @@ else()
 endif()
 add_custom_target(local-retest
     DEPENDS ${PROJECT_NAME} custom-reinstall bin/${PROJECT_NAME}
-    COMMAND ${CMAKE_COMMAND} -E env "PINEAPPLE_SERVER=${PYTHON} ${SERVER}" ${TESTNAME}
+    COMMAND ${CMAKE_COMMAND} -E env "PINEAPPLE_PYTHON=${PYTHON}" "PINEAPPLE_SERVER=${SERVER}" ${TESTNAME}
 )
 add_custom_target(local-test DEPENDS custom-install local-retest)
 set_target_properties(local-test PROPERTIES EXCLUDE_FROM_ALL 1)
