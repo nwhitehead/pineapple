@@ -119,7 +119,10 @@ endif()
 ## pycurl
 
 if(LINUX)
-    set(PYCURL_OPTS --curl-config=$ {CURL_DIR}/bin/curl-config)
+    set(PYCURL_OPTS --curl-config=${CURL_DIR}/bin/curl-config --with-ssl)
+endif()
+if(APPLE)
+    set(PYCURL_OPTS "")
 endif()
 
 set(PYCURL_PREFIX "${PROJECT_BINARY_DIR}/pycurl-prefix")
@@ -132,7 +135,7 @@ ExternalProject_Add(
     PREFIX "${PYCURL_PREFIX}"
     CONFIGURE_COMMAND ""
     BUILD_IN_SOURCE 1
-    BUILD_COMMAND ${PYTHON} ${PYCURL_SOURCE}/setup.py install ${PYCURL_OPTS} --with-ssl
+    BUILD_COMMAND ${PYTHON} ${PYCURL_SOURCE}/setup.py install ${PYCURL_OPTS}
             INSTALL_COMMAND ""
 )
 add_custom_target(pycurl DEPENDS pycurl-external)
