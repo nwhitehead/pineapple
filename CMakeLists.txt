@@ -3,6 +3,17 @@ set (CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/dist") # install locally
 project(Pineapple)
 cmake_minimum_required(VERSION 2.8)
 
+
+### Version info
+
+set(VERSION_NAME "Pineapple")
+set(UPPERCASE_VERSION_NAME "PINEAPPLE")
+set(VERSION_MAJOR 0)
+set(VERSION_MINOR 2)
+
+
+
+
 # Expect targets: APPLE LINUX WINDOWS
 if(NOT APPLE)
     set(LINUX 1)
@@ -167,13 +178,6 @@ add_custom_target(custom-install DEPENDS requirements-install custom-reinstall)
 
 
 #### PINEAPPLE
-
-### Version info
-
-set(VERSION_NAME "Pineapple")
-set(UPPERCASE_VERSION_NAME "PINEAPPLE")
-set(VERSION_MAJOR 0)
-set(VERSION_MINOR 1)
 
 ### Pineapple app
 
