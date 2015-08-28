@@ -78,7 +78,7 @@ endif()
 set(PYTHON_PREFIX "${PROJECT_BINARY_DIR}/python2.7-prefix")
 set(PYTHON_DIR "${PROJECT_BINARY_DIR}/python2.7")
 set(PYTHON_SOURCE "${PYTHON_PREFIX}/src/python2.7-external")
-set(PYTHON "${PYTHON_DIR}/bin/python2.7")
+set(PYTHON "${PYTHON_DIR}/bin/python")
 ExternalProject_Add(
     python2.7-external
     URL "${EXTERNAL}/python-2.7/Python-2.7.10.tgz"
@@ -288,9 +288,9 @@ install (PROGRAMS ${binprogs}
 install (FILES "scripts/pineapple-server"
     DESTINATION "${APP_RES}")
 # Clean up to make final size smaller
-install (CODE "
-        execute_process(COMMAND ${PROJECT_SOURCE_DIR}/scripts/clean-python.sh \"${CMAKE_INSTALL_PREFIX}/${APP_RES}/python2.7\")
-    ")
+#install (CODE "
+#        execute_process(COMMAND ${PROJECT_SOURCE_DIR}/scripts/clean-python.sh \"${CMAKE_INSTALL_PREFIX}/${APP_RES}/python2.7\")
+#    ")
 if(APPLE)
     set (APPS "${CMAKE_INSTALL_PREFIX}/Pineapple.app")
     install (CODE "
