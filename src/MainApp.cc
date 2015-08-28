@@ -88,31 +88,23 @@ bool MainApp::OnInit()
         }
     }
 
-    // Startup ipython server subprocess
-    wxString server_script;
-    std::string server_command;
-    server = nullptr;
-    if (!wxGetEnv(config::server_script_env, &server_script)) {
-        server_script = config::server_script_default;
-        server_command = resource_filename(std::string(server_script));
-    } else {
-        server_command = std::string(server_script);
-    }
-
     server = nullptr;
     Bind(wxEVT_END_PROCESS, &MainApp::OnSubprocessTerminate, this, wxID_ANY);
 
-    wxLogDebug("MainApp::OnInit Starting process [%s]", server_command);
+    std::string python_path(python_fullpath());
+    std::string script_path(server_fullpath());
+    std::string cmd(python_path + std::string(" ") + script_path);
+    wxLogDebug("MainApp::OnInit Python [%s] Script [%s]", python_path, script_path);
     server = new wxProcess(frame);
     long res;
-    if ((res = wxExecute(server_command,
+    if ((res = wxExecute(cmd,
         wxEXEC_ASYNC | wxEXEC_HIDE_CONSOLE | wxEXEC_MAKE_GROUP_LEADER,
         server))) {
         // Nonzero result means we started the subprocess successfully
         wxLogDebug("MainApp::OnInit Started subprocess");
     } else {
+        wxLogError("Internal Error", "Could not start python, exiting");
         wxLogDebug("MainApp::OnInit Could not start subprocess");
-        wxLogFatalError("Error", "Could not start subprocess, exiting");
         return false;
     }
     // Set handler to kill process if we die

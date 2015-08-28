@@ -14,6 +14,36 @@
 
 #include "config.hh"
 
+/// Get filename of python
+std::string python_fullpath()
+{
+    wxString result;
+    if (wxGetEnv(config::python_path_env, &result)) {
+        // User explicitly told us what to use for python
+        return std::string(result);
+    }
+    // Look for python in resource location
+    wxString respath(wxStandardPaths::Get().GetResourcesDir());
+    wxFileName wfname(respath, "");
+    wfname.AppendDir("python2.7");
+    wfname.AppendDir("bin");
+    wfname.SetFullName("python");
+    return std::string(wfname.GetFullPath());
+}
+
+/// Get filename of server
+std::string server_fullpath()
+{
+    wxString result;
+    if (wxGetEnv(config::server_path_env, &result)) {
+        // User explicitly told us what to use for server script
+        return std::string(result);
+    }
+    wxString respath(wxStandardPaths::Get().GetResourcesDir());
+    wxFileName wfname(respath, "pineapple-server");
+    return std::string(wfname.GetFullPath());
+}
+
 /// Get filename for an app resource
 std::string resource_filename(std::string filename)
 {

@@ -6,6 +6,12 @@
 #include <wx/filename.h>
 #include <wx/webview.h>
 
+/// Get filename of python
+std::string python_fullpath();
+
+/// Get filename of server
+std::string server_fullpath();
+
 /// Get filename for an app resource
 std::string resource_filename(std::string filename);
 

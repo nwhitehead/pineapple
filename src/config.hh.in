@@ -12,10 +12,10 @@ constexpr char version_minor [] = "${VERSION_MINOR}";
 constexpr char version [] = "${VERSION_MAJOR}" "." "${VERSION_MINOR}" ;
 constexpr char version_full [] = "${VERSION_NAME}-${VERSION_MAJOR}" "." "${VERSION_MINOR}" ;
 
-/// Environment variable to pass server path
-constexpr char server_script_env[] = "${UPPERCASE_VERSION_NAME}_SERVER";
-/// Default server script if none given
-constexpr char server_script_default[] = "python2.7/bin/python2.7 scripts/pineapple-server";
+/// Environment variable to pass python path
+constexpr char python_path_env[] = "${UPPERCASE_VERSION_NAME}_PYTHON";
+/// Environment variable to pass server script path
+constexpr char server_path_env[] = "${UPPERCASE_VERSION_NAME}_SERVER";
 
 /// Prefix of new unnamed files
 constexpr char untitled_prefix[] = "Untitled";

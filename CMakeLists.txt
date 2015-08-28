@@ -287,8 +287,8 @@ if(APPLE)
     install (CODE "
         include(BundleUtilities)
         fixup_bundle(\"${APPS}\"    \"\"    \"\")
-        execute_process(COMMAND codesign -s \"Nathan Whitehead\" \"Pineapple.app/Contents/MacOS/libwx_osx_cocoau-3.1.dylib\")
-        execute_process(COMMAND codesign -s \"Nathan Whitehead\" \"Pineapple.app\")
+        execute_process(COMMAND codesign -s \"Nathan Whitehead\" \"${CMAKE_INSTALL_PREFIX}/Pineapple.app/Contents/MacOS/libwx_osx_cocoau-3.1.dylib\")
+        execute_process(COMMAND codesign -s \"Nathan Whitehead\" \"${CMAKE_INSTALL_PREFIX}/Pineapple.app\")
     ")
 endif()
 
