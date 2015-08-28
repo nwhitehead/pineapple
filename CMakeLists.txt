@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 2.8)
 set(VERSION_NAME "Pineapple")
 set(UPPERCASE_VERSION_NAME "PINEAPPLE")
 set(VERSION_MAJOR 0)
-set(VERSION_MINOR 2)
+set(VERSION_MINOR 3)
 
 
 
