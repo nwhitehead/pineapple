@@ -3,6 +3,11 @@ set (CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/dist") # install locally
 project(Pineapple)
 cmake_minimum_required(VERSION 2.8)
 
+# Expect targets: APPLE LINUX WINDOWS
+if(NOT APPLE)
+    set(LINUX 1)
+endif()
+
 ### General compilation options
 # Use C++14 for everything
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++1y")
@@ -37,7 +42,7 @@ if(LINUX)
         openssl-external
         URL "${EXTERNAL}/openssl/openssl-1.0.2d.tar.gz"
         PREFIX "${OPENSSL_PREFIX}"
-        CONFIGURE_COMMAND ./config --prefix=$ {OPENSSL_DIR} shared no-idea no-mdc2 no-rc5
+        CONFIGURE_COMMAND ./config --prefix=${OPENSSL_DIR} shared no-idea no-mdc2 no-rc5
                                             BUILD_COMMAND make
                                             BUILD_IN_SOURCE 1
                                             INSTALL_COMMAND make install
@@ -256,7 +261,7 @@ add_custom_target(local-retest
     DEPENDS ${PROJECT_NAME} custom-reinstall bin/${PROJECT_NAME}
     COMMAND ${CMAKE_COMMAND} -E env "PINEAPPLE_PYTHON=${PYTHON}" "PINEAPPLE_SERVER=${SERVER}" ${TESTNAME}
 )
-add_custom_target(local-test DEPENDS custom-install local-retest)
+add_custom_target(local-test DEPENDS custom-reinstall local-retest)
 set_target_properties(local-test PROPERTIES EXCLUDE_FROM_ALL 1)
 set_target_properties(local-retest PROPERTIES EXCLUDE_FROM_ALL 1)
 
