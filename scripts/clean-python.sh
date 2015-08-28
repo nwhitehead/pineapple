@@ -42,25 +42,9 @@ if [[ ! -d "$base" ]]; then
     fail "base is not directory" $LINENO
 fi
 
-#if [[ ! -e "$base/bin/python" ]]; then
-#    fail "python not found" $LINENO
-#fi
-
-## Turn python into link to python2.7
-#rm $base/bin/python
-#ln -s python2.7 $base/bin/python
-
 # Cleanup all .pyc and .pyo files
 find $base -name "*.py[co]" -exec rm -rf {} \;
-
-# Don't need static python lib
-rm -f $base/lib/libpython*
-
-# Take out unused stuff
-rm -fr $base/lib/python2.7/test
-rm -fr $base/lib/python2.7/lib2to3
 
 # Go deeper for more savings
 rm -fr $base/lib/python2.7/site-packages/matplotlib/tests
 rm -fr $base/lib/python2.7/site-packages/mpl_toolkits/tests
-
