@@ -287,6 +287,10 @@ install (PROGRAMS ${binprogs}
     DESTINATION "${APP_RES}/python2.7/bin")
 install (FILES "scripts/pineapple-server"
     DESTINATION "${APP_RES}")
+# Clean up to make final size smaller
+install (CODE "
+        execute_process(COMMAND ${PROJECT_SOURCE_DIR}/scripts/clean-python.sh \"${CMAKE_INSTALL_PREFIX}/${APP_RES}/python2.7\")
+    ")
 if(APPLE)
     set (APPS "${CMAKE_INSTALL_PREFIX}/Pineapple.app")
     install (CODE "
