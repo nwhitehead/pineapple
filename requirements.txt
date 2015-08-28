@@ -1,17 +1,5 @@
-pycurl
 -e git+git://github.com/nwhitehead/nbconvert@e007bf08fafc80316de0b600aeef95e535cc823a#egg=nbconvert-dev
--e git+git://github.com/pyinstaller/pyinstaller@9d0e0ad4c1c02964bbff86edbf7400cd40958b1a#egg=pyinstaller-dev
-Jinja2
-tornado
-ipython_genutils
-traitlets
-jupyter_core
-jupyter_client
-nbformat
-ipykernel
 notebook
-pyzmq
-terminado
-path.py
+ipykernel
 numpy
 matplotlib

@@ -26,21 +26,49 @@ set(EXTERNAL "${PROJECT_SOURCE_DIR}/external")
 
 ## OpenSSL
 
-set(OPENSSL_PREFIX "${PROJECT_BINARY_DIR}/openssl-prefix")
-set(OPENSSL_DIR "${PROJECT_BINARY_DIR}/openssl")
-set(OPENSSL_SOURCE "${OPENSSL_PREFIX}/src/openssl")
-ExternalProject_Add(
-    openssl-external
-    URL "${EXTERNAL}/openssl/openssl-1.0.2d.tar.gz"
-    PREFIX "${OPENSSL_PREFIX}"
-    CONFIGURE_COMMAND ./config --prefix=${OPENSSL_DIR} shared no-idea no-mdc2 no-rc5
-    BUILD_COMMAND make
-    BUILD_IN_SOURCE 1
-    INSTALL_COMMAND make install
-)
-add_custom_target(openssl DEPENDS openssl-external)
-
+if(APPLE)
+    add_custom_target(openssl) # nop
+endif()
+if(LINUX)
+    set(OPENSSL_PREFIX "${PROJECT_BINARY_DIR}/openssl-prefix")
+    set(OPENSSL_DIR "${PROJECT_BINARY_DIR}/openssl")
+    set(OPENSSL_SOURCE "${OPENSSL_PREFIX}/src/openssl")
+    ExternalProject_Add(
+        openssl-external
+        URL "${EXTERNAL}/openssl/openssl-1.0.2d.tar.gz"
+        PREFIX "${OPENSSL_PREFIX}"
+        CONFIGURE_COMMAND ./config --prefix=$ {OPENSSL_DIR} shared no-idea no-mdc2 no-rc5
+                                            BUILD_COMMAND make
+                                            BUILD_IN_SOURCE 1
+                                            INSTALL_COMMAND make install
+    )
+    add_custom_target(openssl DEPENDS openssl-external)
 ## Python
+endif()
+
+set(PYTHON_CONFIGURE_OPTIONS
+    --enable-ipv6
+    --with-system-ffi
+    --with-fpectl
+    --with-threads
+    no-ssl2
+)
+if(LINUX)
+    # Ubuntu uses ucs4
+    set(PYTHON_CONFIGURE_OPTIONS ${PYTHON_CONFIGURE_OPTIONS} --enable-unicode=ucs4)
+endif()
+if(APPLE)
+    # Choose 64-bit build on Mac
+    set(PYTHON_CONFIGURE_OPTIONS ${PYTHON_CONFIGURE_OPTIONS}
+        darwin64-x86_64-cc
+        --enable-unicode=ucs2
+    )
+endif()
+
+set(PYTHON_OPENSSL "")
+if(LINUX)
+    set(PYTHON_OPENSSL "CPPFLAGS=-I${OPENSSL_DIR}" "LDFLAGS=-L${OPENSSL_DIR}/lib -L/usr/lib/x86_64-linux-gnu")
+endif()
 
 set(PYTHON_PREFIX "${PROJECT_BINARY_DIR}/python2.7-prefix")
 set(PYTHON_DIR "${PROJECT_BINARY_DIR}/python2.7")
@@ -51,7 +79,7 @@ ExternalProject_Add(
     URL "${EXTERNAL}/python-2.7/Python-2.7.10.tgz"
     PREFIX "${PYTHON_PREFIX}"
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy ${EXTERNAL}/python-2.7/Setup.local ${PYTHON_SOURCE}/Modules/
-    CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env "CPPFLAGS=-I${OPENSSL_DIR}" "LDFLAGS=-L${OPENSSL_DIR}/lib -L/usr/lib/x86_64-linux-gnu" ./configure --prefix=${PYTHON_DIR} --enable-ipv6 --with-system-ffi --with-fpectl no-ssl2 --with-threads --enable-unicode=ucs4
+    CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env ${PYTHON_OPENSSL} ./configure --prefix=${PYTHON_DIR} ${PYTHON_CONFIGURE_OPTIONS}
     BUILD_COMMAND make
     BUILD_IN_SOURCE 1
     INSTALL_COMMAND make install
@@ -64,22 +92,35 @@ add_custom_target(python2.7-postinstall
 )
 set(PIP "${PYTHON_DIR}/bin/pip")
 
-## libcurl
 
-set(CURL_PREFIX "${PROJECT_BINARY_DIR}/curl-prefix")
-set(CURL_DIR "${PROJECT_BINARY_DIR}/curl")
-ExternalProject_Add(
-    libcurl-external
-    URL "${EXTERNAL}/curl/curl-7.44.0.zip"
-    PREFIX "${CURL_PREFIX}"
-    CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env "CPPFLAGS=-I${OPENSSL_DIR}" "LDFLAGS=-L${OPENSSL_DIR}/lib" ./configure --with-ssl=${OPENSSL_DIR} --prefix=${CURL_DIR}
-    BUILD_COMMAND make
-    BUILD_IN_SOURCE 1
-    INSTALL_COMMAND make install
-)
-add_custom_target(libcurl DEPENDS libcurl-external)
+if(LINUX)
+
+    ## libcurl
+
+    set(CURL_PREFIX "${PROJECT_BINARY_DIR}/curl-prefix")
+    set(CURL_DIR "${PROJECT_BINARY_DIR}/curl")
+    ExternalProject_Add(
+        libcurl-external
+        URL "${EXTERNAL}/curl/curl-7.44.0.zip"
+        PREFIX "${CURL_PREFIX}"
+        CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env "CPPFLAGS=-I${OPENSSL_DIR}" "LDFLAGS=-L${OPENSSL_DIR}/lib" ./configure --with-ssl=${OPENSSL_DIR} --prefix=${CURL_DIR}
+                BUILD_COMMAND make
+                BUILD_IN_SOURCE 1
+                INSTALL_COMMAND make install
+    )
+    add_custom_target(libcurl DEPENDS libcurl-external)
+
+endif()
+if(APPLE)
+    add_custom_target(libcurl) # nop
+endif()
+
 
 ## pycurl
+
+if(LINUX)
+    set(PYCURL_OPTS --curl-config=$ {CURL_DIR}/bin/curl-config)
+endif()
 
 set(PYCURL_PREFIX "${PROJECT_BINARY_DIR}/pycurl-prefix")
 set(PYCURL_DIR "${PROJECT_BINARY_DIR}/pycurl")
@@ -91,10 +132,11 @@ ExternalProject_Add(
     PREFIX "${PYCURL_PREFIX}"
     CONFIGURE_COMMAND ""
     BUILD_IN_SOURCE 1
-    BUILD_COMMAND ${PYTHON} ${PYCURL_SOURCE}/setup.py install --curl-config=${CURL_DIR}/bin/curl-config --with-ssl
-    INSTALL_COMMAND ""
+    BUILD_COMMAND ${PYTHON} ${PYCURL_SOURCE}/setup.py install ${PYCURL_OPTS} --with-ssl
+            INSTALL_COMMAND ""
 )
 add_custom_target(pycurl DEPENDS pycurl-external)
+
 
 ## wxWidgets
 
@@ -228,7 +270,7 @@ else()
 endif()
 
 install (TARGETS ${PROJECT_NAME}
-    RUNTIME DESTINATION ${APP_BIN})
+    DESTINATION ${APP_BIN})
 install (FILES ${DATAFILES}
     DESTINATION "${APP_RES}")
 install (DIRECTORY "${PROJECT_BINARY_DIR}/python2.7/"
