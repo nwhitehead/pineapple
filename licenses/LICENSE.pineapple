@@ -1,58 +1,28 @@
-====================================
-Pineapple Application
-====================================
+========================================
+Pineapple
+========================================
 
-Copyright (c) 2015, Nathan Whitehead.
-All rights reserved.
+Copyright 2015 Nathan Whitehead
+Distributed under the terms of the GNU
+General Public License.
 
-This application is made up of many
-components and libraries, each of
-which includes a license. You may not
-redistribute any component without
-following the terms of the appropriate
-license.
+Pineapple is free software: you can
+redistribute it and/or modify it under
+the terms of the GNU General Public
+License as published by the Free
+Software Foundation, either version
+3 of the License, or (at your option)
+any later version.
 
-The top-level Pineapple application
-and example files (the Software) were
-created by Nathan Whitehead in 2015
-and are protected by copyright. This
-license governs the relationship
-between the purchaser (you) and
-Nathan Whitehead, a private person
-whose principal place of business is
-541 Pine Ave.  This agreement sets
-the terms, rights, restrictions and
-obligations on using the Software.
+Pineapple is distributed in the hope
+that it will be useful, but WITHOUT
+ANY WARRANTY; without even the
+implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for
+more details.
 
-If you purchased a license to the
-Software then you are permitted to use
-the application in binary form.
-
-You are permitted to install the
-application on any number of computers
-that you own and use exclusively.
-
-For the purposes of collaboration you
-may install the application on up to
-5 other people's computers provided
-they agree to these terms and agree
-to delete the application once the
-collaboration is completed.
-
-You may not assign or transfer your
-rights and duties under this license.
-
-THE SOFTWARE IS PROVIDED "AS IS",
-WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED
-TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT.  IN NO EVENT SHALL
-THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF
-CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS
-IN THE SOFTWARE.
-
+You should have received a copy
+of the GNU General Public License
+along with Pineapple.  If not, see
+<http://www.gnu.org/licenses/>.
