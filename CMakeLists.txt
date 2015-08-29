@@ -1,4 +1,4 @@
-set (CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/dist") # install locally
+set (CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}") # install locally
 
 project(Pineapple)
 cmake_minimum_required(VERSION 2.8)
