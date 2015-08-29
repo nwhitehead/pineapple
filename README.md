@@ -1,37 +1,16 @@
 # Pineapple
 
 This project is a standalone Jupyter environment for doing data science
-using Python and Lua. It aims to include as many useful working libraries
-and packages as possible, while remaining super easy to install and use.
-
-This project uses git submodules for referencing other components:
-    pyinstaller
-
-You can get them when you clone with `git clone --recursive ...`. If you
-didn't do that when you cloned, you can get them afterwards with
-`git submodule update --init --recursive` from within the repo.
+using Python. It aims to include many useful working libraries
+and packages, while remaining super easy to install and use.
 
 ## Building Prerequisites
 
 General requirements:
-* C++11 compiler (e.g. g++-4.9)
-* Python, virtualenv (use brew on Mac OS X)
+* C++11 compiler (e.g. g++-4.9 or later)
 * wxWidgets 3.x (source compile)
 
 ### Mac OS X
-
-Use Homebrew for python versions ([http://brew.sh/]). Follow instructions
-on website to get get brew setup, then do:
-
-```
-brew install python
-```
-
-Next get virtualenv using pip (pip is installed as part of Python).
-
-```
-pip install virtualenv
-```
 
 For wxWidgets, I downloaded the source then used:
 
@@ -45,7 +24,7 @@ sudo make install
 
 ### Ubuntu 14.04
 
-To get g++-4.9 use the Ubuntu Toolchain PPA.
+To get g++-4.9 (required) use the Ubuntu Toolchain PPA.
 
 ```
 sudo add-apt-repository ppa:ubuntu-toolchain-r/test
@@ -56,7 +35,11 @@ sudo apt-get install g++-4.9
 You'll need various development files to compile.
 
 ```
-sudo apt-get install build-essential libgtk2.0-dev python2.7
+sudo apt-get install build-essential libz-dev libgtk2.0-dev
+    libreadline-dev libssl-dev libncursesw5-dev
+    libgdbm-dev libsqlite3-dev libbz2-dev liblzma-dev
+    libreadline-gplv2-dev
+    libc6-dev
 ```
 
 Get the wxWidget source and compile:
@@ -69,13 +52,6 @@ make -j4
 sudo make install
 ```
 
-Make sure pip and virtualenv are updated.
-
-```
-pip install --upgrade pip
-pip install --upgrade virtualenv
-```
-
 ## Building for local testing
 
 If prerequisites are met, you should be able to do:
@@ -83,39 +59,26 @@ If prerequisites are met, you should be able to do:
 ```
 mkdir build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=. ..
+cmake ..
 make
 ```
 
-This sets up virtualenv, installs requirements with pip, and builds
+This builds python and various libraries,
+installs requirements with pip, and builds
 the main application. Do `make localtest` to try it.
-[On Linux, do `make install && make localtest`].
 
 ## Distribution
 
-To build a redistributable package, you need to first package the Jupyter
-server component using PyInstaller.
-
-```
-make server
-```
-
-Next you need to create the redistributable application in the build
-directory.
+Redistributable packages are built using CPack.
 
 ```
 make install
-```
-
-Finally you package up the application into a platform-specific format
-for distribution using CPack.
-
-```
 make package
 ```
 
 The final redistributable files will be placed at the top level of the
-build directory.
+build directory. Final packages will be compressed tar files for
+Linux, DMG images for Mac.
 
 ## Notes
 
@@ -125,19 +88,7 @@ If you want to change the icon images, you'll need to regenerate the icns files.
 I did this using [https://iconverticons.com] because the command-line tools
 I found were out of date and I didn't want to hassle with automating it.
 
+## Contact
 
-# Python Build
-
-Switching to explicit Python build so users can add their own packages,
-overlooked modules are still available from the standard library, etc.
-
-## Ubuntu 14.04
-
-```
-apt-get install build-essential libz-dev 
-    libreadline-dev libssl-dev libncursesw5-dev
-    libgdbm-dev libsqlite3-dev libbz2-dev liblzma-dev
-    libreadline-gplv2-dev
-    libc6-dev
-```
-
+Pineapple is a project of Nathan Whitehead, copyright 2015.
+Let me know what you think at nwhitehe [at] gmail.com.
