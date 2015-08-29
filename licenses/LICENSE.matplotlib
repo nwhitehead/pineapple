@@ -1,0 +1,305 @@
+LICENSE AGREEMENT FOR MATPLOTLIB 1.2.0
+--------------------------------------
+
+1. This LICENSE AGREEMENT is between John D. Hunter ("JDH"), and the
+Individual or Organization ("Licensee") accessing and otherwise using
+matplotlib software in source or binary form and its associated
+documentation.
+
+2. Subject to the terms and conditions of this License Agreement, JDH
+hereby grants Licensee a nonexclusive, royalty-free, world-wide license
+to reproduce, analyze, test, perform and/or display publicly, prepare
+derivative works, distribute, and otherwise use matplotlib 1.2.0
+alone or in any derivative version, provided, however, that JDH's
+License Agreement and JDH's notice of copyright, i.e., "Copyright (c)
+2002-2011 John D. Hunter; All Rights Reserved" are retained in
+matplotlib 1.2.0 alone or in any derivative version prepared by
+Licensee.
+
+3. In the event Licensee prepares a derivative work that is based on or
+incorporates matplotlib 1.2.0 or any part thereof, and wants to
+make the derivative work available to others as provided herein, then
+Licensee hereby agrees to include in any such work a brief summary of
+the changes made to matplotlib 1.2.0.
+
+4. JDH is making matplotlib 1.2.0 available to Licensee on an "AS
+IS" basis.  JDH MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
+IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, JDH MAKES NO AND
+DISCLAIMS ANY REPRESENTATION OR WARRANTY OF MERCHANTABILITY OR FITNESS
+FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF MATPLOTLIB 1.2.0
+WILL NOT INFRINGE ANY THIRD PARTY RIGHTS.
+
+5. JDH SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF MATPLOTLIB
+1.2.0 FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR
+LOSS AS A RESULT OF MODIFYING, DISTRIBUTING, OR OTHERWISE USING
+MATPLOTLIB 1.2.0, OR ANY DERIVATIVE THEREOF, EVEN IF ADVISED OF
+THE POSSIBILITY THEREOF.
+
+6. This License Agreement will automatically terminate upon a material
+breach of its terms and conditions.
+
+7. Nothing in this License Agreement shall be deemed to create any
+relationship of agency, partnership, or joint venture between JDH and
+Licensee.  This License Agreement does not grant permission to use JDH
+trademarks or trade name in a trademark sense to endorse or promote
+products or services of Licensee, or any third party.
+
+8. By copying, installing or otherwise using matplotlib 1.2.0,
+Licensee agrees to be bound by the terms and conditions of this License
+Agreement.
+
+========================================================================
+Apache-Style Software License for ColorBrewer Color Schemes
+
+Version 1.1
+
+Copyright (c) 2002 Cynthia Brewer, Mark Harrower, and The Pennsylvania 
+State University. All rights reserved. Redistribution and use in source 
+and binary forms, with or without modification, are permitted provided 
+that the following conditions are met:
+
+1. Redistributions as source code must retain the above copyright notice, 
+this list of conditions and the following disclaimer.
+
+2. The end-user documentation included with the redistribution, if any, 
+must include the following acknowledgment: "This product includes color 
+specifications and designs developed by Cynthia Brewer 
+(http://colorbrewer.org/)." Alternately, this acknowledgment may appear in 
+the software itself, if and wherever such third-party acknowledgments 
+normally appear.
+
+3. The name "ColorBrewer" must not be used to endorse or promote products 
+derived from this software without prior written permission. For written 
+permission, please contact Cynthia Brewer at cbrewer@psu.edu.
+
+4. Products derived from this software may not be called "ColorBrewer", 
+nor may "ColorBrewer" appear in their name, without prior written 
+permission of Cynthia Brewer.
+
+THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESSED OR IMPLIED WARRANTIES, 
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY 
+AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+CYNTHIA BREWER, MARK HARROWER, OR THE PENNSYLVANIA STATE UNIVERSITY BE 
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+POSSIBILITY OF SUCH DAMAGE.
+
+Unless otherwise specified by LICENSE.txt files in individual
+directories, all code is
+
+========================================================================
+Copyright (C) 2011, the scikit-image team
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+ 1. Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the
+    distribution.
+ 3. Neither the name of skimage nor the names of its contributors may be
+    used to endorse or promote products derived from this software without
+    specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+
+========================================================================
+TERMS AND CONDITIONS
+
+   1. Permission is hereby granted, free of charge, to any person 
+obtaining a copy of the STIX Fonts-TM set accompanying this license 
+(collectively, the "Fonts") and the associated documentation files 
+(collectively with the Fonts, the "Font Software"), to reproduce and 
+distribute the Font Software, including the rights to use, copy, merge 
+and publish copies of the Font Software, and to permit persons to whom 
+the Font Software is furnished to do so same, subject to the following 
+terms and conditions (the "License").
+
+   2. The following copyright and trademark notice and these Terms and 
+Conditions shall be included in all copies of one or more of the Font 
+typefaces and any derivative work created as permitted under this 
+License:
+
+	Copyright (c) 2001-2005 by the STI Pub Companies, consisting of 
+the American Institute of Physics, the American Chemical Society, the 
+American Mathematical Society, the American Physical Society, Elsevier, 
+Inc., and The Institute of Electrical and Electronic Engineers, Inc. 
+Portions copyright (c) 1998-2003 by MicroPress, Inc. Portions copyright 
+(c) 1990 by Elsevier, Inc. All rights reserved. STIX Fonts-TM is a 
+trademark of The Institute of Electrical and Electronics Engineers, Inc.
+
+   3. You may (a) convert the Fonts from one format to another (e.g., 
+from TrueType to PostScript), in which case the normal and reasonable 
+distortion that occurs during such conversion shall be permitted and (b) 
+embed or include a subset of the Fonts in a document for the purposes of 
+allowing users to read text in the document that utilizes the Fonts. In 
+each case, you may use the STIX Fonts-TM mark to designate the resulting 
+Fonts or subset of the Fonts.
+
+   4. You may also (a) add glyphs or characters to the Fonts, or modify 
+the shape of existing glyphs, so long as the base set of glyphs is not 
+removed and (b) delete glyphs or characters from the Fonts, provided 
+that the resulting font set is distributed with the following 
+disclaimer: "This [name] font does not include all the Unicode points 
+covered in the STIX Fonts-TM set but may include others." In each case, 
+the name used to denote the resulting font set shall not include the 
+term "STIX" or any similar term.
+
+   5. You may charge a fee in connection with the distribution of the 
+Font Software, provided that no copy of one or more of the individual 
+Font typefaces that form the STIX Fonts-TM set may be sold by itself.
+
+   6. THE FONT SOFTWARE IS PROVIDED "AS IS," WITHOUT WARRANTY OF ANY 
+KIND, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, ANY WARRANTIES 
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT 
+OF COPYRIGHT, PATENT, TRADEMARK OR OTHER RIGHT. IN NO EVENT SHALL 
+MICROPRESS OR ANY OF THE STI PUB COMPANIES BE LIABLE FOR ANY CLAIM, 
+DAMAGES OR OTHER LIABILITY, INCLUDING, BUT NOT LIMITED TO, ANY GENERAL, 
+SPECIAL, INDIRECT, INCIDENTAL OR CONSEQUENTIAL DAMAGES, WHETHER IN AN 
+ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM OR OUT OF THE USE OR 
+INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS IN THE FONT 
+SOFTWARE.
+
+   7. Except as contained in the notice set forth in Section 2, the 
+names MicroPress Inc. and STI Pub Companies, as well as the names of the 
+companies/organizations that compose the STI Pub Companies, shall not be 
+used in advertising or otherwise to promote the sale, use or other 
+dealings in the Font Software without the prior written consent of the 
+respective company or organization.
+
+   8. This License shall become null and void in the event of any 
+material breach of the Terms and Conditions herein by licensee.
+
+   9. A substantial portion of the STIX Fonts set was developed by 
+MicroPress Inc. for the STI Pub Companies. To obtain additional 
+mathematical fonts, please contact MicroPress, Inc., 68-30 Harrow 
+Street, Forest Hills, NY 11375, USA - Phone: (718) 575-1816.
+
+========================================================================
+
+BSD-style license for gist/yorick colormaps.
+
+Copyright:
+
+  Copyright (c) 1996.  The Regents of the University of California.
+			 All rights reserved.
+
+Permission to use, copy, modify, and distribute this software for any
+purpose without fee is hereby granted, provided that this entire
+notice is included in all copies of any software which is or includes
+a copy or modification of this software and in all copies of the
+supporting documentation for such software.
+
+This work was produced at the University of California, Lawrence
+Livermore National Laboratory under contract no. W-7405-ENG-48 between
+the U.S. Department of Energy and The Regents of the University of
+California for the operation of UC LLNL.
+
+
+			      DISCLAIMER
+
+This software was prepared as an account of work sponsored by an
+agency of the United States Government.  Neither the United States
+Government nor the University of California nor any of their
+employees, makes any warranty, express or implied, or assumes any
+liability or responsibility for the accuracy, completeness, or
+usefulness of any information, apparatus, product, or process
+disclosed, or represents that its use would not infringe
+privately-owned rights.  Reference herein to any specific commercial
+products, process, or service by trade name, trademark, manufacturer,
+or otherwise, does not necessarily constitute or imply its
+endorsement, recommendation, or favoring by the United States
+Government or the University of California.  The views and opinions of
+authors expressed herein do not necessarily state or reflect those of
+the United States Government or the University of California, and
+shall not be used for advertising or product endorsement purposes.
+
+
+				AUTHOR
+
+David H. Munro wrote Yorick and Gist.  Berkeley Yacc (byacc) generated
+the Yorick parser.  The routines in Math are from LAPACK and FFTPACK;
+MathC contains C translations by David H. Munro.  The algorithms for
+Yorick's random number generator and several special functions in
+Yorick/include were taken from Numerical Recipes by Press, et. al.,
+although the Yorick implementations are unrelated to those in
+Numerical Recipes.  A small amount of code in Gist was adapted from
+the X11R4 release, copyright M.I.T. -- the complete copyright notice
+may be found in the (unused) file Gist/host.c.
+
+========================================================================
+
+Copyright (c) 2001, 2002 Enthought, Inc.
+
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+  a. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
+  b. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
+  c. Neither the name of the Enthought nor the names of its contributors
+     may be used to endorse or promote products derived from this software
+     without specific prior written permission.
+
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGE.
+
+========================================================================
+Copyright (c) 1970-2003, Wm. Randolph Franklin
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+   1. Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimers.
+   2. Redistributions in binary form must reproduce the above
+      copyright notice in the documentation and/or other materials
+      provided with the distribution.
+   3. The name of W. Randolph Franklin may not be used to endorse or
+      promote products derived from this Software without specific
+      prior written permission. 
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

@@ -1,18 +1,16 @@
 To-do lists.
 
-timeouts in case connection lost/super slow
 welcome doc in dmg
-example notebooks, with menu items to load
+add examples... menu item to global menu with no docs open
+put all licenses together in dir, script to gen final license file
 
 update branding/logos
 write webpage to advertise
 custom theme colors (first pass done)
-standard packages available easily in python
 get working on Windows same way as linux
 windows installer
 automate builds for releases
 add more packages following pyzo
-write a few demo notebooks
 include variation with python 3.4
 include variation with python 3.5 (demo @ operator!!!)
 
@@ -20,7 +18,6 @@ bug: mac version you need to quit twice
 bug: when interrupt,restart kernel, sometimes lose connection, cannot restart
 bug: intermittent leftover python kernels sometimes
 bug: big output causes pineapple to hang while rendering (eg recursion f x = f x)
-bug: need to save before export, otherwise won't get latest changes
 
 Competitors:
 

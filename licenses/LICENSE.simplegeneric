@@ -1,0 +1,22 @@
+Metadata-Version: 2.0
+Name: simplegeneric
+Version: 0.8.1
+Summary: Simple generic functions (similar to Python's own len(), pickle.dump(), etc.)
+Home-page: http://cheeseshop.python.org/pypi/simplegeneric
+Author: Phillip J. Eby
+Author-email: peak@eby-sarna.com
+License: ZPL 2.1
+Platform: UNKNOWN
+Classifier: Development Status :: 6 - Mature
+Classifier: Development Status :: 7 - Inactive
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Zope Public License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.4
+Classifier: Programming Language :: Python :: 2.5
+Classifier: Programming Language :: Python :: 2.6
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
