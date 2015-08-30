@@ -1,3 +1,4 @@
+pineapple
 notebook
 ipykernel
 numpy
