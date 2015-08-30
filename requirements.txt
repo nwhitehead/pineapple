@@ -1,4 +1,3 @@
--e git+git://github.com/nwhitehead/nbconvert@e007bf08fafc80316de0b600aeef95e535cc823a#egg=nbconvert-dev
 notebook
 ipykernel
 numpy
