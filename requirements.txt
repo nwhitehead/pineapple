@@ -1,5 +1,5 @@
-pineapple
 notebook
 ipykernel
 numpy
 matplotlib
+IVisual-alt
