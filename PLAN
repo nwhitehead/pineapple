@@ -14,20 +14,20 @@ automate builds for releases
 add more packages following pyzo
 include variation with python 3.4
 include variation with python 3.5 (demo @ operator!!!)
+add extensions such as graphviz: https://github.com/ipython/ipython/wiki/Extensions-Index
 
 bug: mac version you need to quit twice
 bug: when interrupt,restart kernel, sometimes lose connection, cannot restart
 bug: intermittent leftover python kernels sometimes
 bug: big output causes pineapple to hang while rendering (eg recursion f x = f x)
 
-Competitors:
+Other packages:
 
-DIY using Portable Python
-    http://www.walkingrandomly.com/?p=5734
-
-Some alternatives from http://portablepython.com/
+Some alternatives:
     Anaconda
         https://store.continuum.io/cshop/anaconda/
+    DIY using Portable Python
+        http://www.walkingrandomly.com/?p=5734
     PythonXY
         https://code.google.com/p/pythonxy/
     WinPython
