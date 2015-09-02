@@ -214,6 +214,7 @@ set(DATAFILES
     data/examples/Plotting.ipynb
     data/examples/RichOutput.ipynb
     data/examples/Timing.ipynb
+    data/examples/Video.ipynb
 )
 
 set(SRC_LIST
