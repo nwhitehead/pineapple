@@ -36,6 +36,7 @@
 #include "gui_util.hh"
 #include "util.hh"
 #include "MainFrame.hh"
+#include "MainApp.hh"
 
 /**
  * Data structure for keeping track of tree and filenames
@@ -76,8 +77,17 @@ ExamplesFrame::ExamplesFrame(wxWindow */* parent */)
     wxLogDebug("ExamplesFrame::ExamplesFrame");
 
     SetupTree();
+    Bind(wxEVT_CLOSE_WINDOW, &ExamplesFrame::OnClose, this, wxID_ANY);
     Show();
 }
+
+void ExamplesFrame::OnClose(wxCloseEvent &/* event */)
+{
+    wxLogDebug("ExamplesFrame::OnClose");
+    wxGetApp().examples_frame = nullptr;
+    Destroy();
+}
+
 
 void SpawnExample(wxFrame */* parent */, wxTreeItemId id)
 {

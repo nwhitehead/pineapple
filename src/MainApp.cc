@@ -46,6 +46,7 @@ static void signal_handler(int /* signum */)
 
 bool MainApp::OnInit()
 {
+    examples_frame = nullptr;
     waiting_to_quit = false;
 
     // Load blank notebook so we can do "New"

@@ -30,4 +30,5 @@ class ExamplesFrame: public wxFrame
 public:
     ExamplesFrame(wxWindow *parent);
     void SetupTree();
+    void OnClose(wxCloseEvent &event);
 };

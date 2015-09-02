@@ -27,6 +27,7 @@
 #include "config.hh"
 #include "MainFrame.hh"
 #include "RecentManager.hh"
+#include "ExamplesFrame.hh"
 
 class MainApp: public wxApp
 {
@@ -44,6 +45,7 @@ public:
 
     wxProcess *server;
     MainFrame *frame;
+    ExamplesFrame *examples_frame;
     std::string blank_notebook;
     std::string load_page;
     RecentManager recently_used;

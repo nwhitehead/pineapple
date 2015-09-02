@@ -673,7 +673,11 @@ void MainFrame::OnOpenExample(wxCommandEvent &/* event */)
 {
     wxLogDebug("MainFrame::OnOpenExample");
 
+    if (wxGetApp().examples_frame != nullptr) {
+        wxGetApp().examples_frame->Close();
+    }
     ExamplesFrame *examples(new ExamplesFrame(nullptr));
-    wxLogDebug("MainFrame::OneOpenExample %p", examples);
+    wxLogDebug("MainFrame::OnOpenExample %p", examples);
+    wxGetApp().examples_frame = examples;
     examples->Show();
 }
