@@ -171,7 +171,6 @@ void MainApp::OnAbout(wxCommandEvent &/* event */)
     ss << config::version_full << "\n\n";
     ss << "Copyright (c) 2015 Nathan Whitehead\n\n";
     ss << wxGetLibraryVersionInfo().ToString() << "\n";
-    ss << "Icons are from: https://icons8.com/" << std::endl; 
     wxMessageBox(ss.str(), "About", wxOK | wxICON_INFORMATION);
 }
 

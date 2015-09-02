@@ -189,24 +189,22 @@ set(DATAFILES
     data/blank.ipynb
     data/images/Pineapple.icns
     data/images/Pineapple-Doc.icns
-    data/images/Copy-50.png
-    data/images/Cut-50.png
-    data/images/Delete-50.png
-    data/images/Down-50.png
-    data/images/Edit-50.png
-    data/images/Fantasy-50.png
-    data/images/FastForward-50.png
+    data/images/Copy.png
+    data/images/Cut.png
+    data/images/Delete.png
+    data/images/Down.png
+    data/images/FastForward.png
     data/images/Led-Blue-On-1632.png
     data/images/Led-Blue-Off-1632.png
-    data/images/Paste-50.png
-    data/images/Pen-50.png
-    data/images/Play-50.png
-    data/images/Plus-50.png
-    data/images/Save-50.png
-    data/images/SaveAs-50.png
-    data/images/Stop-50.png
-    data/images/Synchronize-50.png
-    data/images/Up-50.png
+    data/images/Paste.png
+    data/images/Pen.png
+    data/images/Pencil.png
+    data/images/Play.png
+    data/images/Plus.png
+    data/images/Save.png
+    data/images/Stop.png
+    data/images/Synchronize.png
+    data/images/Up.png
     data/examples/Basics.ipynb
     data/examples/Editing.ipynb
     data/examples/Execution.ipynb
