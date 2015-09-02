@@ -112,7 +112,7 @@ bool FindNewFileName(wxFileName &fullname, std::string prefix,
     int n = 1;
     do {
         std::stringstream ss;
-        if (n > 1) {
+        if (n > 0) {
             ss << prefix << n << suffix;
         } else {
             ss << prefix << suffix;

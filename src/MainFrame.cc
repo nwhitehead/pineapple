@@ -367,8 +367,10 @@ void MainFrame::CreateNew(bool indirect_load)
                         config::untitled_max_num, false)) {
         wxLogDebug("MainFrame::CreateNew filename=[%s]", fullname.GetFullPath());
         // FIXME: drive must be the same as we mounted for windows!!!
-        std::ofstream out(fullname.GetFullPath());
-        out << wxGetApp().blank_notebook << std::endl;
+        {
+            std::ofstream out(fullname.GetFullPath());
+            out << wxGetApp().blank_notebook << std::endl;
+        }
         // Get path in UNIX so it is a URI
         std::string uri(fullname.GetFullPath(wxPATH_UNIX));
         std::string filename(fullname.GetFullPath());
