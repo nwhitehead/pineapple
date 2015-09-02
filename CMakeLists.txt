@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 2.8)
 set(VERSION_NAME "Pineapple")
 set(UPPERCASE_VERSION_NAME "PINEAPPLE")
 set(VERSION_MAJOR 0)
-set(VERSION_MINOR 3)
+set(VERSION_MINOR 4)
 
 
 
@@ -168,6 +168,7 @@ include(${wxWidgets_USE_FILE})
 add_custom_target(requirements-install
     DEPENDS python2.7 python2.7-postinstall openssl libcurl pycurl
     COMMAND ${CMAKE_COMMAND} -E env LD_LIBRARY_PATH=${SSL_DIR}/lib:${CURL_DIR}/lib ${PIP} install -r ${PROJECT_SOURCE_DIR}/requirements.txt
+    COMMAND ${PROJECT_SOURCE_DIR}/scripts/clean-python.sh ${PYTHON_DIR}
 )
 # Server resources
 add_custom_target(custom-reinstall
