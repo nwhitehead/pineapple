@@ -303,7 +303,7 @@ void MainFrame::SetupBindings()
     MainApp *theApp = &wxGetApp();
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainApp::OnQuit, theApp, wxID_EXIT);
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnPrint, this, wxID_PRINT);
-    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnOpenExample, this, wxID_OPEN_EXAMPLE);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnOpenExample, wxID_OPEN_EXAMPLE);
 
     bind_export(wxID_EXPORT_PYTHON, "python");
     bind_export(wxID_EXPORT_HTML, "html");
@@ -671,9 +671,9 @@ void MainFrame::Export(std::string format)
 
 void MainFrame::OnOpenExample(wxCommandEvent &/* event */)
 {
-    wxLogDebug("MainFrame::OnOpenExample grrr");
+    wxLogDebug("MainFrame::OnOpenExample");
 
-    ExamplesFrame *examples(new ExamplesFrame(this));
+    ExamplesFrame *examples(new ExamplesFrame(nullptr));
     wxLogDebug("MainFrame::OneOpenExample %p", examples);
     examples->Show();
 }

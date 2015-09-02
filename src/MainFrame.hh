@@ -75,13 +75,13 @@ public:
 
     static void OnNew(wxCommandEvent &event);
     static void OnOpen(wxCommandEvent &event);
+    static void OnOpenExample(wxCommandEvent &event);
     void OnSave(wxCommandEvent &event);
     void OnSaveAs(wxCommandEvent &event);
     void OnProperties(wxCommandEvent &event);
     void OnMenuClose(wxCommandEvent &event);
     void OnMenuCloseAll(wxCommandEvent &event);
     void OnPrint(wxCommandEvent &event);
-    void OnOpenExample(wxCommandEvent &event);
     void OnTimerEvent(wxTimerEvent &event);
 
     void SetupMenu();
