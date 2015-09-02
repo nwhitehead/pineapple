@@ -3,3 +3,4 @@ ipykernel
 numpy
 matplotlib
 IVisual-alt
+pineapple

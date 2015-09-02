@@ -45,7 +45,7 @@ std::string python_fullpath()
     wxFileName wfname(respath, "");
     wfname.AppendDir("python2.7");
     wfname.AppendDir("bin");
-    wfname.SetFullName("python");
+    wfname.SetFullName("python2.7");
     return std::string(wfname.GetFullPath());
 }
 

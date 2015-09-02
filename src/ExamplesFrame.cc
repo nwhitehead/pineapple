@@ -58,7 +58,7 @@ tree_type tree_data {
         }
     },
     { "Examples", {
-            std::make_tuple("Heat diffusion", "Heat.ipynb")
+            std::make_tuple("Video Demo", "Video.ipynb")
         }
     }
 };
