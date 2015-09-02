@@ -33,6 +33,8 @@
 
 class MainFrame: public wxFrame
 {
+public:
+
     enum {
         wxID_EXPORT_PYTHON = 10000, wxID_EXPORT_MARKDOWN,
         wxID_EXPORT_PDF, wxID_EXPORT_HTML,
@@ -50,8 +52,6 @@ class MainFrame: public wxFrame
         wxID_KERNEL_BUSY,
         wxID_TIMER
     };
-
-public:
 
     MainFrame(std::string url0, std::string filename, const wxString &title, const wxPoint &pos, const wxSize &size, bool indirect_load);
 
