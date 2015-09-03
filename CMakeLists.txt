@@ -285,10 +285,10 @@ install (TARGETS ${PROJECT_NAME}
     DESTINATION ${APP_BIN})
 install (FILES ${DATAFILES}
     DESTINATION "${APP_RES}")
-install (DIRECTORY "${PROJECT_BINARY_DIR}/python2.7/include" DESTINATION "${APP_RES}/python2.7/include")
-install (DIRECTORY "${PROJECT_BINARY_DIR}/python2.7/lib" DESTINATION "${APP_RES}/python2.7/lib")
-install (DIRECTORY "${PROJECT_BINARY_DIR}/python2.7/man" DESTINATION "${APP_RES}/python2.7/man")
-install (DIRECTORY "${PROJECT_BINARY_DIR}/python2.7/share" DESTINATION "${APP_RES}/python2.7/share")
+install (DIRECTORY "${PROJECT_BINARY_DIR}/python2.7/include" DESTINATION "${APP_RES}/python2.7")
+install (DIRECTORY "${PROJECT_BINARY_DIR}/python2.7/lib" DESTINATION "${APP_RES}/python2.7")
+install (DIRECTORY "${PROJECT_BINARY_DIR}/python2.7/man" DESTINATION "${APP_RES}/python2.7")
+install (DIRECTORY "${PROJECT_BINARY_DIR}/python2.7/share" DESTINATION "${APP_RES}/python2.7")
 install (PROGRAMS ${binprogs}
     DESTINATION "${APP_RES}/python2.7/bin")
 install (FILES "scripts/pineapple-server"
