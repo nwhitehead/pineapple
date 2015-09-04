@@ -114,11 +114,17 @@ bool MainApp::OnInit()
 
     std::string python_path(python_fullpath());
     std::string script_path(server_fullpath());
-    std::string cmd(python_path + std::string(" ") + script_path);
     wxLogDebug("MainApp::OnInit Python [%s] Script [%s]", python_path, script_path);
+    // Need to construct "char **argv" for wxExecute, kind of convoluted in C++
+    // Passing in a single string "path/python path/server" fails if paths have spaces
+    std::vector<char> raw_python_path(python_path.begin(), python_path.end());
+    raw_python_path.push_back('\0');
+    std::vector<char> raw_script_path(script_path.begin(), script_path.end());
+    raw_script_path.push_back('\0');
+    char *argv[] = { &raw_python_path[0], &raw_script_path[0], nullptr };
     server = new wxProcess(frame);
     long res;
-    if ((res = wxExecute(cmd,
+    if ((res = wxExecute(argv,
         wxEXEC_ASYNC | wxEXEC_HIDE_CONSOLE | wxEXEC_MAKE_GROUP_LEADER,
         server))) {
         // Nonzero result means we started the subprocess successfully

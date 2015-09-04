@@ -69,9 +69,6 @@ std::string resource_filename(std::string filename)
     pathList.Add(std::string(".")); // for dev builds
     wxString respath(wxStandardPaths::Get().GetResourcesDir());
     std::string std_respath(respath);
-    if (std_respath.find(' ') != std::string::npos) {
-        wxLogFatalError("This application cannot be run from a directory containing spaces");
-    }
     pathList.Add(respath);
     wxString fname(pathList.FindValidPath(filename));
     if (!fname) {
