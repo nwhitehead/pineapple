@@ -1,0 +1,205 @@
+
+/*******************
+FONTS
+********************/
+
+@font-face {
+    font-family: 'RobotoSlab';
+    src: url('fonts/RobotoSlab-Regular-webfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'RobotoSlab';
+    src: url('fonts/RobotoSlab-Bold-webfont.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+/*******************
+CSS
+********************/
+
+/* Use font */
+body {
+}
+
+/*
+body code, kbd, pre, samp {
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.214em;
+}
+*/
+
+/* BEGIN BLOCK */
+/* Direct embedding vs. indirect */
+div#notebook-container {
+    width: 100%;
+    padding-top: 50px;
+    padding-bottom: 100px;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+div#notebook {
+    padding: 0;
+}
+/* END BLOCK */
+
+div.end_space {
+    display: none !important;
+}
+
+/* Space between input/output (not sure I want or not) */
+/*
+div.input {
+    margin-bottom: 5px;
+}
+*/
+
+@media print {
+    div.input, pre {
+        page-break-inside: avoid;
+    }
+}
+
+div.input_area {
+    margin-left: 5px;
+    border-radius: 3px;
+}
+
+/* Set background to cream */
+div#notebook-container {
+    background: transparent;
+}
+
+div#notebook {
+    background: #ffffff;
+    font-size: 16px;
+}
+
+div.input_prompt {
+    color: #4f9fcf;
+}
+div.output_prompt {
+    border-radius: 3px;
+    color: #a0b4c0;
+}
+
+/* Off black for text in markdown areas */
+div.rendered_html {
+    color: #222222;
+}
+
+/* Break up long words if we need to */
+div.rendered_html p {
+    word-wrap: break-word;
+}
+
+/* Keyboard shortcut */
+div.rendered_html kbd {
+    color: #000;
+    background-color: #f4f4f4;
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    box-shadow: 0.1em 0.2em 0.3em #ddd;
+    padding: 0.2em 0.4em;
+}
+div.rendered_html span.symbol {
+    font-size: 1.4em;
+    vertical-align: middle;
+}
+
+/*
+Idea for colors:
+Bootstrap for off-black bg (but #333333 was too much)
+Link color #4f9fcf looked nice,
+mixed with white to get edf5fa
+mixed with gray to get output prompt
+*/
+
+/* Change codemirror bg */
+div.input_area {
+      background-color: #edf5fa;
+}
+
+div.rendered_html h1 {
+    font-family: "RobotoSlab";
+    font-size: 48px;
+    font-weight: normal;
+    border-bottom: solid 1px #eeeeee;
+}
+
+div.rendered_html h2 {
+    font-family: "RobotoSlab";
+    font-weight: normal;
+    font-size: 32px;
+}
+
+/* Backticks in markdown and actual code get more distinct bg */
+div.rendered_html code {
+    color: #b32146;
+    background-color: #f9f2f4;
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
+    border-radius: 3px;
+}
+
+/* Allow code blocks */
+div.rendered_html pre code {
+    color: #333333;
+    background-color: #dcecf5;
+    display: block;
+}
+
+/* Turn off paragraph thingies */
+div.rendered_html a.anchor-link {
+    visibility: hidden;
+}
+
+.cm-s-ipython {
+/*    font-size: 16px;*/
+}
+
+/* CodeMirror neat theme */
+.cm-s-ipython span.cm-comment { color: #a86; font-style: italic; }
+.cm-s-ipython span.cm-keyword { line-height: 1em; font-weight: bold; color: blue; }
+.cm-s-ipython span.cm-string { color: #a22; }
+.cm-s-ipython span.cm-builtin { line-height: 1em; font-weight: bold; color: #077; }
+.cm-s-ipython span.cm-special { line-height: 1em; font-weight: bold; color: #0aa; }
+.cm-s-ipython span.cm-variable { color: black; }
+.cm-s-ipython span.cm-number { color: #3a3; }
+.cm-s-ipython span.cm-atom { color: #3a3; }
+.cm-s-ipython span.cm-meta {color: #555;}
+.cm-s-ipython span.cm-link { color: #3a3; }
+
+/* Pick nice outline color for cell selection */
+@media screen  {
+    div.cell.selected {
+        border-color: #A59573;
+    }
+}
+
+/* Make the cell pop with a shadow when editing */
+.edit_mode div.cell.selected {
+    border-color: #A59573;
+    box-shadow: 3px 3px 20px 0px rgba(0,0,0,0.35);
+}
+
+/* Nicer collapsed button colors */
+div.btn.btn-default.output_collapsed {
+    background-color: #3498db;
+    background-image: linear-gradient(to bottom, #3498db, #2980b9);
+    border-radius: 28px;
+    color: #ffffff;
+    padding: 7px 20px 7px 20px;
+    margin-top: 6px;
+}
+div.btn.btn-default.output_collapsed:hover {
+    background: #3cb0fd;
+    background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+}
