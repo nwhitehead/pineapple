@@ -1,13 +1,3 @@
-
-/*******************
-CSS
-********************/
-
-/* Turn off web menubar and header */
-div#menubar-container, div#header-container {
-    display: none !important;
-}
-
 /* BEGIN BLOCK */
 /* Direct embedding vs. indirect */
 div#notebook-container {
@@ -27,13 +17,6 @@ div.end_space {
     display: none !important;
 }
 
-/* Space between input/output (not sure I want or not) */
-/*
-div.input {
-    margin-bottom: 5px;
-}
-*/
-
 @media print {
     div.input, pre {
         page-break-inside: avoid;
@@ -45,7 +28,6 @@ div.input_area {
     border-radius: 3px;
 }
 
-/* Set background to cream */
 div#notebook-container {
     background: transparent;
 }
@@ -56,19 +38,17 @@ div#notebook {
 }
 
 div.input_prompt {
-    color: #4f9fcf;
+    color: #a0b4c0;
 }
 div.output_prompt {
     border-radius: 3px;
-    color: #a0b4c0;
+    color: #707e86;
 }
 
-/* Off black for text in markdown areas */
 div.rendered_html {
     color: #eeeeee;
 }
 
-/* Break up long words if we need to */
 div.rendered_html p {
     word-wrap: break-word;
 }
@@ -87,17 +67,20 @@ div.rendered_html span.symbol {
     vertical-align: middle;
 }
 
-/*
-Idea for colors:
-Bootstrap for off-black bg (but #333333 was too much)
-Link color #4f9fcf looked nice,
-mixed with white to get edf5fa
-mixed with gray to get output prompt
-*/
-
 /* Change codemirror bg */
 div.input_area {
-      background-color: #edf5fa;
+    background-color: #222;
+    border: none;
+}
+
+div.output_area {
+    color: #ff8;
+}
+div.output_area pre {
+    color: #ff8;
+}
+div.output_area div.output_stderr {
+    background-color: #400;
 }
 
 div.rendered_html h1 {
@@ -113,8 +96,8 @@ div.rendered_html h2 {
 
 /* Backticks in markdown and actual code get more distinct bg */
 div.rendered_html code {
-    color: #b32146;
-    background-color: #f9f2f4;
+    color: #eee;
+    background-color: #468321;
     padding-left: 0.3em;
     padding-right: 0.3em;
     padding-top: 0.1em;
@@ -123,10 +106,16 @@ div.rendered_html code {
 }
 
 /* Allow code blocks */
+div.rendered_html pre {
+    background: transparent;
+    border-radius: 0;
+}
+
 div.rendered_html pre code {
-    color: #333333;
-    background-color: #dcecf5;
+    color: #ddd;
+    background-color: #333;
     display: block;
+    border-radius: 3px;
 }
 
 /* Turn off paragraph thingies */
@@ -134,21 +123,63 @@ div.rendered_html a.anchor-link {
     visibility: hidden;
 }
 
-.cm-s-ipython {
-/*    font-size: 16px;*/
-}
+/* CodeMirror ambiance theme */
 
-/* CodeMirror neat theme */
-.cm-s-ipython span.cm-comment { color: #a86; font-style: italic; }
-.cm-s-ipython span.cm-keyword { line-height: 1em; font-weight: bold; color: blue; }
-.cm-s-ipython span.cm-string { color: #a22; }
-.cm-s-ipython span.cm-builtin { line-height: 1em; font-weight: bold; color: #077; }
-.cm-s-ipython span.cm-special { line-height: 1em; font-weight: bold; color: #0aa; }
-.cm-s-ipython span.cm-variable { color: black; }
-.cm-s-ipython span.cm-number { color: #3a3; }
-.cm-s-ipython span.cm-atom { color: #3a3; }
-.cm-s-ipython span.cm-meta {color: #555;}
-.cm-s-ipython span.cm-link { color: #3a3; }
+.cm-s-ipython span.cm-header {color: blue;}
+.cm-s-ipython span.cm-quote { color: #24C2C7; }
+.cm-s-ipython span.cm-keyword { color: #cda869; }
+.cm-s-ipython span.cm-atom { color: #CF7EA9; }
+.cm-s-ipython span.cm-number { color: #78CF8A; }
+.cm-s-ipython span.cm-def { color: #aac6e3; }
+.cm-s-ipython span.cm-variable { color: #ffb795; }
+.cm-s-ipython span.cm-variable-2 { color: #eed1b3; }
+.cm-s-ipython span.cm-variable-3 { color: #faded3; }
+.cm-s-ipython span.cm-property { color: #eed1b3; }
+.cm-s-ipython span.cm-operator {color: #fa8d6a;}
+.cm-s-ipython span.cm-comment { color: #555; font-style:italic; }
+.cm-s-ipython span.cm-string { color: #8f9d6a; }
+.cm-s-ipython span.cm-string-2 { color: #9d937c; }
+.cm-s-ipython span.cm-meta { color: #D2A8A1; }
+.cm-s-ipython span.cm-qualifier { color: yellow; }
+.cm-s-ipython span.cm-builtin { color: #9999cc; }
+.cm-s-ipython span.cm-bracket { color: #24C2C7; }
+.cm-s-ipython span.cm-tag { color: #fee4ff }
+.cm-s-ipython span.cm-attribute {  color: #9B859D; }
+.cm-s-ipython span.cm-hr { color: pink; }
+.cm-s-ipython span.cm-link { color: #F4C20B; }
+.cm-s-ipython span.cm-special { color: #FF9D00; }
+.cm-s-ipython span.cm-error { color: #AF2018; }
+
+div.CodeMirror.cm-s-ipython span.CodeMirror-matchingbracket { color: #ff0; }
+div.CodeMirror.cm-s-ipython p { color: #f22; }
+div.CodeMirror.cm-s-ipython { color: #E6E1DC; }
+div.CodeMirror.cm-s-default { color: #e6e1dc; } 
+
+.cm-s-ipython .CodeMirror-cursor { border-left-color: #fdf6e3 !important; }
+
+/* Make Markdown editing visible */
+.cm-s-default span.cm-header {color: #88f;}
+.cm-s-default span.cm-quote {color: #090;}
+.cm-s-default span.cm-keyword {color: #708;}
+.cm-s-default span.cm-atom {color: #219;}
+.cm-s-default span.cm-number {color: #164;}
+.cm-s-default span.cm-def {color: #00f;}
+.cm-s-default span.cm-variable-2 {color: #05a;}
+.cm-s-default span.cm-variable-3 {color: #085;}
+.cm-s-default span.cm-comment {color: #a50;}
+.cm-s-default span.cm-string {color: #a11;}
+.cm-s-default span.cm-string-2 {color: #f50;}
+.cm-s-default span.cm-meta {color: #555;}
+.cm-s-default span.cm-qualifier {color: #555;}
+.cm-s-default span.cm-builtin {color: #30a;}
+.cm-s-default span.cm-bracket {color: #997;}
+.cm-s-default span.cm-tag {color: #170;}
+.cm-s-default span.cm-attribute {color: #88f;}
+.cm-s-default span.cm-hr {color: #999;}
+.cm-s-default span.cm-link {color: #00c;}
+.cm-s-default .cm-error {color: #f00;}
+
+.cm-s-default .CodeMirror-cursor { border-left-color: #fdf6e3 !important; }
 
 /* Pick nice outline color for cell selection */
 @media screen  {
@@ -160,7 +191,7 @@ div.rendered_html a.anchor-link {
 /* Make the cell pop with a shadow when editing */
 .edit_mode div.cell.selected {
     border-color: #A59573;
-    box-shadow: 3px 3px 20px 0px rgba(0,0,0,0.35);
+    box-shadow: 0px 0px 12px 0px #fff;
 }
 
 /* Nicer collapsed button colors */

@@ -25,14 +25,6 @@ CSS
 body {
 }
 
-/*
-body code, kbd, pre, samp {
-    font-family: monospace;
-    font-size: 14px;
-    line-height: 1.214em;
-}
-*/
-
 /* BEGIN BLOCK */
 /* Direct embedding vs. indirect */
 div#notebook-container {
@@ -51,13 +43,6 @@ div#notebook {
 div.end_space {
     display: none !important;
 }
-
-/* Space between input/output (not sure I want or not) */
-/*
-div.input {
-    margin-bottom: 5px;
-}
-*/
 
 @media print {
     div.input, pre {
@@ -112,14 +97,6 @@ div.rendered_html span.symbol {
     vertical-align: middle;
 }
 
-/*
-Idea for colors:
-Bootstrap for off-black bg (but #333333 was too much)
-Link color #4f9fcf looked nice,
-mixed with white to get edf5fa
-mixed with gray to get output prompt
-*/
-
 /* Change codemirror bg */
 div.input_area {
       background-color: #edf5fa;
@@ -159,10 +136,6 @@ div.rendered_html pre code {
 /* Turn off paragraph thingies */
 div.rendered_html a.anchor-link {
     visibility: hidden;
-}
-
-.cm-s-ipython {
-/*    font-size: 16px;*/
 }
 
 /* CodeMirror neat theme */
