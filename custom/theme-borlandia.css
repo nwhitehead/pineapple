@@ -41,7 +41,7 @@ div#notebook {
 div.cell {
     background-color: #a8a8a8;
     border: 4px double #a8a8a8;
-    border-radius: 0;
+    border-radius: 0.1px;
     border-spacing: 5px;
     margin-bottom: 10px;
 }
@@ -80,7 +80,7 @@ div.rendered_html span.symbol {
 div.input_area {
     color: #fff;
     background-color: #0000a8;
-    border-radius: 0;
+    border-radius: 0.1px;
     border: 4px double #fff;
 }
 
@@ -145,13 +145,13 @@ div.rendered_html a:visited {
 
 /* CodeMirror theme */
 .cm-s-default pre { color: #fff; }
-.cm-s-ipython span { color: #fff; font-weight: bold; }
+.cm-s-ipython span { color: #fff; }
 .cm-s-ipython span.cm-comment { color: #a8a8a8; font-style: italic; font-weight: normal; }
 .cm-s-ipython span.cm-keyword { line-height: 1em; font-weight: bold; color: #ff0; }
-.cm-s-ipython span.cm-string { color: #00ffff; font-weight: bold; }
+.cm-s-ipython span.cm-string { color: #00ffff; }
 .cm-s-ipython span.cm-builtin { line-height: 1em; font-weight: bold; color: #fff; }
 .cm-s-ipython span.cm-special { line-height: 1em; font-weight: bold; color: #fff; }
-.cm-s-ipython span.cm-def { color: #ff0; font-weight: bold; }
+.cm-s-ipython span.cm-def { color: #ff0; }
 .cm-s-ipython span.cm-variable { color: #fff; }
 .cm-s-ipython span.cm-variable-2 { color: #a800a8; }
 .cm-s-ipython span.cm-number { color: #00a800; }
@@ -201,6 +201,7 @@ div.output span.ansicyan {
 @media screen  {
     div.cell.selected {
         border: 4px double #000;
+        border-radius: 0.1px;
     }
 }
 
