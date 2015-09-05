@@ -576,7 +576,8 @@ void MainFrame::UpdateTheme()
 {
     // Set theme according to preferences
     std::string theme(wxGetApp().preferences.Get("theme", config::default_theme));
-    eval_js(std::string("set_theme('") + theme + std::string("');"), [this](std::string/* x */) {
+    eval_js(std::string("global_start_theme='") + theme + \
+            std::string("'; set_theme(global_start_theme);"), [this](std::string/* x */) {
         wxLogDebug("MainFrame::OnPageLoad::callback Theme loaded");
     });    
 }

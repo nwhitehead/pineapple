@@ -37,3 +37,7 @@ var set_theme = function(url) {
     head.appendChild(link);
     console.log("Changed theme to url: " + url);
 };
+
+if (typeof global_start_theme !== 'undefined') {
+    set_theme(global_start_theme);
+}
