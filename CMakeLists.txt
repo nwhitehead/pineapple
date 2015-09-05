@@ -224,6 +224,7 @@ set(SRC_LIST
     src/MainFrame.cc
     src/MainApp.cc
     src/RecentManager.cc
+    src/PreferencesManager.cc
     ${DATAFILES}
 )
 configure_file("${PROJECT_SOURCE_DIR}/src/config.hh.in" "${PROJECT_BINARY_DIR}/include/config.hh")

@@ -37,6 +37,3 @@ var set_theme = function(url) {
     head.appendChild(link);
     console.log("Changed theme to url: " + url);
 };
-
-// Default theme
-set_theme('/custom/theme-light.css');

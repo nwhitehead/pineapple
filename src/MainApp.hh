@@ -25,9 +25,10 @@
 #include <wx/process.h>
 
 #include "config.hh"
-#include "MainFrame.hh"
-#include "RecentManager.hh"
 #include "ExamplesFrame.hh"
+#include "MainFrame.hh"
+#include "PreferencesManager.hh"
+#include "RecentManager.hh"
 
 class MainApp: public wxApp
 {
@@ -49,6 +50,7 @@ public:
     std::string blank_notebook;
     std::string load_page;
     RecentManager recently_used;
+    PreferencesManager preferences;
     std::vector<wxWindow *> frames;
     bool waiting_to_quit;
 };

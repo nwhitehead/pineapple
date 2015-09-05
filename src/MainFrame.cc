@@ -156,6 +156,12 @@ void MainFrame::SetupMenu()
     menu_kernel->Append(wxID_KERNEL_RECONNECT, "Reconnect");
     menubar->Append(menu_kernel, "Kernel");
 
+    wxMenu *menu_theme = new wxMenu();
+    menu_theme->Append(wxID_THEME_NONE, "None");
+    menu_theme->Append(wxID_THEME_LIGHT, "Light");
+    menu_theme->Append(wxID_THEME_DARK, "Dark");
+    menubar->Append(menu_theme, "Theme");
+
     wxMenu *menu_help = new wxMenu();
     menu_help->Append(wxID_HELP_KEYBOARD, "Keyboard shortcuts");
     menu_help->AppendSeparator();
@@ -262,6 +268,15 @@ void MainFrame::SetupBindings()
             }, id);
 
     };
+    
+    auto bind_theme = [this](int id, std::string theme) -> void {
+        
+        Bind(wxEVT_COMMAND_MENU_SELECTED,
+            [this, theme](wxCommandEvent &/* event */) -> void {
+                wxGetApp().preferences.Set("theme", theme);
+                UpdateTheme();
+            }, id);
+    };
 
     /// Bind simple menu items (simple Jupyter functions on the cell)
     bind_jupyter_click_cell(wxID_TRUST, "trust_notebook");
@@ -291,6 +306,11 @@ void MainFrame::SetupBindings()
     /// Bind url opens in default browser
     bind_goto_url(wxID_HELP_NOTEBOOK, "http://nbviewer.ipython.org/github/ipython/ipython/blob/3.x/examples/Notebook/Index.ipynb");
     bind_goto_url(wxID_HELP_MARKDOWN, "https://help.github.com/articles/markdown-basics/");
+
+    /// Bind theme selections
+    bind_theme(wxID_THEME_NONE, "#");
+    bind_theme(wxID_THEME_LIGHT, "/custom/theme-light.css");
+    bind_theme(wxID_THEME_DARK, "/custom/theme-dark.css");
 
     /// Bind custom menu items
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnNew, wxID_NEW);
@@ -552,6 +572,15 @@ void MainFrame::OnClose(wxCloseEvent &event)
     }
 }
 
+void MainFrame::UpdateTheme()
+{
+    // Set theme according to preferences
+    std::string theme(wxGetApp().preferences.Get("theme", config::default_theme));
+    eval_js(std::string("set_theme('") + theme + std::string("');"), [this](std::string/* x */) {
+        wxLogDebug("MainFrame::OnPageLoad::callback Theme loaded");
+    });    
+}
+
 void MainFrame::OnPageLoad(wxWebViewEvent &/* event */)
 {
     wxLogDebug("MainFrame::OnPageLoad");
@@ -561,6 +590,7 @@ void MainFrame::OnPageLoad(wxWebViewEvent &/* event */)
         }
         wxLogDebug("MainFrame::OnPageLoad::callback Page loaded jupyter=%s", jupyter_ready ? "true" : "false");
     });
+    UpdateTheme();
 }
 
 void MainFrame::OnNewWindow(wxWebViewEvent &event)

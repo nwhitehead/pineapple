@@ -35,6 +35,7 @@
 #include "gui_util.hh"
 #include "util.hh"
 #include "MainFrame.hh"
+#include "PreferencesManager.hh"
 
 wxIMPLEMENT_APP(MainApp);
 
@@ -48,6 +49,9 @@ bool MainApp::OnInit()
 {
     examples_frame = nullptr;
     waiting_to_quit = false;
+
+    // Load preferences
+    preferences.SyncRead();
 
     // Load blank notebook so we can do "New"
     blank_notebook = read_all_file(resource_filename(

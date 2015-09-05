@@ -50,6 +50,7 @@ public:
         wxID_KERNEL_INTERRUPT, wxID_KERNEL_RESTART, wxID_KERNEL_RECONNECT,
         wxID_HELP_KEYBOARD, wxID_HELP_NOTEBOOK, wxID_HELP_MARKDOWN,
         wxID_KERNEL_BUSY,
+        wxID_THEME_NONE, wxID_THEME_LIGHT, wxID_THEME_DARK,
         wxID_TIMER
     };
 
@@ -97,6 +98,7 @@ public:
     void eval_js(std::string expression, Callback::t success);
     void eval_js_event(std::string expression, std::string evtname, Callback::t continuation);
     void Export(std::string format);
+    void UpdateTheme();
 
     std::string jupyter_click_code(std::string id);
     wxTimer m_save_on_close_timer;

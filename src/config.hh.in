@@ -50,6 +50,12 @@ constexpr int example_max_num = 1000;
 constexpr char recent_files_filename[] = "recent";
 constexpr int recent_number = 10;
 
+/// Filename to store preferences
+constexpr char preferences_filename[] = "preferences";
+
+/// Default theme in preferenes
+constexpr char default_theme[] = "/custom/theme-light.css";
+
 /// Default size of main window on startup
 #if defined(__LINUX__)
     constexpr int initial_width = 900;
