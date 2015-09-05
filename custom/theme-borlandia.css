@@ -87,7 +87,8 @@ div.input_area {
 div.rendered_html h1 {
     font-size: 48px;
     font-weight: bold;
-    border-bottom: dotted 1px #888;
+    border-bottom: dotted 1px #000;
+    text-shadow: 3px 2px 0px #fff;
 }
 
 div.rendered_html h2 {
@@ -123,13 +124,27 @@ div.rendered_html pre code {
     border: 1px solid #000;
     padding: 10px;
 }
+div.rendered_html hr {
+    border-top: solid 1px #000;
+}
 
 /* Turn off paragraph thingies */
 div.rendered_html a.anchor-link {
     visibility: hidden;
 }
 
+div.rendered_html a {
+    color: #ff0;
+}
+div.rendered_html a:hover {
+    color: #fff;
+}
+div.rendered_html a:visited {
+    color: #fff;
+}
+
 /* CodeMirror theme */
+.cm-s-default pre { color: #fff; }
 .cm-s-ipython span { color: #fff; font-weight: bold; }
 .cm-s-ipython span.cm-comment { color: #a8a8a8; font-style: italic; font-weight: normal; }
 .cm-s-ipython span.cm-keyword { line-height: 1em; font-weight: bold; color: #ff0; }
@@ -147,6 +162,32 @@ div.rendered_html a.anchor-link {
 
 .cm-s-ipython div.CodeMirror-cursor { border-left-color: #fff !important; }
 
+/* Make Markdown editing visible */
+.cm-s-default pre { color: #ff0; }
+.cm-s-default span.cm-header {color: #88f;}
+.cm-s-default span.cm-quote {color: #090;}
+.cm-s-default span.cm-keyword {color: #708;}
+.cm-s-default span.cm-atom {color: #219;}
+.cm-s-default span.cm-number {color: #164;}
+.cm-s-default span.cm-def {color: #00f;}
+.cm-s-default span.cm-variable-2 {color: #05a;}
+.cm-s-default span.cm-variable-3 {color: #085;}
+.cm-s-default span.cm-comment {color: #a50;}
+.cm-s-default span.cm-string {color: #a11;}
+.cm-s-default span.cm-string-2 {color: #f50;}
+.cm-s-default span.cm-meta {color: #555;}
+.cm-s-default span.cm-qualifier {color: #555;}
+.cm-s-default span.cm-builtin {color: #30a;}
+.cm-s-default span.cm-bracket {color: #997;}
+.cm-s-default span.cm-tag {color: #170;}
+.cm-s-default span.cm-attribute {color: #88f;}
+.cm-s-default span.cm-hr {color: #999;}
+.cm-s-default span.cm-link {color: #cc8;}
+.cm-s-default .cm-error {color: #f00;}
+.cm-s-default .CodeMirror-cursor { border-left-color: #fff !important; }
+
+
+/* Make ansi colors more visible on gray background in output */
 div.output span.ansiyellow {
     color: #ff0;
     font-weight: bold;

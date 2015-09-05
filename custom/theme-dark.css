@@ -176,7 +176,7 @@ div.CodeMirror.cm-s-default { color: #e6e1dc; }
 .cm-s-default span.cm-tag {color: #170;}
 .cm-s-default span.cm-attribute {color: #88f;}
 .cm-s-default span.cm-hr {color: #999;}
-.cm-s-default span.cm-link {color: #00c;}
+.cm-s-default span.cm-link {color: #cc8;}
 .cm-s-default .cm-error {color: #f00;}
 
 .cm-s-default .CodeMirror-cursor { border-left-color: #fdf6e3 !important; }
