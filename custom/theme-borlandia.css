@@ -1,3 +1,10 @@
+@font-face {
+    font-family: 'VGA';
+    src: url('fonts/LessPerfectDOSVGA.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 /* BEGIN BLOCK */
 /* Direct embedding vs. indirect */
 div#notebook-container {
@@ -47,20 +54,30 @@ div.cell {
 }
 
 div.input_prompt {
+    font-family: 'VGA';
+    font-size: 17px;
     color: #fff;
 }
 div.output_prompt {
+    font-family: 'VGA';
+    font-size: 17px;
     border-radius: 0;
     color: #ff5;
 }
 
 div.rendered_html {
+    font-family: 'VGA';
     color: #000;
 }
 
 /* Break up long words if we need to */
 div.rendered_html p {
     word-wrap: break-word;
+}
+
+div.rendered_html strong {
+    color: #fff;
+    font-weight: normal;
 }
 
 /* Keyboard shortcut */
@@ -82,18 +99,21 @@ div.input_area {
     background-color: #00a;
     border-radius: 0.1px;
     border: 4px double #fff;
+    font-family: 'VGA';
+    font-size: 17px;
 }
 
 div.rendered_html h1 {
     font-size: 48px;
     font-weight: bold;
     border-bottom: dotted 1px #000;
-    text-shadow: 3px 2px 0px #fff;
+    text-shadow: 4px 2px 0px #fff;
 }
 
 div.rendered_html h2 {
     font-weight: bold;
     font-size: 32px;
+    text-shadow: 2px 2px 0px #fff;
 }
 
 /* Backticks in markdown and actual code get more distinct bg */
@@ -143,19 +163,21 @@ div.rendered_html a:visited {
     color: #fff;
 }
 
+/* div.cs-s-ipython { font-family: 'VGA'; } */
+
 /* CodeMirror theme */
 .cm-s-default pre { color: #fff; }
-.cm-s-ipython span { color: #fff; }
-.cm-s-ipython span.cm-comment { color: #aaa; font-style: italic; font-weight: normal; }
-.cm-s-ipython span.cm-keyword { line-height: 1em; font-weight: bold; color: #ff5; }
+.cm-s-ipython span { color: #fff; font-family: 'VGA'; line-height: 10px; font-size: 17px; }
+.cm-s-ipython span.cm-comment { color: #aaa; font-style: normal; font-weight: normal; }
+.cm-s-ipython span.cm-keyword { line-height: 1em; font-weight: normal; color: #ff5; }
 .cm-s-ipython span.cm-string { color: #5ff; }
-.cm-s-ipython span.cm-builtin { line-height: 1em; font-weight: bold; color: #fff; }
-.cm-s-ipython span.cm-special { line-height: 1em; font-weight: bold; color: #fff; }
+.cm-s-ipython span.cm-builtin { line-height: 1em; font-weight: normal; color: #fff; }
+.cm-s-ipython span.cm-special { line-height: 1em; font-weight: normal; color: #fff; }
 .cm-s-ipython span.cm-def { color: #ff5; }
 .cm-s-ipython span.cm-variable { color: #fff; }
 .cm-s-ipython span.cm-variable-2 { color: #f5f; }
 .cm-s-ipython span.cm-number { color: #5f5; }
-.cm-s-ipython span.cm-operator { color: #f5f; }
+.cm-s-ipython span.cm-operator { color: #f5f; font-weight: normal; }
 .cm-s-ipython span.cm-atom { color: #fff; }
 .cm-s-ipython span.cm-meta {color: #555;}
 .cm-s-ipython span.cm-link { color: #5f5; }
@@ -192,6 +214,11 @@ div.output span.ansired { color: #a00; }
 div.output span.ansiyellow { color: #ff5; }
 div.output span.ansicyan { color: #5ff; }
 div.output span.ansigreen { color: #555; }
+
+div.output pre {
+    font-family: 'VGA';
+    font-size: 17px;
+}
 
 /* Pick nice outline color for cell selection */
 @media screen  {
