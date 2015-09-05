@@ -33,14 +33,14 @@ div#notebook-container {
 }
 
 div#notebook {
-    background-color: #0000a8;
+    background-color: #0000aa;
     background-image: url('images/borlandia-tile.png');
     font-size: 16px;
 }
 
 div.cell {
-    background-color: #a8a8a8;
-    border: 4px double #a8a8a8;
+    background-color: #aaa;
+    border: 4px double #aaa;
     border-radius: 0.1px;
     border-spacing: 5px;
     margin-bottom: 10px;
@@ -51,7 +51,7 @@ div.input_prompt {
 }
 div.output_prompt {
     border-radius: 0;
-    color: #ff0;
+    color: #ff5;
 }
 
 div.rendered_html {
@@ -66,7 +66,7 @@ div.rendered_html p {
 /* Keyboard shortcut */
 div.rendered_html kbd {
     color: #000;
-    background-color: #f4f4f4;
+    background-color: #fff;
     border: 1px solid #aaa;
     border-radius: 3px;
     box-shadow: 0.1em 0.2em 0.3em #ddd;
@@ -79,7 +79,7 @@ div.rendered_html span.symbol {
 
 div.input_area {
     color: #fff;
-    background-color: #0000a8;
+    background-color: #00a;
     border-radius: 0.1px;
     border: 4px double #fff;
 }
@@ -98,8 +98,8 @@ div.rendered_html h2 {
 
 /* Backticks in markdown and actual code get more distinct bg */
 div.rendered_html code {
-    color: #ffff00;
-    background-color: #a8a8a8;
+    color: #ff5;
+    background-color: #aaa;
     padding-left: 0.3em;
     padding-right: 0.3em;
     padding-top: 0.1em;
@@ -134,7 +134,7 @@ div.rendered_html a.anchor-link {
 }
 
 div.rendered_html a {
-    color: #ff0;
+    color: #ff5;
 }
 div.rendered_html a:hover {
     color: #fff;
@@ -146,19 +146,19 @@ div.rendered_html a:visited {
 /* CodeMirror theme */
 .cm-s-default pre { color: #fff; }
 .cm-s-ipython span { color: #fff; }
-.cm-s-ipython span.cm-comment { color: #a8a8a8; font-style: italic; font-weight: normal; }
-.cm-s-ipython span.cm-keyword { line-height: 1em; font-weight: bold; color: #ff0; }
-.cm-s-ipython span.cm-string { color: #00ffff; }
+.cm-s-ipython span.cm-comment { color: #aaa; font-style: italic; font-weight: normal; }
+.cm-s-ipython span.cm-keyword { line-height: 1em; font-weight: bold; color: #ff5; }
+.cm-s-ipython span.cm-string { color: #5ff; }
 .cm-s-ipython span.cm-builtin { line-height: 1em; font-weight: bold; color: #fff; }
 .cm-s-ipython span.cm-special { line-height: 1em; font-weight: bold; color: #fff; }
-.cm-s-ipython span.cm-def { color: #ff0; }
+.cm-s-ipython span.cm-def { color: #ff5; }
 .cm-s-ipython span.cm-variable { color: #fff; }
-.cm-s-ipython span.cm-variable-2 { color: #a800a8; }
-.cm-s-ipython span.cm-number { color: #00a800; }
-.cm-s-ipython span.cm-operator { color: #f0f; }
+.cm-s-ipython span.cm-variable-2 { color: #f5f; }
+.cm-s-ipython span.cm-number { color: #5f5; }
+.cm-s-ipython span.cm-operator { color: #f5f; }
 .cm-s-ipython span.cm-atom { color: #fff; }
 .cm-s-ipython span.cm-meta {color: #555;}
-.cm-s-ipython span.cm-link { color: #3a3; }
+.cm-s-ipython span.cm-link { color: #5f5; }
 
 .cm-s-ipython div.CodeMirror-cursor { border-left-color: #fff !important; }
 
@@ -188,14 +188,10 @@ div.rendered_html a:visited {
 
 
 /* Make ansi colors more visible on gray background in output */
-div.output span.ansiyellow {
-    color: #ff0;
-    font-weight: bold;
-}
-div.output span.ansicyan {
-    color: #0080ff;
-    font-weight: bold;
-}
+div.output span.ansired { color: #a00; }
+div.output span.ansiyellow { color: #ff5; }
+div.output span.ansicyan { color: #5ff; }
+div.output span.ansigreen { color: #555; }
 
 /* Pick nice outline color for cell selection */
 @media screen  {
