@@ -157,6 +157,11 @@ div.rendered_html a.anchor-link {
     }
 }
 
+/* Read-only has special bg */
+div.cell read-only {
+    background-color: #f00;
+}
+
 /* Make the cell pop with a shadow when editing */
 .edit_mode div.cell.selected {
     border-color: #A59573;

@@ -146,6 +146,8 @@ void MainFrame::SetupMenu()
         menu_type->Append(wxID_CELL_RAW, "Raw\tCtrl-R");
         menu_cell->AppendSubMenu(menu_type, "Cell type");
     }
+    menu_cell->AppendSeparator();
+    menu_cell->Append(wxID_TOGGLE_READONLY, "Toggle read-only");
     menubar->Append(menu_cell, "Cell");
 
     wxMenu *menu_kernel = new wxMenu();
@@ -336,6 +338,12 @@ void MainFrame::SetupBindings()
     Bind(wxEVT_WEBVIEW_LOADED, &MainFrame::OnPageLoad, this, wxID_ANY);
     Bind(wxEVT_WEBVIEW_NEWWINDOW, &MainFrame::OnNewWindow, this, wxID_ANY);
     Bind(wxEVT_CLOSE_WINDOW, &MainFrame::OnClose, this, wxID_ANY);
+
+    Bind(wxEVT_COMMAND_MENU_SELECTED,
+        [this](wxCommandEvent &/* event */) -> void {
+            webview->RunScript(std::string("require('custom/custom').toggleReadOnly();"));
+        }, wxID_TOGGLE_READONLY);
+
 
     /// Setup permanent handler for kernel busy/idle updates
     handler.register_callback(config::token_kernel_busy, AsyncResult::Success,

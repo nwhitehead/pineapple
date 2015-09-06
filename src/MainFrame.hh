@@ -44,6 +44,7 @@ public:
         wxID_INSERT, wxID_DELETE, wxID_UNDELETE,
         wxID_SPLIT, wxID_MERGE,
         wxID_MOVE_UP, wxID_MOVE_DOWN,
+        wxID_TOGGLE_READONLY,
         wxID_TRUST,
         wxID_RUN, wxID_RUN_NEXT, wxID_RUN_ALL, wxID_RUN_ALL_ABOVE, wxID_RUN_ALL_BELOW,
         wxID_CELL_CODE, wxID_CELL_MARKDOWN, wxID_CELL_RAW,
