@@ -53,6 +53,10 @@ div.cell {
     margin-bottom: 10px;
 }
 
+.prompt {
+    min-width: 10ex;
+}
+
 div.input_prompt {
     font-family: 'VGA';
     font-size: 17px;
@@ -208,17 +212,37 @@ div.rendered_html a:visited {
 .cm-s-default .cm-error {color: #f00;}
 .cm-s-default .CodeMirror-cursor { border-left-color: #fff !important; }
 
+div.cell.read-only div.input_area {
+    background-image: url('images/stripe.png');
+    background-repeat: repeat-y;
+    background-position: right;
+    border-radius: 0;
+    border: 0;
+}
 
 /* Make ansi colors more visible on gray background in output */
+div.output span.ansiblack { color: #000; }
 div.output span.ansired { color: #a00; }
-div.output span.ansiyellow { color: #ff5; }
-div.output span.ansicyan { color: #5ff; }
 div.output span.ansigreen { color: #555; }
+div.output span.ansiyellow { color: #ff5; }
+div.output span.ansiblue { color: #00a; }
+div.output span.ansimagenta { color: #f5f; }
+div.output span.ansicyan { color: #5ff; }
+div.output span.ansigray { color: #333; }
+div.output span.ansiwhite { color: #fff; }
+
 
 div.output pre {
     font-family: 'VGA';
     font-size: 17px;
 }
+
+div.output div.output_stderr {
+    margin-left: 5px;
+    background-color: #faf;
+}
+
+
 
 /* Pick nice outline color for cell selection */
 @media screen  {
@@ -227,6 +251,12 @@ div.output pre {
         border-radius: 0.1px;
     }
 }
+
+div.cell.read-only.selected {
+    border: 4px double #ccc;
+    border-radius: 0.1px;
+}
+
 
 /* Make the cell pop when editing */
 .edit_mode div.cell.selected {

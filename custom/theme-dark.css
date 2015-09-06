@@ -42,7 +42,7 @@ div.input_prompt {
 }
 div.output_prompt {
     border-radius: 3px;
-    color: #707e86;
+    color: #a0b4c0;
 }
 
 div.rendered_html {
@@ -78,9 +78,6 @@ div.output_area {
 }
 div.output_area pre {
     color: #ff8;
-}
-div.output_area div.output_stderr {
-    background-color: #400;
 }
 
 div.rendered_html h1 {
@@ -206,4 +203,33 @@ div.btn.btn-default.output_collapsed {
 div.btn.btn-default.output_collapsed:hover {
     background: #3cb0fd;
     background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+}
+
+div.output div.output_stderr {
+    margin-left: 5px;
+    background-color: #300;
+}
+
+div.cell.read-only div.input_area {
+    background-image: url('images/stripe.png');
+    background-repeat: repeat-y;
+    background-position: right;
+    border-radius: 0;
+    border: 0;
+}
+
+/* Make ansi colors more visible on gray background in output */
+div.output span.ansiblack { color: #000; }
+div.output span.ansired { color: #a00; }
+div.output span.ansigreen { color: #555; }
+div.output span.ansiyellow { color: #ff5; }
+div.output span.ansiblue { color: #00a; }
+div.output span.ansimagenta { color: #f5f; }
+div.output span.ansicyan { color: #5ff; }
+div.output span.ansigray { color: #aaa; }
+div.output span.ansiwhite { color: #fff; }
+
+div.cell.read-only.selected {
+    border: 1px solid #444;
+    border-radius: 3px;
 }

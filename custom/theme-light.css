@@ -147,7 +147,7 @@ div.rendered_html a.anchor-link {
 .cm-s-ipython span.cm-variable { color: black; }
 .cm-s-ipython span.cm-number { color: #3a3; }
 .cm-s-ipython span.cm-atom { color: #3a3; }
-.cm-s-ipython span.cm-meta {color: #555;}
+.cm-s-ipython span.cm-meta { color: #555; }
 .cm-s-ipython span.cm-link { color: #3a3; }
 
 /* Pick nice outline color for cell selection */
@@ -158,8 +158,23 @@ div.rendered_html a.anchor-link {
 }
 
 /* Read-only has special bg */
-div.cell read-only {
-    background-color: #f00;
+div.cell.read-only div.rendered_html {
+/*
+    border-right: 2px solid #000;
+*/
+}
+
+div.cell.read-only div.input_area {
+    background-image: url('images/stripe.png');
+    background-repeat: repeat-y;
+    background-position: right;
+    border-radius: 0;
+    border: 0;
+}
+
+div.cell.read-only.selected {
+    border: 1px solid #ccc;
+    border-radius: 3px;
 }
 
 /* Make the cell pop with a shadow when editing */
@@ -180,4 +195,21 @@ div.btn.btn-default.output_collapsed {
 div.btn.btn-default.output_collapsed:hover {
     background: #3cb0fd;
     background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+}
+
+/* Make ansi colors more visible on gray background in output */
+div.output span.ansiblack { color: #000; }
+div.output span.ansired { color: #a00; }
+div.output span.ansigreen { color: #555; }
+div.output span.ansiyellow { color: #ff5; }
+div.output span.ansiblue { color: #00a; }
+div.output span.ansimagenta { color: #f5f; }
+div.output span.ansicyan { color: #5ff; }
+div.output span.ansigray { color: #555; }
+div.output span.ansiwhite { color: #fff; }
+
+/* Pink for stderr, white for stdout */
+div.output div.output_stderr {
+    margin-left: 5px;
+    background-color: #fef;
 }
