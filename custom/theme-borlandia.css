@@ -13,16 +13,14 @@ div#notebook-container {
     padding-bottom: 100px;
     padding-left: 50px;
     padding-right: 50px;
+    box-shadow: none;
+    -webkit-box-shadow: none;
 }
 
 div#notebook {
     padding: 0;
 }
 /* END BLOCK */
-
-div.end_space {
-    display: none !important;
-}
 
 @media print {
     div.input, pre {
