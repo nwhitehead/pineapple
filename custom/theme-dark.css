@@ -209,7 +209,7 @@ div.output div.output_stderr {
 }
 
 div.cell.read-only div.input_area {
-    background-image: url('images/stripe.png');
+    background-image: url('images/stripe2.png');
     background-repeat: repeat-y;
     background-position: right;
     border-radius: 0;
@@ -230,4 +230,16 @@ div.output span.ansiwhite { color: #fff; }
 div.cell.read-only.selected {
     border: 1px solid #444;
     border-radius: 3px;
+}
+
+/* always account for stripe to avoid rewrapping as cursor moves */
+div.cell div.rendered_html {
+    padding-right: 20px;
+}
+
+div.cell.read-only.selected div.rendered_html {
+    background-image: url('images/stripe2.png');
+    background-repeat: repeat-y;
+    background-position: right;
+    padding-right: 20px;
 }

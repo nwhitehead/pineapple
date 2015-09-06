@@ -149,26 +149,31 @@ div.rendered_html a.anchor-link {
     div.cell.selected {
         border-color: #A59573;
     }
-}
-
-/* Read-only has special bg */
-div.cell.read-only div.rendered_html {
-/*
-    border-right: 2px solid #000;
-*/
+    div.cell.read-only.selected {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+    }
 }
 
 div.cell.read-only div.input_area {
-    background-image: url('images/stripe.png');
+    background-image: url('images/stripe2.png');
     background-repeat: repeat-y;
     background-position: right;
     border-radius: 0;
     border: 0;
+    padding-right: 20px;
 }
 
-div.cell.read-only.selected {
-    border: 1px solid #ccc;
-    border-radius: 3px;
+/* always account for stripe to avoid rewrapping as cursor moves */
+div.cell div.rendered_html {
+    padding-right: 20px;
+}
+
+div.cell.read-only.selected div.rendered_html {
+    background-image: url('images/stripe2.png');
+    background-repeat: repeat-y;
+    background-position: right;
+    padding-right: 20px;
 }
 
 /* Make the cell pop with a shadow when editing */
