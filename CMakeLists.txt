@@ -211,6 +211,7 @@ set(DATAFILES
     data/examples/Execution.ipynb
     data/examples/Markdown.ipynb
     data/examples/Plotting.ipynb
+    data/examples/ReadOnly.ipynb
     data/examples/RichOutput.ipynb
     data/examples/Timing.ipynb
     data/examples/Video.ipynb

@@ -53,6 +53,7 @@ tree_type tree_data {
             std::make_tuple("Editing", "Editing.ipynb"),
             std::make_tuple("Markdown", "Markdown.ipynb"),
             std::make_tuple("Execution", "Execution.ipynb"),
+            std::make_tuple("Read Only", "ReadOnly.ipynb"),
             std::make_tuple("Plotting", "Plotting.ipynb"),
             std::make_tuple("Timing", "Timing.ipynb"),
             std::make_tuple("Rich Output", "RichOutput.ipynb")
