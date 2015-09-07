@@ -105,3 +105,12 @@ std::string urlencode(std::string path)
     }
     return result.str();
 }
+
+bool has_ending (std::string const &s, std::string const &ending) {
+    if (s.length() >= ending.length()) {
+        return (0 == s.compare(s.length() - ending.length(),
+            ending.length(), ending));
+    } else {
+        return false;
+    }
+}

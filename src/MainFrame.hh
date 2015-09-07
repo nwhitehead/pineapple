@@ -57,6 +57,7 @@ public:
 
     MainFrame(std::string url0, std::string filename, const wxString &title, const wxPoint &pos, const wxSize &size, bool indirect_load);
 
+    static bool SafeSpawn(std::string filename, bool indirect_load=false);
     static void Spawn(std::string url, std::string filename, bool indirect_load=false);
     static void CreateNew(bool indirect_load=false);
 

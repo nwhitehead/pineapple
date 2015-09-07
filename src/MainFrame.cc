@@ -380,6 +380,36 @@ void MainFrame::LoadDocument(bool indirect_load)
  * Alternate ways to create MainFrames
  */
 
+/// Verify filename is good (show messagebox if not)
+static bool safe_notebook_filename(std::string filename)
+{
+    if (not has_ending(filename, ".ipynb") and not has_ending(filename, ".IPYNB")) {
+        wxMessageBox("Unknown file extension, filename must end with .ipynb", "Trouble opening");
+        return false;
+    }
+    // FIXME: should also verify Windows drive etc here
+    return true;
+}
+
+/**
+ * Try to spawn new MainFrame window connected to given filename
+ * Any problems, open up a messagebox showing problem.
+ */
+bool MainFrame::SafeSpawn(std::string filename, bool indirect_load)
+{
+    std::string url(wxGetApp().UrlFromFilename(filename));
+    if (url == std::string("")) {
+        wxMessageBox("Could not open file", "Trouble opening");
+        return false;
+    }
+    // Verify filename has .ipynb extension
+    if (not safe_notebook_filename(filename)) {
+        return false;
+    }
+    Spawn(url, filename, indirect_load);
+    return true;
+}
+
 void MainFrame::Spawn(std::string url, std::string filename, bool indirect_load)
 {
     wxGetApp().frames.push_back(
@@ -407,7 +437,7 @@ void MainFrame::CreateNew(bool indirect_load)
         // Remember it as recently used
         wxGetApp().recently_used.Add(filename);
         // Open new window for it
-        Spawn(wxGetApp().UrlFromFilename(uri), filename, indirect_load);
+        SafeSpawn(filename, indirect_load);
         return;
     }
 
@@ -507,7 +537,7 @@ void MainFrame::OnOpen(wxCommandEvent &/* event */)
     std::string filename = std::string(dialog.GetPath());
     wxLogDebug("MainFrame::OnOpen filename=[%s]", filename);
     wxGetApp().recently_used.Add(filename);
-    Spawn(wxGetApp().UrlFromFilename(filename), filename, false);
+    SafeSpawn(filename, false);
 }
 
 void MainFrame::OnSave(wxCommandEvent &/* event */)
@@ -524,7 +554,9 @@ void MainFrame::OnSaveAs(wxCommandEvent &/* event */)
 
     std::string new_filename = std::string(dialog.GetPath());
     wxLogDebug("MainFrame::OnSaveAs filename=[%s]", new_filename);
-
+    if (not safe_notebook_filename(new_filename)) {
+        return;
+    }
     // Copy the old file to the new filename
     std::ifstream ifs(local_filename);
     std::string contents = std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());

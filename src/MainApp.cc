@@ -109,8 +109,9 @@ bool MainApp::OnInit()
             if (fname.FileExists()) {
                 std::string filename(fname.GetFullPath());
                 wxLogDebug("MainApp::OnInit Loading file from command line [%s]", filename);
-                MainFrame::Spawn(UrlFromFilename(filename), filename, true);
-                loaded++;
+                if (MainFrame::SafeSpawn(filename, true)) {
+                    loaded++;
+                }
             } else {
                 wxLogError("Could not open file: %s", arg);
             }
@@ -125,7 +126,7 @@ bool MainApp::OnInit()
             MainFrame::CreateNew(true);
         } else {
             // Open most recently used
-            MainFrame::Spawn(UrlFromFilename(filename), filename, true);
+            MainFrame::SafeSpawn(filename, true);
         }
     }
 
@@ -171,7 +172,7 @@ void MainApp::MacOpenFile(const wxString &filename)
 {
     std::string fname(filename);
     wxGetApp().recently_used.Add(fname);
-    MainFrame::Spawn(UrlFromFilename(fname), fname, true);
+    MainFrame::SafeSpawn(fname, true);
 }
 
 int MainApp::OnExit()

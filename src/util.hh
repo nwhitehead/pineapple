@@ -53,6 +53,10 @@ std::vector<std::string> split(const std::string &s, char delimiter);
 /// Urlencode a string so it works inside url
 std::string urlencode(std::string path);
 
+/// Check if a string has given ending
+bool has_ending (std::string const &s, std::string const &ending);
+
+
 /**
  * Specific to app
  */
