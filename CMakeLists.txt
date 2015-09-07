@@ -210,6 +210,7 @@ set(DATAFILES
     data/examples/Editing.ipynb
     data/examples/Execution.ipynb
     data/examples/Markdown.ipynb
+    data/examples/Packages.ipynb
     data/examples/Plotting.ipynb
     data/examples/ReadOnly.ipynb
     data/examples/RichOutput.ipynb
