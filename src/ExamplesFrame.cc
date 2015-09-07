@@ -106,7 +106,7 @@ void SpawnExample(wxFrame */* parent */, wxTreeItemId id)
         // Output filename doesn't exist, write it
         write_file(new_filename, read_all_file(original_filename));
         wxLogDebug("SpawnExample Loading file [%s]", new_filename);
-        MainFrame::Spawn(url_from_filename(new_filename), new_filename, false);
+        MainFrame::Spawn(wxGetApp().UrlFromFilename(new_filename), new_filename, false);
     } else {
         wxLogError("Could not create temporary example file");
     }

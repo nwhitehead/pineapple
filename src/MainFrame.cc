@@ -407,7 +407,7 @@ void MainFrame::CreateNew(bool indirect_load)
         // Remember it as recently used
         wxGetApp().recently_used.Add(filename);
         // Open new window for it
-        Spawn(url_from_filename(uri), filename, indirect_load);
+        Spawn(wxGetApp().UrlFromFilename(uri), filename, indirect_load);
         return;
     }
 
@@ -507,7 +507,7 @@ void MainFrame::OnOpen(wxCommandEvent &/* event */)
     std::string filename = std::string(dialog.GetPath());
     wxLogDebug("MainFrame::OnOpen filename=[%s]", filename);
     wxGetApp().recently_used.Add(filename);
-    Spawn(url_from_filename(filename), filename, false);
+    Spawn(wxGetApp().UrlFromFilename(filename), filename, false);
 }
 
 void MainFrame::OnSave(wxCommandEvent &/* event */)
@@ -531,7 +531,7 @@ void MainFrame::OnSaveAs(wxCommandEvent &/* event */)
     std::ofstream ofs(new_filename);
     ofs << contents;
     local_filename = new_filename;
-    url = url_from_filename(new_filename);
+    url = wxGetApp().UrlFromFilename(new_filename);
 
     // Remember this as a recent file
     wxGetApp().recently_used.Add(local_filename);
@@ -655,13 +655,13 @@ void MainFrame::OnPrint(wxCommandEvent &/* event */)
 void MainFrame::Export(std::string format)
 {
     // Export data first, then prompt user
-    std::string url(export_url_from_filename(local_filename, format));
+    std::string url(wxGetApp().ExportUrlFromFilename(local_filename, format));
     wxLogDebug("MainFrame::Export format=[%s] local_filename=[%s] url=[%s]", format, local_filename, url);
 
     wxHTTP http;
     std::string contents;
     std::string content_type;
-    http.Connect(config::hostname, config::portnumber);
+    http.Connect(wxGetApp().hostname, wxGetApp().port_number);
     if (http.GetError() == wxPROTO_NOERR) {
         wxInputStream *in = http.GetInputStream(url);
         content_type = http.GetHeader("content-type");

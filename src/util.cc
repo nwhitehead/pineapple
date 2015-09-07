@@ -105,15 +105,3 @@ std::string urlencode(std::string path)
     }
     return result.str();
 }
-
-std::string url_from_filename(std::string filename)
-{
-    std::string uri(urlencode(filename));
-    return std::string(config::base_url) + std::string(config::path_url) + uri;
-}
-
-std::string export_url_from_filename(std::string filename, std::string format)
-{
-    std::string uri(filename);
-    return std::string(config::nbconvert_url) + std::string("/") + format + uri;
-}

@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -43,6 +44,8 @@ public:
     void OnQuit(wxCommandEvent &event);
     void OnSubprocessTerminate(wxProcessEvent &event);
     static void OnAbout(wxCommandEvent &event);
+    std::string UrlFromFilename(std::string filename);
+    std::string ExportUrlFromFilename(std::string filename, std::string format);
 
     wxProcess *server;
     MainFrame *frame;
@@ -53,6 +56,12 @@ public:
     PreferencesManager preferences;
     std::vector<wxWindow *> frames;
     bool waiting_to_quit;
+
+    std::string hostname;
+    uint16_t port_number;
+    std::string host_port;
+    std::string protocol;
+    std::string base_url;
 };
 
 wxDECLARE_APP(MainApp);

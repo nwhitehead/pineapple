@@ -8,7 +8,8 @@ if __name__ == '__main__':
         kernelapp.launch_new_instance()
         exit(0)
     # Always serve from root
-    sys.argv = [sys.executable, '/']
+    port = sys.argv[-1]
+    sys.argv = [sys.executable, '--port={}'.format(port), '/']
     app = NotebookApp()
     app.open_browser = False
     app.initialize()

@@ -66,11 +66,8 @@ constexpr char default_theme[] = "/custom/theme-light.css";
 #endif
 
 /// Local connection information
-constexpr char hostname[] = "localhost";
-constexpr int portnumber = 8888;
-const std::string host_port = std::string(hostname) + std::string(":") + std::to_string(portnumber);
-constexpr char protocol[] = "http";
-const std::string base_url = std::string(protocol) + std::string("://") + host_port;
+constexpr int min_port = 45967;
+constexpr int max_port = 46997;
 
 /// Where to look for full path filenames
 constexpr char path_url[] = "/tree";

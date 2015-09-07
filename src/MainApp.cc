@@ -18,6 +18,8 @@
 
 #include "MainApp.hh"
 
+#include <cstdint>
+#include <chrono>
 #include <fstream>
 #include <iostream>
 #include <signal.h>
@@ -84,6 +86,20 @@ bool MainApp::OnInit()
 
 #endif
 
+    /// Setup server connection info
+    // Get random offset for port
+    int64_t ms = 
+        std::chrono::duration_cast<std::chrono::milliseconds>
+            (std::chrono::system_clock::now().time_since_epoch()).count();
+    std::cout << "Time since epoch is: " << ms << std::endl;
+
+    hostname = "localhost";
+    port_number = static_cast<uint16_t>(config::min_port +
+        (static_cast<int>(ms) % (config::max_port - config::min_port)));
+    host_port = std::string(hostname) + std::string(":") + std::to_string(port_number);
+    protocol = "http";
+    base_url = protocol + std::string("://") + host_port;
+
     int loaded = 0;
     if (argc > 1) {
         for (int i = 1; i < argc; ++i) {
@@ -93,7 +109,7 @@ bool MainApp::OnInit()
             if (fname.FileExists()) {
                 std::string filename(fname.GetFullPath());
                 wxLogDebug("MainApp::OnInit Loading file from command line [%s]", filename);
-                MainFrame::Spawn(url_from_filename(filename), filename, true);
+                MainFrame::Spawn(UrlFromFilename(filename), filename, true);
                 loaded++;
             } else {
                 wxLogError("Could not open file: %s", arg);
@@ -109,23 +125,29 @@ bool MainApp::OnInit()
             MainFrame::CreateNew(true);
         } else {
             // Open most recently used
-            MainFrame::Spawn(url_from_filename(filename), filename, true);
+            MainFrame::Spawn(UrlFromFilename(filename), filename, true);
         }
     }
 
     server = nullptr;
     Bind(wxEVT_END_PROCESS, &MainApp::OnSubprocessTerminate, this, wxID_ANY);
 
+    /// Setup arguments to start server
     std::string python_path(python_fullpath());
     std::string script_path(server_fullpath());
+    std::string portnum_string(std::to_string(port_number));
     wxLogDebug("MainApp::OnInit Python [%s] Script [%s]", python_path, script_path);
     // Need to construct "char **argv" for wxExecute, kind of convoluted in C++
-    // Passing in a single string "path/python path/server" fails if paths have spaces
+    // Passing in a single string "path/python path/server portnum" fails if paths have spaces
     std::vector<char> raw_python_path(python_path.begin(), python_path.end());
     raw_python_path.push_back('\0');
     std::vector<char> raw_script_path(script_path.begin(), script_path.end());
     raw_script_path.push_back('\0');
-    char *argv[] = { &raw_python_path[0], &raw_script_path[0], nullptr };
+    std::vector<char> raw_portnum(portnum_string.begin(), portnum_string.end());
+    raw_portnum.push_back('\0');
+    char *argv[] = { &raw_python_path[0], &raw_script_path[0], &raw_portnum[0], nullptr };
+
+    /// Start server
     server = new wxProcess(frame);
     long res;
     if ((res = wxExecute(argv,
@@ -138,6 +160,7 @@ bool MainApp::OnInit()
         wxLogDebug("MainApp::OnInit Could not start subprocess");
         return false;
     }
+
     // Set handler to kill process if we die
     signal(SIGINT, signal_handler);
 
@@ -148,7 +171,7 @@ void MainApp::MacOpenFile(const wxString &filename)
 {
     std::string fname(filename);
     wxGetApp().recently_used.Add(fname);
-    MainFrame::Spawn(url_from_filename(fname), fname, true);
+    MainFrame::Spawn(UrlFromFilename(fname), fname, true);
 }
 
 int MainApp::OnExit()
@@ -195,4 +218,16 @@ void MainApp::OnQuit(wxCommandEvent &/* event */)
     } else {
         ExitMainLoop();
     }
+}
+
+std::string MainApp::UrlFromFilename(std::string filename)
+{
+    std::string uri(urlencode(filename));
+    return base_url + std::string(config::path_url) + uri;
+}
+
+std::string MainApp::ExportUrlFromFilename(std::string filename, std::string format)
+{
+    std::string uri(filename);
+    return std::string(config::nbconvert_url) + std::string("/") + format + uri;
 }
