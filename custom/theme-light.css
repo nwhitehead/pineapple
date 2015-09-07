@@ -209,7 +209,6 @@ div.output span.ansiwhite { color: #fff; }
 
 div.cell.is-button div.input_area {
     display: none;
-    /* background-color: #f00; */
 }
 
 div.cell-button {
@@ -227,11 +226,6 @@ div.cell-button:hover {
     background: #3cb0fd;
     color: #fff;
     background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
-}
-*/
-
-div.cell_button {
-    background: #f00;
 }
 
 /* Pink for stderr, white for stdout */
