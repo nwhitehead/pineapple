@@ -207,6 +207,33 @@ div.output span.ansicyan { color: #5ff; }
 div.output span.ansigray { color: #555; }
 div.output span.ansiwhite { color: #fff; }
 
+div.cell.is-button div.input_area {
+    display: none;
+    /* background-color: #f00; */
+}
+
+div.cell-button {
+    text-align: center;
+    background-color: #3498db;
+    background-image: linear-gradient(to bottom, #3498db, #2980b9);
+    border-radius: 28px;
+    color: #fff;
+    padding: 7px 20px 7px 20px;
+    margin-left: 5px;
+    margin-top: 6px;
+    width: 100%;
+}
+div.cell-button:hover {
+    background: #3cb0fd;
+    color: #fff;
+    background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+}
+*/
+
+div.cell_button {
+    background: #f00;
+}
+
 /* Pink for stderr, white for stdout */
 div.output div.output_stderr {
     margin-left: 5px;

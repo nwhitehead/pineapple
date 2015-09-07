@@ -310,6 +310,14 @@ if(APPLE)
     ")
 endif()
 
+### HACK for dev work inside install to avoid "make install"
+add_custom_target(custom-install-dev
+    COMMAND rm -f "${CMAKE_INSTALL_PREFIX}/${APP_RES}/python2.7/lib/python2.7/site-packages/notebook/static/custom"
+    COMMAND rm -fr "${CMAKE_INSTALL_PREFIX}/${APP_RES}/python2.7/lib/python2.7/site-packages/notebook/static/custom"
+    COMMAND ln -s "${PROJECT_SOURCE_DIR}/custom" "${CMAKE_INSTALL_PREFIX}/${APP_RES}/python2.7/lib/python2.7/site-packages/notebook/static/custom"
+)
+
+
 ### CPACK
 
 include (InstallRequiredSystemLibraries)

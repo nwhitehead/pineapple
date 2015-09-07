@@ -147,8 +147,56 @@ define([
     };
 
 
+    /**
+     * Set codecell to be button
+     * 
+     *  @param {Object} cell current notebook cell
+     *  @param {Boolean} val is cell a button
+     */
+    var setButton = function (cell, val) {
+        if (val == undefined) {
+            val = false;
+        }
+        cell.metadata.button = val;
+        cell.button = val;
+        var title = val + '';
+        cell.element.find('.cell-button').remove();
+        if (val !== false) {
+            cell.element.addClass("is-button");
+            cell.element
+                .find('.inner_cell')
+                .append('<div class="btn btn-default cell-button">' + title + '</div>');
+            cell.element
+                .find('.cell-button')
+                .click(function() {
+                    IPython.notebook.execute_cell();
+                });
+        } else {
+            cell.element.removeClass("is-button");
+        }
+    };
+    function getButton(cell) {
+        return cell.metadata.button;
+    }
+
+    // Wait until notebook loaded, then update unittest data
+    events.on('notebook_loaded.Notebook', function() {
+        // loop through notebook and set read-only cells defined in metadata
+        var cells = IPython.notebook.get_cells();
+        for(var i in cells){
+            var cell = cells[i];
+            setButton(cell, cell.metadata.button);
+        };
+    });
+
+    function setSelectionButton(val) {
+        var cell = IPython.notebook.get_selected_cell();
+        setButton(cell, val);
+    }
+
     return {
         set_theme: set_theme,
-        toggleReadOnly: toggleReadOnly
+        toggleReadOnly: toggleReadOnly,
+        setSelectionButton: setSelectionButton
     };
 });

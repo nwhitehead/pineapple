@@ -148,6 +148,11 @@ void MainFrame::SetupMenu()
     }
     menu_cell->AppendSeparator();
     menu_cell->Append(wxID_TOGGLE_READONLY, "Toggle read-only");
+    menu_cell->AppendSeparator();
+    menu_cell->Append(wxID_CLEAR_OUTPUT, "Clear output");
+    menu_cell->AppendSeparator();
+    menu_cell->Append(wxID_SET_BUTTON, "Set button");
+    menu_cell->Append(wxID_UNSET_BUTTON, "Unset button");
     menubar->Append(menu_cell, "Cell");
 
     wxMenu *menu_kernel = new wxMenu();
@@ -343,6 +348,21 @@ void MainFrame::SetupBindings()
         [this](wxCommandEvent &/* event */) -> void {
             webview->RunScript(std::string("require('custom/custom').toggleReadOnly();"));
         }, wxID_TOGGLE_READONLY);
+
+    Bind(wxEVT_COMMAND_MENU_SELECTED,
+        [this](wxCommandEvent &/* event */) -> void {
+            webview->RunScript(std::string("require('custom/custom').setSelectionButton('&#x25b6;');"));
+        }, wxID_SET_BUTTON);
+
+    Bind(wxEVT_COMMAND_MENU_SELECTED,
+        [this](wxCommandEvent &/* event */) -> void {
+            webview->RunScript(std::string("require('custom/custom').setSelectionButton(false);"));
+        }, wxID_UNSET_BUTTON);
+
+    Bind(wxEVT_COMMAND_MENU_SELECTED,
+        [this](wxCommandEvent &/* event */) -> void {
+            webview->RunScript(std::string("require('base/js/namespace').notebook.clear_output();"));
+        }, wxID_CLEAR_OUTPUT);
 
 
     /// Setup permanent handler for kernel busy/idle updates
