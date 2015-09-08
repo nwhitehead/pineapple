@@ -18,12 +18,7 @@ div.cell {
     background-color: #aaa;
     border: 4px double #aaa;
     border-radius: 0.1px;
-    border-spacing: 5px;
     margin-bottom: 10px;
-}
-
-.prompt {
-    min-width: 10ex;
 }
 
 div.input_prompt {
@@ -36,6 +31,12 @@ div.output_prompt {
     font-size: 17px;
     border-radius: 0;
     color: #ff5;
+}
+div.out_prompt_overlay {
+    min-width: 100px;
+}
+.prompt {
+    min-width: 100px;
 }
 
 div.rendered_html {
@@ -101,7 +102,6 @@ div.rendered_html pre code {
 div.rendered_html hr {
     border-top: solid 1px #000;
 }
-
 
 div.rendered_html a { color: #ff5; }
 div.rendered_html a:hover { color: #fff; }
