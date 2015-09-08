@@ -1,0 +1,44 @@
+/* Styling for buttons */
+@button-base: #987;
+@button-c1: @button-base;
+@button-c2: darken(@button-base, 10%);
+@button-hover: lighten(@button-base, 5%);
+@button-fg: contrast(mix(@button-c1, @button-c2, 50%));
+
+div.btn.btn-default.output_collapsed {
+    background-color: @button-c1;
+    background-image: linear-gradient(to bottom, @button-c1, @button-c2);
+    border-radius: 28px;
+    border-color: transparent;
+    color: @button-fg;
+    padding: 7px 20px 7px 20px;
+    margin-top: 6px;
+}
+
+div.btn.btn-default.output_collapsed:hover {
+    background: @button-hover;
+    background-image: linear-gradient(to bottom, @button-hover, @button-c1);
+}
+
+div.cell.is-button div.input_area {
+    display: none;
+}
+
+div.cell-button {
+    text-align: center;
+    background-color: @button-c1;
+    background-image: linear-gradient(to bottom, @button-c1, @button-c2);
+    border-radius: 28px;
+    border: 0;
+    color: @button-fg;
+    padding: 7px 20px 7px 20px;
+    margin-left: 5px;
+    margin-top: 6px;
+    width: 100%;
+}
+
+div.cell-button:hover {
+    background: @button-hover;
+    color: @button-fg;
+    background-image: linear-gradient(to bottom, @button-hover, @button-c1);
+}

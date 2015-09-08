@@ -1,7 +1,13 @@
+@bg: #fff;
+@fg: #000;
+@output-tick: #00f;
+@output-tick-mix: 10%;
+@output-code: #0f0;
+
 div.rendered_html h1 {
     font-size: 48px;
     font-weight: normal;
-    border-bottom: solid 1px #eeeeee;
+    border-bottom: solid 1px @fg;
 }
 div.rendered_html h2 {
     font-weight: normal;
@@ -9,8 +15,10 @@ div.rendered_html h2 {
 }
 div.rendered_html code {
     /* backticks */
-    color: #b32146;
-    background-color: #f9f2f4;
+    @d: desaturate(@output-tick, 10%);
+    @otbg: mix(@d, @bg, @output-tick-mix);
+    background-color: @otbg;
+    color: contrast(@otbg, mix(@fg, @d, 20%), mix(@fg, @d, 95%));
     padding-left: 0.3em;
     padding-right: 0.3em;
     padding-top: 0.1em;
@@ -26,7 +34,8 @@ div.rendered_html pre {
 }
 div.rendered_html pre code {
     /* code blocks */
-    color: #333333;
-    background-color: #dcecf5;
+    @d: desaturate(@output-code, 30%);
+    background-color: mix(@d, @bg, 18%);
+    color: mix(@fg, @d, 85%);
     display: block;
 }

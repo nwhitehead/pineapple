@@ -1,0 +1,11 @@
+/* Make ansi colors more visible in output */
+@ansi-bg: #fff;
+@ansi-thr: 43%;
+div.output span.ansiblack { color: contrast(@ansi-bg, #000, #555, @ansi-thr); }
+div.output span.ansired { color: contrast(@ansi-bg, #a00, #f55, @ansi-thr); }
+div.output span.ansigreen { color: contrast(@ansi-bg, #0a0, #5f5, @ansi-thr); }
+div.output span.ansiyellow { color: contrast(@ansi-bg, #ca0, #ff5, @ansi-thr); }
+div.output span.ansiblue { color: contrast(@ansi-bg, #00a, #55f, @ansi-thr); }
+div.output span.ansimagenta { color: contrast(@ansi-bg, #a0a, #f5f, @ansi-thr); }
+div.output span.ansicyan { color: contrast(@ansi-bg, #0aa, #5ff, @ansi-thr); }
+div.output span.ansigray { color: contrast(@ansi-bg, #555, #aaa, @ansi-thr); }

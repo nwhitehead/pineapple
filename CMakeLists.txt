@@ -171,9 +171,19 @@ add_custom_target(requirements-install
     COMMAND ${PROJECT_SOURCE_DIR}/scripts/clean-python.sh ${PYTHON_DIR}
 )
 # Server resources
-add_custom_target(custom-reinstall
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/custom" "${PYTHON_DIR}/lib/python2.7/site-packages/notebook/static/custom/"
+set(LESSC "lessc")
+set(CUSTOM_DIR "${PYTHON_DIR}/lib/python2.7/site-packages/notebook/static/custom/")
+add_custom_target(compile-less
+    COMMAND ${LESSC} ${PROJECT_SOURCE_DIR}/custom/theme-light.less ${CUSTOM_DIR}/theme-light.css
+    COMMAND ${LESSC} ${PROJECT_SOURCE_DIR}/custom/theme-dark.less ${CUSTOM_DIR}/theme-dark.css
+    COMMAND ${LESSC} ${PROJECT_SOURCE_DIR}/custom/theme-borlandia.less ${CUSTOM_DIR}/theme-borlandia.css
+    DEPENDS custom-reinstall-first
 )
+add_custom_target(custom-reinstall-first
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/custom" "${CUSTOM_DIR}"
+)
+add_custom_target(custom-reinstall
+    DEPENDS compile-less)
 add_custom_target(custom-install DEPENDS requirements-install custom-reinstall)
 
 
@@ -311,10 +321,11 @@ if(APPLE)
 endif()
 
 ### HACK for dev work inside install to avoid "make install"
+set(CUSTOM_INSTALL_LOCATION "${CMAKE_INSTALL_PREFIX}/${APP_RES}/python2.7/lib/python2.7/site-packages/notebook/static/custom")
 add_custom_target(custom-install-dev
-    COMMAND rm -f "${CMAKE_INSTALL_PREFIX}/${APP_RES}/python2.7/lib/python2.7/site-packages/notebook/static/custom"
-    COMMAND rm -fr "${CMAKE_INSTALL_PREFIX}/${APP_RES}/python2.7/lib/python2.7/site-packages/notebook/static/custom"
-    COMMAND ln -s "${PROJECT_SOURCE_DIR}/custom" "${CMAKE_INSTALL_PREFIX}/${APP_RES}/python2.7/lib/python2.7/site-packages/notebook/static/custom"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${CUSTOM_INSTALL_LOCATION}"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CUSTOM_DIR}" "${CUSTOM_INSTALL_LOCATION}"
+    DEPENDS custom-reinstall
 )
 
 

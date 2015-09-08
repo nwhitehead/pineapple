@@ -1,0 +1,24 @@
+@import url("embedding.less");
+@import url("buttons.less");
+@import url("fonts.less");
+@import url("print.less");
+@import url("ansi.less");
+@import url("readonly.less");
+@import url("cm-dark.less");
+@import url("cm-dark-text.less");
+@import url("kbd.less");
+@import url("rendered.less");
+@import url("common.less");
+
+@bg: #000;
+@fg: #eee;
+@accent: hsl(30, 50%, 50%);
+@input: spin(@accent, 0);
+@input-mix: 25%;
+@output: mix(#ff0, @fg);
+@output-tick: spin(@accent, 80);
+@output-tick-mix: 90%;
+@output-code: spin(@accent, 0);
+@stderr: spin(@accent, -30);
+@stderr-mix: 15%;
+@select-shadow: 0px 0px 12px 0px @shadow-color; 

@@ -1,0 +1,18 @@
+/* Keyboard shortcut */
+@fg: #000;
+@shadow-color: rgba(0,0,0,0.35);
+
+div.rendered_html kbd {
+    @b: mix(@fg, @bg, 12%);
+    @bb: mix(@b, @bg);
+    color: @fg;
+    background-color: @b;
+    border: 1px solid @bb;
+    border-radius: 3px;
+    box-shadow: 0.1em 0.2em 0.3em @shadow-color;
+    padding: 0.2em 0.4em;
+}
+div.rendered_html span.symbol {
+    font-size: 1.4em;
+    vertical-align: middle;
+}

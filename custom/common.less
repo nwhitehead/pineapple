@@ -1,0 +1,49 @@
+@bg: #f00;
+@fg: #00f;
+@accent: hsl(205, 100%, 50%);
+@prompt: spin(@accent, 5);
+@input: spin(@accent, -15);
+@input-mix: 10%;
+@output: @fg;
+@output-tick: spin(@accent, 140);
+@output-tick-mix: 7%;
+@output-code: spin(@accent, 0);
+@stderr: spin(@accent, 95);
+@stderr-mix: 10%;
+@select: spin(@accent, 5);
+@shadow-color: fade(difference(@bg, #fff), 65%);
+@select-shadow: 3px 3px 20px 0px @shadow-color; 
+@ansi-bg: mix(@bg, @stderr, 50%);
+@button-base: lighten(desaturate(spin(@accent, 0), 30%), 3%);
+
+div#notebook { background: @bg; }
+
+div.input_prompt {
+    color: mix(desaturate(@prompt, 30%), @bg, 80%);
+}
+div.output_prompt {
+    color: mix(desaturate(@prompt, 30%), @bg, 50%);
+}
+
+div.input_area {
+    background-color: mix(desaturate(@input, 50%), @bg, @input-mix);
+}
+
+div.output_area { color: @output; }
+div.output_area pre { color: @output; }
+
+div.output div.output_stderr {
+    background-color: mix(desaturate(@stderr, 0%), @bg, @stderr-mix);
+}
+
+div.rendered_html { color: @fg; }
+
+@select-box: mix(desaturate(@select, 85%), @bg, 80%);
+div.cell.selected {
+    border-color: @select-box;
+}
+
+.edit_mode div.cell.selected {
+    border-color: @select-box;
+    box-shadow: @select-shadow;
+}
