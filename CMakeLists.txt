@@ -177,6 +177,7 @@ add_custom_target(compile-less
     COMMAND ${LESSC} ${PROJECT_SOURCE_DIR}/custom/theme-light.less ${CUSTOM_DIR}/theme-light.css
     COMMAND ${LESSC} ${PROJECT_SOURCE_DIR}/custom/theme-dark.less ${CUSTOM_DIR}/theme-dark.css
     COMMAND ${LESSC} ${PROJECT_SOURCE_DIR}/custom/theme-borlandia.less ${CUSTOM_DIR}/theme-borlandia.css
+    COMMAND ${LESSC} ${PROJECT_SOURCE_DIR}/custom/theme-red.less ${CUSTOM_DIR}/theme-red.css
     DEPENDS custom-reinstall-first
 )
 add_custom_target(custom-reinstall-first

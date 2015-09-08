@@ -1,0 +1,39 @@
+@import url("embedding.less");
+@import url("buttons.less");
+@import url("fonts.less");
+@import url("print.less");
+@import url("ansi.less");
+@import url("readonly.less");
+@import url("cm-light.less");
+@import url("kbd.less");
+@import url("rendered.less");
+@import url("common.less");
+
+@bg: #fff;
+@fg: #222;
+@accent: hsl(5, 100%, 40%);
+@prompt: hsl(0, 0, 20%);
+@input: spin(@accent, 15);
+@input-mix: 10%;
+@output: @fg;
+@output-tick: spin(@accent, 140);
+@output-tick-mix: 7%;
+@output-code: spin(@accent, 0);
+@stderr: spin(@accent, 55);
+@stderr-mix: 8%;
+
+@size: 70px;
+div.rendered_html h1 {
+    box-sizing: border-box;
+    font-family: "GreatVibes";
+    font-size: @size;
+    line-height: @size * 4.0/7.0;
+    border-bottom: solid 2px @accent;
+}
+div.rendered_html h2 {
+    @ssize: @size * 0.6;
+    font-size: @ssize;
+    line-height: @ssize * 4.0/7.0;
+    font-family: "GreatVibes";
+    border-bottom: solid 1px @accent;
+}

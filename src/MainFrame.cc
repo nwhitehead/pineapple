@@ -168,6 +168,7 @@ void MainFrame::SetupMenu()
     menu_theme->Append(wxID_THEME_LIGHT, "Light");
     menu_theme->Append(wxID_THEME_DARK, "Dark");
     menu_theme->Append(wxID_THEME_BORLANDIA, "Borlandia");
+    menu_theme->Append(wxID_THEME_RED, "Red");
     menubar->Append(menu_theme, "Theme");
 
     wxMenu *menu_help = new wxMenu();
@@ -320,6 +321,7 @@ void MainFrame::SetupBindings()
     bind_theme(wxID_THEME_LIGHT, "/custom/theme-light.css");
     bind_theme(wxID_THEME_DARK, "/custom/theme-dark.css");
     bind_theme(wxID_THEME_BORLANDIA, "/custom/theme-borlandia.css");
+    bind_theme(wxID_THEME_RED, "/custom/theme-red.css");
 
     /// Bind custom menu items
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MainFrame::OnNew, wxID_NEW);
