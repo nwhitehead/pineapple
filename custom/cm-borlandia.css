@@ -1,6 +1,6 @@
 /* CodeMirror theme */
 .cm-s-default pre { color: #fff; }
-.cm-s-ipython span { color: #fff; font-family: 'VGA'; line-height: 10px; font-size: 17px; }
+.cm-s-ipython span { color: #fff; }
 .cm-s-ipython span.cm-comment { color: #aaa; font-style: normal; font-weight: normal; }
 .cm-s-ipython span.cm-keyword { line-height: 1em; font-weight: normal; color: #ff5; }
 .cm-s-ipython span.cm-string { color: #5ff; }

@@ -23,12 +23,12 @@ div.cell {
 
 div.input_prompt {
     font-family: 'VGA';
-    font-size: 17px;
+    font-size: 15px;
     color: #fff;
 }
 div.output_prompt {
     font-family: 'VGA';
-    font-size: 17px;
+    font-size: 15px;
     border-radius: 0;
     color: #ff5;
 }
@@ -55,7 +55,12 @@ div.input_area {
     border-radius: 0.1px;
     border: 4px double #fff;
     font-family: 'VGA';
-    font-size: 17px;
+    font-size: 15px;
+}
+.cm-s-ipython span { 
+    font-family: 'VGA';
+    line-height: 10px;
+    font-size: 15px;
 }
 
 div.rendered_html h1 {
