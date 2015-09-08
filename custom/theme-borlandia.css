@@ -24,13 +24,17 @@ div.cell {
 div.input_prompt {
     font-family: 'VGA';
     font-size: 15px;
+    line-height: 10px;
     color: #fff;
+    margin-top: 8px;
 }
 div.output_prompt {
     font-family: 'VGA';
     font-size: 15px;
+    line-height: 10px;
     border-radius: 0;
     color: #ff5;
+    margin-top: 6px;
 }
 div.out_prompt_overlay {
     min-width: 100px;
@@ -125,6 +129,10 @@ div.output div.output_stderr {
 div.cell.selected {
     border: 4px double #000;
     border-radius: 0.1px;
+}
+
+div.cell.read-only div.input_area {
+    border: 4px solid transparent;
 }
 
 div.cell.read-only.selected {
