@@ -1,46 +1,17 @@
-@font-face {
-    font-family: 'VGA';
-    src: url('fonts/MorePerfectDOSVGA.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-/* BEGIN BLOCK */
-/* Direct embedding vs. indirect */
-div#notebook-container {
-    width: 100%;
-    padding-top: 50px;
-    padding-bottom: 100px;
-    padding-left: 50px;
-    padding-right: 50px;
-    box-shadow: none;
-    -webkit-box-shadow: none;
-}
-
-div#notebook {
-    padding: 0;
-}
-/* END BLOCK */
-
-@media print {
-    div.input, pre {
-        page-break-inside: avoid;
-    }
-}
-
-div.input_area {
-    margin-left: 5px;
-    border-radius: 3px;
-}
-
-div#notebook-container {
-    background-color: transparent;
-}
+@import url("embedding.css");
+@import url("buttons.css");
+@import url("fonts.css");
+@import url("print.css");
+@import url("ansi.css");
+@import url("readonly.css");
+@import url("cm-borlandia.css");
+@import url("cm-borlandia-text.css");
+@import url("kbd.css");
+@import url("rendered.css");
 
 div#notebook {
     background-color: #0000aa;
     background-image: url('images/borlandia-tile.png');
-    font-size: 16px;
 }
 
 div.cell {
@@ -72,28 +43,9 @@ div.rendered_html {
     color: #000;
 }
 
-/* Break up long words if we need to */
-div.rendered_html p {
-    word-wrap: break-word;
-}
-
 div.rendered_html strong {
     color: #fff;
     font-weight: normal;
-}
-
-/* Keyboard shortcut */
-div.rendered_html kbd {
-    color: #000;
-    background-color: #fff;
-    border: 1px solid #aaa;
-    border-radius: 3px;
-    box-shadow: 0.1em 0.2em 0.3em #ddd;
-    padding: 0.2em 0.4em;
-}
-div.rendered_html span.symbol {
-    font-size: 1.4em;
-    vertical-align: middle;
 }
 
 div.input_area {
@@ -150,85 +102,10 @@ div.rendered_html hr {
     border-top: solid 1px #000;
 }
 
-/* Turn off paragraph thingies */
-div.rendered_html a.anchor-link {
-    visibility: hidden;
-}
 
-div.rendered_html a {
-    color: #ff5;
-}
-div.rendered_html a:hover {
-    color: #fff;
-}
-div.rendered_html a:visited {
-    color: #fff;
-}
-
-/* div.cs-s-ipython { font-family: 'VGA'; } */
-
-/* CodeMirror theme */
-.cm-s-default pre { color: #fff; }
-.cm-s-ipython span { color: #fff; font-family: 'VGA'; line-height: 10px; font-size: 17px; }
-.cm-s-ipython span.cm-comment { color: #aaa; font-style: normal; font-weight: normal; }
-.cm-s-ipython span.cm-keyword { line-height: 1em; font-weight: normal; color: #ff5; }
-.cm-s-ipython span.cm-string { color: #5ff; }
-.cm-s-ipython span.cm-builtin { line-height: 1em; font-weight: normal; color: #fff; }
-.cm-s-ipython span.cm-special { line-height: 1em; font-weight: normal; color: #fff; }
-.cm-s-ipython span.cm-def { color: #ff5; }
-.cm-s-ipython span.cm-variable { color: #fff; }
-.cm-s-ipython span.cm-variable-2 { color: #f5f; }
-.cm-s-ipython span.cm-number { color: #5f5; }
-.cm-s-ipython span.cm-operator { color: #f5f; font-weight: normal; }
-.cm-s-ipython span.cm-atom { color: #fff; }
-.cm-s-ipython span.cm-meta {color: #555;}
-.cm-s-ipython span.cm-link { color: #5f5; }
-
-.cm-s-ipython div.CodeMirror-cursor { border-left-color: #fff !important; }
-
-/* Make Markdown editing visible */
-.cm-s-default pre { color: #ff0; }
-.cm-s-default span.cm-header {color: #88f;}
-.cm-s-default span.cm-quote {color: #090;}
-.cm-s-default span.cm-keyword {color: #708;}
-.cm-s-default span.cm-atom {color: #219;}
-.cm-s-default span.cm-number {color: #164;}
-.cm-s-default span.cm-def {color: #00f;}
-.cm-s-default span.cm-variable-2 {color: #05a;}
-.cm-s-default span.cm-variable-3 {color: #085;}
-.cm-s-default span.cm-comment {color: #a50;}
-.cm-s-default span.cm-string {color: #a11;}
-.cm-s-default span.cm-string-2 {color: #f50;}
-.cm-s-default span.cm-meta {color: #555;}
-.cm-s-default span.cm-qualifier {color: #555;}
-.cm-s-default span.cm-builtin {color: #30a;}
-.cm-s-default span.cm-bracket {color: #997;}
-.cm-s-default span.cm-tag {color: #170;}
-.cm-s-default span.cm-attribute {color: #88f;}
-.cm-s-default span.cm-hr {color: #999;}
-.cm-s-default span.cm-link {color: #cc8;}
-.cm-s-default .cm-error {color: #f00;}
-.cm-s-default .CodeMirror-cursor { border-left-color: #fff !important; }
-
-div.cell.read-only div.input_area {
-    background-image: url('images/stripe.png');
-    background-repeat: repeat-y;
-    background-position: right;
-    border-radius: 0;
-    border: 0;
-}
-
-/* Make ansi colors more visible on gray background in output */
-div.output span.ansiblack { color: #000; }
-div.output span.ansired { color: #a00; }
-div.output span.ansigreen { color: #555; }
-div.output span.ansiyellow { color: #ff5; }
-div.output span.ansiblue { color: #00a; }
-div.output span.ansimagenta { color: #f5f; }
-div.output span.ansicyan { color: #5ff; }
-div.output span.ansigray { color: #333; }
-div.output span.ansiwhite { color: #fff; }
-
+div.rendered_html a { color: #ff5; }
+div.rendered_html a:hover { color: #fff; }
+div.rendered_html a:visited { color: #fff; }
 
 div.output pre {
     font-family: 'VGA';
@@ -236,18 +113,13 @@ div.output pre {
 }
 
 div.output div.output_stderr {
-    margin-left: 5px;
     background-color: #faf;
 }
 
-
-
 /* Pick nice outline color for cell selection */
-@media screen  {
-    div.cell.selected {
-        border: 4px double #000;
-        border-radius: 0.1px;
-    }
+div.cell.selected {
+    border: 4px double #000;
+    border-radius: 0.1px;
 }
 
 div.cell.read-only.selected {
@@ -255,22 +127,7 @@ div.cell.read-only.selected {
     border-radius: 0.1px;
 }
 
-
 /* Make the cell pop when editing */
 .edit_mode div.cell.selected {
     border-color: #fff;
-}
-
-/* Nicer collapsed button colors */
-div.btn.btn-default.output_collapsed {
-    background-color: #3498db;
-    background-image: linear-gradient(to bottom, #3498db, #2980b9);
-    border-radius: 28px;
-    color: #ffffff;
-    padding: 7px 20px 7px 20px;
-    margin-top: 6px;
-}
-div.btn.btn-default.output_collapsed:hover {
-    background: #3cb0fd;
-    background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
 }

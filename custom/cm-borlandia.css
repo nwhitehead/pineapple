@@ -1,0 +1,17 @@
+/* CodeMirror theme */
+.cm-s-default pre { color: #fff; }
+.cm-s-ipython span { color: #fff; font-family: 'VGA'; line-height: 10px; font-size: 17px; }
+.cm-s-ipython span.cm-comment { color: #aaa; font-style: normal; font-weight: normal; }
+.cm-s-ipython span.cm-keyword { line-height: 1em; font-weight: normal; color: #ff5; }
+.cm-s-ipython span.cm-string { color: #5ff; }
+.cm-s-ipython span.cm-builtin { line-height: 1em; font-weight: normal; color: #fff; }
+.cm-s-ipython span.cm-special { line-height: 1em; font-weight: normal; color: #fff; }
+.cm-s-ipython span.cm-def { color: #ff5; }
+.cm-s-ipython span.cm-variable { color: #fff; }
+.cm-s-ipython span.cm-variable-2 { color: #f5f; }
+.cm-s-ipython span.cm-number { color: #5f5; }
+.cm-s-ipython span.cm-operator { color: #f5f; font-weight: normal; }
+.cm-s-ipython span.cm-atom { color: #fff; }
+.cm-s-ipython span.cm-meta {color: #555;}
+.cm-s-ipython span.cm-link { color: #5f5; }
+.cm-s-ipython div.CodeMirror-cursor { border-left-color: #fff !important; }

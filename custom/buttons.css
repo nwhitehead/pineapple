@@ -1,0 +1,39 @@
+/* Styling for buttons */
+
+div.btn.btn-default.output_collapsed {
+    background-color: #3498db;
+    background-image: linear-gradient(to bottom, #3498db, #2980b9);
+    border-radius: 28px;
+    border-color: transparent;
+    color: #ffffff;
+    padding: 7px 20px 7px 20px;
+    margin-top: 6px;
+}
+
+div.btn.btn-default.output_collapsed:hover {
+    background: #3cb0fd;
+    background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+}
+
+div.cell.is-button div.input_area {
+    display: none;
+}
+
+div.cell-button {
+    text-align: center;
+    background-color: #3498db;
+    background-image: linear-gradient(to bottom, #3498db, #2980b9);
+    border-radius: 28px;
+    border: 0;
+    color: #fff;
+    padding: 7px 20px 7px 20px;
+    margin-left: 5px;
+    margin-top: 6px;
+    width: 100%;
+}
+
+div.cell-button:hover {
+    background: #3cb0fd;
+    color: #fff;
+    background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+}

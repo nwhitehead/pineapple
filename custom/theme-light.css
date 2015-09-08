@@ -1,235 +1,37 @@
-
-/*******************
-FONTS
-********************/
-
-@font-face {
-    font-family: 'RobotoSlab';
-    src: url('fonts/RobotoSlab-Regular-webfont.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'RobotoSlab';
-    src: url('fonts/RobotoSlab-Bold-webfont.ttf') format('truetype');
-    font-weight: bold;
-    font-style: normal;
-}
-
-/*******************
-CSS
-********************/
-
-/* BEGIN BLOCK */
-/* Direct embedding vs. indirect */
-div#notebook-container {
-    width: 100%;
-    padding-top: 50px;
-    padding-bottom: 100px;
-    padding-left: 50px;
-    padding-right: 50px;
-    box-shadow: none;
-    -webkit-box-shadow: none;
-}
-
-div#notebook {
-    padding: 0;
-}
-/* END BLOCK */
-
-@media print {
-    div.input, pre {
-        page-break-inside: avoid;
-    }
-}
-
-div.input_area {
-    margin-left: 5px;
-    border-radius: 3px;
-}
-
-/* Set background to cream */
-div#notebook-container {
-    background: transparent;
-}
+@import url("embedding.css");
+@import url("buttons.css");
+@import url("fonts.css");
+@import url("print.css");
+@import url("ansi.css");
+@import url("readonly.css");
+@import url("cm-light.css");
+@import url("kbd.css");
+@import url("rendered.css");
 
 div#notebook {
     background: #ffffff;
-    font-size: 16px;
 }
 
-div.input_prompt {
-    color: #4f9fcf;
-}
-div.output_prompt {
-    border-radius: 3px;
-    color: #a0b4c0;
-}
+div.input_prompt { color: #4f9fcf; }
+div.input_area { background-color: #edf5fa; }
 
-/* Off black for text in markdown areas */
-div.rendered_html {
-    color: #222222;
-}
+div.output_prompt { color: #a0b4c0; }
+div.output div.output_stderr { background-color: #fef; }
 
-/* Break up long words if we need to */
-div.rendered_html p {
-    word-wrap: break-word;
-}
-
-/* Keyboard shortcut */
-div.rendered_html kbd {
-    color: #000;
-    background-color: #f4f4f4;
-    border: 1px solid #aaa;
-    border-radius: 3px;
-    box-shadow: 0.1em 0.2em 0.3em #ddd;
-    padding: 0.2em 0.4em;
-}
-div.rendered_html span.symbol {
-    font-size: 1.4em;
-    vertical-align: middle;
-}
-
-/* Change codemirror bg */
-div.input_area {
-      background-color: #edf5fa;
-}
-
+div.rendered_html { color: #222222; }
 div.rendered_html h1 {
     font-family: "RobotoSlab";
-    font-size: 48px;
-    font-weight: normal;
-    border-bottom: solid 1px #eeeeee;
 }
-
 div.rendered_html h2 {
     font-family: "RobotoSlab";
-    font-weight: normal;
-    font-size: 32px;
 }
 
-/* Backticks in markdown and actual code get more distinct bg */
-div.rendered_html code {
-    color: #b32146;
-    background-color: #f9f2f4;
-    padding-left: 0.3em;
-    padding-right: 0.3em;
-    padding-top: 0.1em;
-    padding-bottom: 0.1em;
-    border-radius: 3px;
-}
-
-/* Allow code blocks */
-div.rendered_html pre code {
-    color: #333333;
-    background-color: #dcecf5;
-    display: block;
-}
-
-/* Turn off paragraph thingies */
-div.rendered_html a.anchor-link {
-    visibility: hidden;
-}
-
-/* CodeMirror neat theme */
-.cm-s-ipython span.cm-comment { color: #a86; font-style: italic; }
-.cm-s-ipython span.cm-keyword { line-height: 1em; font-weight: bold; color: blue; }
-.cm-s-ipython span.cm-string { color: #a22; }
-.cm-s-ipython span.cm-builtin { line-height: 1em; font-weight: bold; color: #077; }
-.cm-s-ipython span.cm-special { line-height: 1em; font-weight: bold; color: #0aa; }
-.cm-s-ipython span.cm-variable { color: black; }
-.cm-s-ipython span.cm-number { color: #3a3; }
-.cm-s-ipython span.cm-atom { color: #3a3; }
-.cm-s-ipython span.cm-meta { color: #555; }
-.cm-s-ipython span.cm-link { color: #3a3; }
-
-/* Pick nice outline color for cell selection */
-@media screen  {
-    div.cell.selected {
-        border-color: #A59573;
-    }
-    div.cell.read-only.selected {
-        border: 1px solid #ccc;
-        border-radius: 3px;
-    }
-}
-
-div.cell.read-only div.input_area {
-    background-image: url('images/stripe2.png');
-    background-repeat: repeat-y;
-    background-position: right;
-    border-radius: 0;
-    border: 0;
-    padding-right: 20px;
-}
-
-/* always account for stripe to avoid rewrapping as cursor moves */
-div.cell div.rendered_html {
-    padding-right: 20px;
-}
-
-div.cell.read-only.selected div.rendered_html {
-    background-image: url('images/stripe2.png');
-    background-repeat: repeat-y;
-    background-position: right;
-    padding-right: 20px;
-}
-
-/* Make the cell pop with a shadow when editing */
+div.cell.selected { border-color: #A59573; }
 .edit_mode div.cell.selected {
     border-color: #A59573;
     box-shadow: 3px 3px 20px 0px rgba(0,0,0,0.35);
 }
 
-/* Nicer collapsed button colors */
-div.btn.btn-default.output_collapsed {
-    background-color: #3498db;
-    background-image: linear-gradient(to bottom, #3498db, #2980b9);
-    border-radius: 28px;
-    color: #ffffff;
-    padding: 7px 20px 7px 20px;
-    margin-top: 6px;
-}
-div.btn.btn-default.output_collapsed:hover {
-    background: #3cb0fd;
-    background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
-}
-
-/* Make ansi colors more visible on gray background in output */
-div.output span.ansiblack { color: #000; }
-div.output span.ansired { color: #a00; }
-div.output span.ansigreen { color: #555; }
-div.output span.ansiyellow { color: #aa0; }
-div.output span.ansiblue { color: #00a; }
-div.output span.ansimagenta { color: #f5f; }
-div.output span.ansicyan { color: #5ff; }
+div.output span.ansiyellow { color: #880; }
+div.output span.ansicyan { color: #0aa; }
 div.output span.ansigray { color: #555; }
-div.output span.ansiwhite { color: #fff; }
-
-div.cell.is-button div.input_area {
-    display: none;
-}
-
-div.cell-button {
-    text-align: center;
-    background-color: #3498db;
-    background-image: linear-gradient(to bottom, #3498db, #2980b9);
-    border-radius: 28px;
-    color: #fff;
-    padding: 7px 20px 7px 20px;
-    margin-left: 5px;
-    margin-top: 6px;
-    width: 100%;
-}
-div.cell-button:hover {
-    background: #3cb0fd;
-    color: #fff;
-    background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
-}
-
-/* Pink for stderr, white for stdout */
-div.output div.output_stderr {
-    margin-left: 5px;
-    background-color: #fef;
-}

@@ -1,0 +1,20 @@
+div.cell.read-only div.input_area {
+    background-image: url('images/stripe2.png');
+    background-repeat: repeat-y;
+    background-position: right;
+    border-radius: 0;
+    border: 0;
+    padding-right: 20px;
+}
+
+div.cell.read-only.selected div.rendered_html {
+    background-image: url('images/stripe2.png');
+    background-repeat: repeat-y;
+    background-position: right;
+    padding-right: 20px;
+}
+
+/* always account for stripe to avoid rewrapping as cursor moves */
+div.cell div.rendered_html {
+    padding-right: 20px;
+}

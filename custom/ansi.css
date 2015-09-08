@@ -1,0 +1,10 @@
+/* Make ansi colors more visible in output */
+div.output span.ansiblack { color: #000; }
+div.output span.ansired { color: #a00; }
+div.output span.ansigreen { color: #555; }
+div.output span.ansiyellow { color: #ff5; }
+div.output span.ansiblue { color: #00a; }
+div.output span.ansimagenta { color: #f5f; }
+div.output span.ansicyan { color: #5ff; }
+div.output span.ansigray { color: #333; }
+div.output span.ansiwhite { color: #fff; }

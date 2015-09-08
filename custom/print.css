@@ -1,0 +1,11 @@
+@media print {
+    div.input, pre {
+        page-break-inside: avoid;
+    }
+}
+
+@media print  {
+    div.cell.selected {
+        border: none !important;
+    }
+}

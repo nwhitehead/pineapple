@@ -1,0 +1,29 @@
+/* CodeMirror ambiance theme */
+.cm-s-ipython span.cm-header {color: blue;}
+.cm-s-ipython span.cm-quote { color: #24C2C7; }
+.cm-s-ipython span.cm-keyword { color: #cda869; }
+.cm-s-ipython span.cm-atom { color: #CF7EA9; }
+.cm-s-ipython span.cm-number { color: #78CF8A; }
+.cm-s-ipython span.cm-def { color: #aac6e3; }
+.cm-s-ipython span.cm-variable { color: #ffb795; }
+.cm-s-ipython span.cm-variable-2 { color: #eed1b3; }
+.cm-s-ipython span.cm-variable-3 { color: #faded3; }
+.cm-s-ipython span.cm-property { color: #eed1b3; }
+.cm-s-ipython span.cm-operator {color: #fa8d6a;}
+.cm-s-ipython span.cm-comment { color: #555; font-style:italic; }
+.cm-s-ipython span.cm-string { color: #8f9d6a; }
+.cm-s-ipython span.cm-string-2 { color: #9d937c; }
+.cm-s-ipython span.cm-meta { color: #D2A8A1; }
+.cm-s-ipython span.cm-qualifier { color: yellow; }
+.cm-s-ipython span.cm-builtin { color: #9999cc; }
+.cm-s-ipython span.cm-bracket { color: #24C2C7; }
+.cm-s-ipython span.cm-tag { color: #fee4ff }
+.cm-s-ipython span.cm-attribute {  color: #9B859D; }
+.cm-s-ipython span.cm-hr { color: pink; }
+.cm-s-ipython span.cm-link { color: #F4C20B; }
+.cm-s-ipython span.cm-special { color: #FF9D00; }
+.cm-s-ipython span.cm-error { color: #AF2018; }
+.cm-s-ipython span.CodeMirror-matchingbracket { color: #ff0; }
+.cm-s-ipython { color: #E6E1DC; }
+.cm-s-ipython p { color: #f22; }
+.cm-s-ipython .CodeMirror-cursor { border-left-color: #fdf6e3 !important; }
