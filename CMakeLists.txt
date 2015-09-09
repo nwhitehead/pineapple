@@ -211,6 +211,7 @@ set(DATAFILES
     data/images/Paste.png
     data/images/Pen.png
     data/images/Pencil.png
+    data/images/Pineapple-256.png
     data/images/Play.png
     data/images/Plus.png
     data/images/Save.png

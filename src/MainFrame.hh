@@ -94,6 +94,7 @@ public:
     void SetupWebView();
     void SetupLayout(const wxPoint &pos, const wxSize &size);
     void SetupBindings();
+    void SetupIcon();
     void LoadDocument(bool indirect_load=true);
 
     void Save();

@@ -31,6 +31,7 @@
 #include <wx/filedlg.h>
 #include <wx/filefn.h>
 #include <wx/filename.h>
+#include <wx/icon.h>
 #include <wx/image.h>
 #include <wx/log.h>
 #include <wx/menu.h>
@@ -72,8 +73,18 @@ MainFrame::MainFrame(std::string url0, std::string filename,
     SetupWebView();
     SetupLayout(pos, size);
     SetupBindings();
+    SetupIcon();
     LoadDocument(indirect_load);
     Show();
+}
+
+void MainFrame::SetupIcon()
+{
+    wxFileName wfname("Pineapple-256.png");
+    std::string fname(resource_filename(std::string(wfname.GetFullPath())));
+    wxIcon ico;
+    ico.LoadFile(fname);
+    SetIcon(ico);
 }
 
 void MainFrame::SetupMenu()
