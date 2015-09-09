@@ -18,7 +18,7 @@ For wxWidgets, I downloaded the source then used:
 ```
 mkdir build-release
 cd build-release
-../configure --enable-shared --enable-monolithic --with-osx_cocoa CXX='clang++ -std=c++11 -stdlib=libc++' CC=clang --with-macosx-version-min=10.8 --disable-debug
+../configure --enable-shared --enable-monolithic --with-osx_cocoa CXX='clang++ -std=c++11 -stdlib=libc++' CC=clang --with-macosx-version-min=10.8 --disable-debug --without-liblzma
 make -j4
 sudo make install
 ```
