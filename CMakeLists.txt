@@ -11,8 +11,8 @@ set(UPPERCASE_VERSION_NAME "PINEAPPLE")
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 5)
 
-
-
+set(PYTHON_VERSION "2.7")
+set(PYTHON_FULL_VERSION "2.7.10")
 
 # Expect targets: APPLE LINUX WINDOWS
 if(NOT APPLE)
@@ -67,11 +67,11 @@ set(PYTHON_CONFIGURE_OPTIONS
     --with-system-ffi
     --with-fpectl
     --with-threads
-    no-ssl2
 )
 if(LINUX)
     # Ubuntu uses ucs4
-    set(PYTHON_CONFIGURE_OPTIONS ${PYTHON_CONFIGURE_OPTIONS} --enable-unicode=ucs4)
+    set(PYTHON_CONFIGURE_OPTIONS ${PYTHON_CONFIGURE_OPTIONS}
+        --enable-unicode=ucs4)
 endif()
 if(APPLE)
     # Choose 64-bit build on Mac
@@ -86,24 +86,24 @@ if(LINUX)
     set(PYTHON_OPENSSL "CPPFLAGS=-I${OPENSSL_DIR}" "LDFLAGS=-L${OPENSSL_DIR}/lib -L/usr/lib/x86_64-linux-gnu")
 endif()
 
-set(PYTHON_PREFIX "${PROJECT_BINARY_DIR}/python2.7-prefix")
-set(PYTHON_DIR "${PROJECT_BINARY_DIR}/python2.7")
-set(PYTHON_SOURCE "${PYTHON_PREFIX}/src/python2.7-external")
+set(PYTHON_PREFIX "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}-prefix")
+set(PYTHON_DIR "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}")
+set(PYTHON_SOURCE "${PYTHON_PREFIX}/src/python${PYTHON_VERSION}-external")
 set(PYTHON "${PYTHON_DIR}/bin/python")
 ExternalProject_Add(
-    python2.7-external
-    URL "${EXTERNAL}/python-2.7/Python-2.7.10.tgz"
+    python${PYTHON_VERSION}-external
+    URL "${EXTERNAL}/python-${PYTHON_VERSION}/Python-${PYTHON_FULL_VERSION}.tgz"
     PREFIX "${PYTHON_PREFIX}"
-    PATCH_COMMAND ${CMAKE_COMMAND} -E copy ${EXTERNAL}/python-2.7/Setup.local ${PYTHON_SOURCE}/Modules/
+    PATCH_COMMAND ${CMAKE_COMMAND} -E copy ${EXTERNAL}/python-${PYTHON_VERSION}/Setup.local ${PYTHON_SOURCE}/Modules/
     CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env ${PYTHON_OPENSSL} ./configure --prefix=${PYTHON_DIR} ${PYTHON_CONFIGURE_OPTIONS}
     BUILD_COMMAND make
     BUILD_IN_SOURCE 1
     INSTALL_COMMAND make install
 )
-add_custom_target(python2.7 DEPENDS python2.7-external openssl)
-add_custom_target(python2.7-postinstall
-    DEPENDS python2.7
-    COMMAND ${PYTHON} ${EXTERNAL}/python-2.7/get-pip.py
+add_custom_target(python${PYTHON_VERSION} DEPENDS python${PYTHON_VERSION}-external openssl)
+add_custom_target(python${PYTHON_VERSION}-postinstall
+    DEPENDS python${PYTHON_VERSION}
+    COMMAND ${PYTHON} ${EXTERNAL}/python-${PYTHON_VERSION}/get-pip.py
     COMMENT "Setting up pip"
 )
 set(PIP "${PYTHON_DIR}/bin/pip")
@@ -146,7 +146,7 @@ set(PYCURL_DIR "${PROJECT_BINARY_DIR}/pycurl")
 set(PYCURL_SOURCE "${PYCURL_PREFIX}/src/pycurl-external")
 ExternalProject_Add(
     pycurl-external
-    DEPENDS python2.7 libcurl
+    DEPENDS python${PYTHON_VERSION} libcurl
     URL "${EXTERNAL}/pycurl/pycurl-7.19.5.tar.gz"
     PREFIX "${PYCURL_PREFIX}"
     CONFIGURE_COMMAND ""
@@ -166,13 +166,13 @@ include(${wxWidgets_USE_FILE})
 ## PIP prerequisites
 
 add_custom_target(requirements-install
-    DEPENDS python2.7 python2.7-postinstall openssl libcurl pycurl
+    DEPENDS python${PYTHON_VERSION} python${PYTHON_VERSION}-postinstall openssl libcurl pycurl
     COMMAND ${CMAKE_COMMAND} -E env LD_LIBRARY_PATH=${SSL_DIR}/lib:${CURL_DIR}/lib ${PIP} install -r ${PROJECT_SOURCE_DIR}/requirements.txt
     COMMAND ${PROJECT_SOURCE_DIR}/scripts/clean-python.sh ${PYTHON_DIR}
 )
 # Server resources
 set(LESSC "lessc")
-set(CUSTOM_DIR "${PYTHON_DIR}/lib/python2.7/site-packages/notebook/static/custom/")
+set(CUSTOM_DIR "${PYTHON_DIR}/lib/python${PYTHON_VERSION}/site-packages/notebook/static/custom/")
 add_custom_target(compile-less
     COMMAND ${LESSC} ${PROJECT_SOURCE_DIR}/custom/theme-light.less ${CUSTOM_DIR}/theme-light.css
     COMMAND ${LESSC} ${PROJECT_SOURCE_DIR}/custom/theme-dark.less ${CUSTOM_DIR}/theme-dark.css
@@ -287,7 +287,7 @@ set_target_properties(local-retest PROPERTIES EXCLUDE_FROM_ALL 1)
 
 ### Install
 
-file (GLOB binprogs "${PROJECT_BINARY_DIR}/python2.7/bin/*")
+file (GLOB binprogs "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/bin/*")
 if(APPLE)
     set (APP_BIN ".")
     set (APP_RES "Pineapple.app/Contents/Resources")
@@ -300,17 +300,17 @@ install (TARGETS ${PROJECT_NAME}
     DESTINATION ${APP_BIN})
 install (FILES ${DATAFILES}
     DESTINATION "${APP_RES}")
-install (DIRECTORY "${PROJECT_BINARY_DIR}/python2.7/include" DESTINATION "${APP_RES}/python2.7")
-install (DIRECTORY "${PROJECT_BINARY_DIR}/python2.7/lib" DESTINATION "${APP_RES}/python2.7")
-install (DIRECTORY "${PROJECT_BINARY_DIR}/python2.7/man" DESTINATION "${APP_RES}/python2.7")
-install (DIRECTORY "${PROJECT_BINARY_DIR}/python2.7/share" DESTINATION "${APP_RES}/python2.7")
+install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/include" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
+install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/lib" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
+install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/man" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
+install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/share" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
 install (PROGRAMS ${binprogs}
-    DESTINATION "${APP_RES}/python2.7/bin")
+    DESTINATION "${APP_RES}/python${PYTHON_VERSION}/bin")
 install (FILES "scripts/pineapple-server"
     DESTINATION "${APP_RES}")
 # Clean up to make final size smaller
 install (CODE "
-        execute_process(COMMAND ${PROJECT_SOURCE_DIR}/scripts/clean-python.sh \"${CMAKE_INSTALL_PREFIX}/${APP_RES}/python2.7\")
+        execute_process(COMMAND ${PROJECT_SOURCE_DIR}/scripts/clean-python.sh \"${CMAKE_INSTALL_PREFIX}/${APP_RES}/python${PYTHON_VERSION}\")
     ")
 if(APPLE)
     set (APPS "${CMAKE_INSTALL_PREFIX}/Pineapple.app")
@@ -323,7 +323,7 @@ if(APPLE)
 endif()
 
 ### HACK for dev work inside install to avoid "make install"
-set(CUSTOM_INSTALL_LOCATION "${CMAKE_INSTALL_PREFIX}/${APP_RES}/python2.7/lib/python2.7/site-packages/notebook/static/custom")
+set(CUSTOM_INSTALL_LOCATION "${CMAKE_INSTALL_PREFIX}/${APP_RES}/python${PYTHON_VERSION}/lib/python${PYTHON_VERSION}/site-packages/notebook/static/custom")
 add_custom_target(custom-install-dev
     COMMAND ${CMAKE_COMMAND} -E make_directory "${CUSTOM_INSTALL_LOCATION}"
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${CUSTOM_DIR}" "${CUSTOM_INSTALL_LOCATION}"
