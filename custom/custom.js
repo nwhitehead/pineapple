@@ -163,14 +163,31 @@ define([
         cell.element.find('.cell-button').remove();
         if (val !== false) {
             cell.element.addClass("is-button");
-            cell.element
-                .find('.inner_cell')
-                .append('<div class="btn btn-default cell-button">' + title + '</div>');
-            cell.element
-                .find('.cell-button')
-                .click(function() {
-                    IPython.notebook.execute_cell();
-                });
+            if (val === 'run') {
+                cell.element
+                    .find('.inner_cell')
+                    .append('<div class="btn btn-default cell-button">&#x25b6;</div>');
+                cell.element
+                    .find('.cell-button')
+                    .click(function() {
+                        cell.execute();
+                    });
+            }
+            if (val === 'submit') {
+                cell.element
+                    .find('.inner_cell')
+                    .append('<div class="btn btn-default cell-button">&#x25b6;</div>');
+                cell.element
+                    .find('.cell-button')
+                    .click(function() {
+                        var cells = IPython.notebook.get_cells();
+                        var i = cells.indexOf(cell);
+                        if (i > 0) {
+                            cells[i - 1].execute();
+                        }
+                        cell.execute();
+                    });
+            }
         } else {
             cell.element.removeClass("is-button");
         }

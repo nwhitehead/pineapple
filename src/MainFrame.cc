@@ -147,13 +147,20 @@ void MainFrame::SetupMenu()
         menu_cell->AppendSubMenu(menu_type, "Cell type");
     }
     menu_cell->AppendSeparator();
-    menu_cell->Append(wxID_TOGGLE_READONLY, "Toggle read-only");
-    menu_cell->AppendSeparator();
     menu_cell->Append(wxID_CLEAR_OUTPUT, "Clear output");
-    menu_cell->AppendSeparator();
-    menu_cell->Append(wxID_SET_BUTTON, "Set button");
-    menu_cell->Append(wxID_UNSET_BUTTON, "Unset button");
     menubar->Append(menu_cell, "Cell");
+
+    wxMenu *menu_tools = new wxMenu();
+    {
+        wxMenu  *menu_button = new wxMenu();
+        menu_button->Append(wxID_SET_BUTTON, "Run button");
+        menu_button->Append(wxID_SUBMIT_BUTTON, "Submit button");
+        menu_button->Append(wxID_UNSET_BUTTON, "Clear button");
+        menu_tools->AppendSubMenu(menu_button, "Button");
+    }
+    menu_tools->AppendSeparator();
+    menu_tools->Append(wxID_TOGGLE_READONLY, "Toggle read-only");
+    menubar->Append(menu_tools, "Tools");
 
     wxMenu *menu_kernel = new wxMenu();
     menu_kernel->Append(wxID_KERNEL_INTERRUPT, "Interrupt\tCtrl-I");
@@ -353,8 +360,13 @@ void MainFrame::SetupBindings()
 
     Bind(wxEVT_COMMAND_MENU_SELECTED,
         [this](wxCommandEvent &/* event */) -> void {
-            webview->RunScript(std::string("require('custom/custom').setSelectionButton('&#x25b6;');"));
+            webview->RunScript(std::string("require('custom/custom').setSelectionButton('run');"));
         }, wxID_SET_BUTTON);
+
+    Bind(wxEVT_COMMAND_MENU_SELECTED,
+        [this](wxCommandEvent &/* event */) -> void {
+            webview->RunScript(std::string("require('custom/custom').setSelectionButton('submit');"));
+        }, wxID_SUBMIT_BUTTON);
 
     Bind(wxEVT_COMMAND_MENU_SELECTED,
         [this](wxCommandEvent &/* event */) -> void {
