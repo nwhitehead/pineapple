@@ -43,9 +43,9 @@ std::string python_fullpath()
     // Look for python in resource location
     wxString respath(wxStandardPaths::Get().GetResourcesDir());
     wxFileName wfname(respath, "");
-    wfname.AppendDir("python2.7");
+    wfname.AppendDir(config::python_dir);
     wfname.AppendDir("bin");
-    wfname.SetFullName("python2.7");
+    wfname.SetFullName(config::python_name);
     return std::string(wfname.GetFullPath());
 }
 

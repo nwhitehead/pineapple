@@ -11,8 +11,8 @@ set(UPPERCASE_VERSION_NAME "PINEAPPLE")
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 5)
 
-set(PYTHON_VERSION "2.7")
-set(PYTHON_FULL_VERSION "2.7.10")
+set(PYTHON_VERSION "3.5")
+set(PYTHON_FULL_VERSION "3.5.0rc3")
 set(OPENSSL_VERSION "1.0.2d")
 set(CURL_VERSION "7.44.0")
 set(PYCURL_VERSION "7.19.5")
@@ -92,7 +92,7 @@ endif()
 set(PYTHON_PREFIX "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}-prefix")
 set(PYTHON_DIR "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}")
 set(PYTHON_SOURCE "${PYTHON_PREFIX}/src/python${PYTHON_VERSION}-external")
-set(PYTHON "${PYTHON_DIR}/bin/python")
+set(PYTHON "${PYTHON_DIR}/bin/python${PYTHON_VERSION}")
 ExternalProject_Add(
     python${PYTHON_VERSION}-external
     URL "${EXTERNAL}/python-${PYTHON_VERSION}/Python-${PYTHON_FULL_VERSION}.tgz"
@@ -109,7 +109,7 @@ add_custom_target(python${PYTHON_VERSION}-postinstall
     COMMAND ${PYTHON} ${EXTERNAL}/python-${PYTHON_VERSION}/get-pip.py
     COMMENT "Setting up pip"
 )
-set(PIP "${PYTHON_DIR}/bin/pip")
+set(PIP "${PYTHON_DIR}/bin/pip${PYTHON_VERSION}")
 
 
 if(LINUX)
