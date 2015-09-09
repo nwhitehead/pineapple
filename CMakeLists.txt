@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 2.8)
 set(VERSION_NAME "Pineapple")
 set(UPPERCASE_VERSION_NAME "PINEAPPLE")
 set(VERSION_MAJOR 0)
-set(VERSION_MINOR 5)
+set(VERSION_MINOR 6)
 
 set(PYTHON_VERSION "3.5")
 set(PYTHON_FULL_VERSION "3.5.0rc3")
@@ -65,28 +65,16 @@ if(LINUX)
 ## Python
 endif()
 
-set(PYTHON_CONFIGURE_OPTIONS
-    --enable-ipv6
-    --with-system-ffi
-    --with-fpectl
-    --with-threads
-)
-if(LINUX)
-    # Ubuntu uses ucs4
-    set(PYTHON_CONFIGURE_OPTIONS ${PYTHON_CONFIGURE_OPTIONS}
-        --enable-unicode=ucs4)
-endif()
-if(APPLE)
-    # Choose 64-bit build on Mac
-    set(PYTHON_CONFIGURE_OPTIONS ${PYTHON_CONFIGURE_OPTIONS}
-        darwin64-x86_64-cc
-        --enable-unicode=ucs2
-    )
-endif()
+set(PYTHON_CONFIGURE_OPTIONS "")
 
 set(PYTHON_OPENSSL "")
 if(LINUX)
     set(PYTHON_OPENSSL "CPPFLAGS=-I${OPENSSL_DIR}" "LDFLAGS=-L${OPENSSL_DIR}/lib -L/usr/lib/x86_64-linux-gnu")
+endif()
+if(APPLE)
+    if(EXISTS /usr/local/include/libintl.h)
+        message(FATAL_ERROR "You need to move /usr/local/include/libintl.h somewhere else")
+    endif()
 endif()
 
 set(PYTHON_PREFIX "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}-prefix")
@@ -320,6 +308,8 @@ if(APPLE)
         include(BundleUtilities)
         fixup_bundle(\"${APPS}\"    \"\"    \"\")
         execute_process(COMMAND codesign --force -s \"Nathan Whitehead\" \"${CMAKE_INSTALL_PREFIX}/Pineapple.app/Contents/MacOS/libwx_osx_cocoau-3.1.dylib\")
+#        execute_process(COMMAND codesign --force -s \"Nathan Whitehead\" \"${CMAKE_INSTALL_PREFIX}/Pineapple.app/Contents/MacOS/libiconv.2.dylib\")
+#        execute_process(COMMAND codesign --force -s \"Nathan Whitehead\" \"${CMAKE_INSTALL_PREFIX}/Pineapple.app/Contents/MacOS/libintl.8.dylib\")
         execute_process(COMMAND codesign --force -s \"Nathan Whitehead\" \"${CMAKE_INSTALL_PREFIX}/Pineapple.app\")
     ")
 endif()
