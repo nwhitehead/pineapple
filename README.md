@@ -9,6 +9,7 @@ and packages, while remaining super easy to install and use.
 General requirements:
 * C++11 compiler (e.g. g++-4.9 or later)
 * wxWidgets 3.x (source compile)
+* lessc (for compiling .less files, get it with npm)
 
 ### Mac OS X
 
@@ -63,9 +64,15 @@ cmake ..
 make
 ```
 
-This builds python and various libraries,
-installs requirements with pip, and builds
-the main application. Do `make localtest` to try it.
+This builds python and various libraries and builds
+the main application.
+
+```
+make custom-install
+```
+This installs pip requirements and then copies custom
+files into the notebook static directory. Now you can
+try the local application with `make localtest`.
 
 ## Distribution
 

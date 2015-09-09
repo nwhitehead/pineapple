@@ -13,6 +13,9 @@ set(VERSION_MINOR 5)
 
 set(PYTHON_VERSION "2.7")
 set(PYTHON_FULL_VERSION "2.7.10")
+set(OPENSSL_VERSION "1.0.2d")
+set(CURL_VERSION "7.44.0")
+set(PYCURL_VERSION "7.19.5")
 
 # Expect targets: APPLE LINUX WINDOWS
 if(NOT APPLE)
@@ -51,12 +54,12 @@ if(LINUX)
     set(OPENSSL_SOURCE "${OPENSSL_PREFIX}/src/openssl")
     ExternalProject_Add(
         openssl-external
-        URL "${EXTERNAL}/openssl/openssl-1.0.2d.tar.gz"
+        URL "${EXTERNAL}/openssl/openssl-${OPENSSL_VERSION}.tar.gz"
         PREFIX "${OPENSSL_PREFIX}"
         CONFIGURE_COMMAND ./config --prefix=${OPENSSL_DIR} shared no-idea no-mdc2 no-rc5
-                                            BUILD_COMMAND make
-                                            BUILD_IN_SOURCE 1
-                                            INSTALL_COMMAND make install
+        BUILD_COMMAND make
+        BUILD_IN_SOURCE 1
+        INSTALL_COMMAND make install
     )
     add_custom_target(openssl DEPENDS openssl-external)
 ## Python
@@ -117,7 +120,7 @@ if(LINUX)
     set(CURL_DIR "${PROJECT_BINARY_DIR}/curl")
     ExternalProject_Add(
         libcurl-external
-        URL "${EXTERNAL}/curl/curl-7.44.0.zip"
+        URL "${EXTERNAL}/curl/curl-${CURL_VERSION}.zip"
         PREFIX "${CURL_PREFIX}"
         CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env "CPPFLAGS=-I${OPENSSL_DIR}" "LDFLAGS=-L${OPENSSL_DIR}/lib" ./configure --with-ssl=${OPENSSL_DIR} --prefix=${CURL_DIR}
                 BUILD_COMMAND make
@@ -147,7 +150,7 @@ set(PYCURL_SOURCE "${PYCURL_PREFIX}/src/pycurl-external")
 ExternalProject_Add(
     pycurl-external
     DEPENDS python${PYTHON_VERSION} libcurl
-    URL "${EXTERNAL}/pycurl/pycurl-7.19.5.tar.gz"
+    URL "${EXTERNAL}/pycurl/pycurl-${PYCURL_VERSION}.tar.gz"
     PREFIX "${PYCURL_PREFIX}"
     CONFIGURE_COMMAND ""
     BUILD_IN_SOURCE 1
@@ -302,7 +305,6 @@ install (FILES ${DATAFILES}
     DESTINATION "${APP_RES}")
 install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/include" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
 install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/lib" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
-install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/man" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
 install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/share" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
 install (PROGRAMS ${binprogs}
     DESTINATION "${APP_RES}/python${PYTHON_VERSION}/bin")
