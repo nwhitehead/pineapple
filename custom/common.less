@@ -47,3 +47,37 @@ div.cell.selected {
     border-color: @select-box;
     box-shadow: @select-shadow;
 }
+
+@ut-mix: 30%;
+@ut-accent: hsl(55, 90%, 50%);
+@ut-bg: mix(@ut-accent, @bg, @ut-mix);
+@ut-fg: @fg;
+@ut-success: mix(#0f0, difference(@ut-bg, #fff), 40%);
+@ut-failure: mix(#f00, difference(@ut-bg, #fff), 40%);
+@ut-other: #8f8;
+@ut-border: @ut-accent;
+div.unittest {
+    font-family: mono;
+//    border: 1px solid @ut-border;
+    border-left: 6px solid @ut-border;
+    border-radius: 0px;
+    margin-left: -5px;
+    margin-right: -20px;
+    padding: 30px;
+    background-color: @ut-bg;
+    color: @ut-fg;
+    p.unittest-test {
+        padding: 0;
+        margin: 0;
+    }
+    p.unittest-success {
+        color: @ut-success;
+        span.unittest-name { color: @ut-fg; }
+    }
+    p.unittest-failure {
+        color: @ut-failure;
+    }
+    p.unittest-error { color: @ut-failure; }
+    p.unittest-skipped { color: @ut-other; }
+    span.unittest-time { color: mix(@ut-fg, @ut-bg); }
+}
