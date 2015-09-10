@@ -92,7 +92,6 @@ ExternalProject_Add(
     python${PYTHON_VERSION}-external
     URL "${EXTERNAL}/python-${PYTHON_VERSION}/Python-${PYTHON_FULL_VERSION}.tgz"
     PREFIX "${PYTHON_PREFIX}"
-    PATCH_COMMAND ${CMAKE_COMMAND} -E copy ${EXTERNAL}/python-${PYTHON_VERSION}/Setup.local ${PYTHON_SOURCE}/Modules/
     CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env ${PYTHON_OPENSSL} ./configure --prefix=${PYTHON_DIR} ${PYTHON_CONFIGURE_OPTIONS}
     BUILD_COMMAND make
     BUILD_IN_SOURCE 1
@@ -309,9 +308,9 @@ if(LINUX)
         DESTINATION "${APP_RES}")
 else()
   if(APPLE)
-    install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/Python.framework/Versions" DESTINATION "${APP_FRAMEWORKS}/Python.framework/")
-#    install (PROGRAMS ${PYTHON}
-#        DESTINATION "${APP_FRAMEWORKS}")
+    install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/Python.framework/Versions" DESTINATION "${APP_FRAMEWORKS}/Python.framework/" PATTERN bin/* EXCLUDE)
+    install (PROGRAMS ${PYTHON}
+        DESTINATION "${APP_FRAMEWORKS}")
 #    install (FILES "scripts/pineapple-server"
 #        DESTINATION "${APP_RES}")
   endif()
