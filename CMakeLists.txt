@@ -65,6 +65,16 @@ if(LINUX)
 ## Python
 endif()
 
+set(PYTHON_PREFIX "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}-prefix")
+set(PYTHON_DIR "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}")
+set(PYTHON_SOURCE "${PYTHON_PREFIX}/src/python${PYTHON_VERSION}-external")
+if(APPLE)
+    set(PYTHON_FRAMEWORK "${PYTHON_DIR}/Python.framework/Versions/Current")
+else()
+    set(PYTHON_FRAMEWORK "${PYTHON_DIR}")
+endif()
+set(PYTHON "${PYTHON_FRAMEWORK}/bin/python${PYTHON_VERSION}")
+
 set(PYTHON_CONFIGURE_OPTIONS "")
 
 set(PYTHON_OPENSSL "")
@@ -75,12 +85,9 @@ if(APPLE)
     if(EXISTS /usr/local/include/libintl.h)
         message(FATAL_ERROR "You need to move /usr/local/include/libintl.h somewhere else")
     endif()
+    set(PYTHON_CONFIGURE_OPTIONS ${PYTHON_CONFIGURE_OPTIONS} --enable-framework=${PYTHON_DIR})
 endif()
 
-set(PYTHON_PREFIX "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}-prefix")
-set(PYTHON_DIR "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}")
-set(PYTHON_SOURCE "${PYTHON_PREFIX}/src/python${PYTHON_VERSION}-external")
-set(PYTHON "${PYTHON_DIR}/bin/python${PYTHON_VERSION}")
 ExternalProject_Add(
     python${PYTHON_VERSION}-external
     URL "${EXTERNAL}/python-${PYTHON_VERSION}/Python-${PYTHON_FULL_VERSION}.tgz"
@@ -278,10 +285,10 @@ set_target_properties(local-retest PROPERTIES EXCLUDE_FROM_ALL 1)
 
 ### Install
 
-file (GLOB binprogs "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/bin/*")
 if(APPLE)
     set (APP_BIN ".")
     set (APP_RES "Pineapple.app/Contents/Resources")
+    set (APP_FRAMEWORKS "Pineapple.app/Contents/Frameworks")
 else()
     set (APP_BIN "bin")
     set (APP_RES "share/${VERSION_NAME}")
@@ -291,18 +298,33 @@ install (TARGETS ${PROJECT_NAME}
     DESTINATION ${APP_BIN})
 install (FILES ${DATAFILES}
     DESTINATION "${APP_RES}")
-install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/include" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
-install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/lib" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
-install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/share" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
-install (PROGRAMS ${binprogs}
-    DESTINATION "${APP_RES}/python${PYTHON_VERSION}/bin")
-install (FILES "scripts/pineapple-server"
-    DESTINATION "${APP_RES}")
+if(LINUX)
+    file (GLOB binprogs "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/bin/*")
+    install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/include" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
+    install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/lib" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
+    install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/share" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
+    install (PROGRAMS ${binprogs}
+        DESTINATION "${APP_RES}/python${PYTHON_VERSION}/bin")
+    install (FILES "scripts/pineapple-server"
+        DESTINATION "${APP_RES}")
+else()
+  if(APPLE)
+    install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/Python.framework/Versions" DESTINATION "${APP_FRAMEWORKS}/Python.framework/")
+#    install (PROGRAMS ${PYTHON}
+#        DESTINATION "${APP_FRAMEWORKS}")
+#    install (FILES "scripts/pineapple-server"
+#        DESTINATION "${APP_RES}")
+  endif()
+endif()
+
 # Clean up to make final size smaller
 install (CODE "
         execute_process(COMMAND ${PROJECT_SOURCE_DIR}/scripts/clean-python.sh \"${CMAKE_INSTALL_PREFIX}/${APP_RES}/python${PYTHON_VERSION}\")
     ")
 if(APPLE)
+    install (CODE "
+            execute_process(COMMAND ${PROJECT_SOURCE_DIR}/scripts/clean-python.sh \"${CMAKE_INSTALL_PREFIX}/${APP_RES}/python${PYTHON_VERSION}/Python.framework/Versions/Current/\")
+        ")
     set (APPS "${CMAKE_INSTALL_PREFIX}/Pineapple.app")
     install (CODE "
         include(BundleUtilities)
