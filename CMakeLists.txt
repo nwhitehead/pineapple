@@ -233,6 +233,13 @@ set(SRC_LIST
     src/PreferencesManager.cc
     ${DATAFILES}
 )
+
+if (LINUX)
+    set (CPP_PYTHON_DIR "python${PYTHON_VERSION}")
+else()
+    set (CPP_PYTHON_DIR "..")
+endif()
+set (CPP_PYTHON_NAME "python${PYTHON_VERSION}")
 configure_file("${PROJECT_SOURCE_DIR}/src/config.hh.in" "${PROJECT_BINARY_DIR}/include/config.hh")
 include_directories("${PROJECT_BINARY_DIR}/include")
 add_executable(${PROJECT_NAME} ${SRC_LIST})
@@ -307,6 +314,8 @@ else()
     set (APP_FRAMEWORKS "Pineapple.app/Contents/Frameworks")
     set (PYTHON_FRAMEWORK "${APP_FRAMEWORKS}/Python.framework/")
     install (DIRECTORY "${PYTHON_DIR}/Python.framework/Versions" DESTINATION "${PYTHON_FRAMEWORK}" PATTERN bin/* EXCLUDE)
+    install (FILES "scripts/pineapple-server"
+        DESTINATION "${APP_RES}")
   endif()
 
 endif()

@@ -103,7 +103,7 @@ constexpr int token_final_save = -2;
 constexpr int timeout_delay_ms = 2000;
 
 /// Python things
-constexpr char python_dir[] = "python${PYTHON_VERSION}";
-constexpr char python_name[] = "python${PYTHON_VERSION}";
+constexpr char python_dir[] = "${CPP_PYTHON_DIR}";
+constexpr char python_name[] = "${CPP_PYTHON_NAME}";
 
 } /// namespace config
