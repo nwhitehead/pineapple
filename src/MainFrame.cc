@@ -167,6 +167,7 @@ void MainFrame::SetupMenu()
         menu_button->Append(wxID_SET_BUTTON, "Run button");
         menu_button->Append(wxID_SUBMIT_BUTTON, "Submit button");
         menu_button->Append(wxID_UNSET_BUTTON, "Clear button");
+        menu_button->Append(wxID_NONE_BUTTON, "Invisible input");
         menu_tools->AppendSubMenu(menu_button, "Button");
     }
     menu_tools->AppendSeparator();
@@ -378,6 +379,11 @@ void MainFrame::SetupBindings()
         [this](wxCommandEvent &/* event */) -> void {
             webview->RunScript(std::string("require('custom/custom').setSelectionButton('submit');"));
         }, wxID_SUBMIT_BUTTON);
+
+    Bind(wxEVT_COMMAND_MENU_SELECTED,
+        [this](wxCommandEvent &/* event */) -> void {
+            webview->RunScript(std::string("require('custom/custom').setSelectionButton('none');"));
+        }, wxID_NONE_BUTTON);
 
     Bind(wxEVT_COMMAND_MENU_SELECTED,
         [this](wxCommandEvent &/* event */) -> void {

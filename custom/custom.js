@@ -163,6 +163,9 @@ define([
         cell.element.find('.cell-button').remove();
         if (val !== false) {
             cell.element.addClass("is-button");
+            cell.element
+                .find('.input')
+                .show();
             if (val === 'run') {
                 cell.element
                     .find('.inner_cell')
@@ -172,6 +175,11 @@ define([
                     .click(function() {
                         cell.execute();
                     });
+            }
+            if (val === 'none') {
+                cell.element
+                    .find('.input')
+                    .hide();
             }
             if (val === 'submit') {
                 cell.element
