@@ -282,7 +282,6 @@ set_target_properties(local-retest PROPERTIES EXCLUDE_FROM_ALL 1)
 if(APPLE)
     set (APP_BIN ".")
     set (APP_RES "Pineapple.app/Contents/Resources")
-    set (APP_FRAMEWORKS "Pineapple.app/Contents/Frameworks")
 else()
     set (APP_BIN "bin")
     set (APP_RES "share/${VERSION_NAME}")
@@ -292,6 +291,7 @@ install (TARGETS ${PROJECT_NAME}
     DESTINATION ${APP_BIN})
 install (FILES ${DATAFILES}
     DESTINATION "${APP_RES}")
+
 if(LINUX)
     file (GLOB binprogs "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/bin/*")
     install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/include" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
@@ -302,42 +302,43 @@ if(LINUX)
     install (FILES "scripts/pineapple-server"
         DESTINATION "${APP_RES}")
 else()
+
   if(APPLE)
-    install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/Python.framework/Versions" DESTINATION "${APP_FRAMEWORKS}/Python.framework/" PATTERN bin/* EXCLUDE)
-    file (GLOB binprogs "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/Python.framework/Versions/Current/bin/python3.5")
-#    install (PROGRAMS "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/Python.framework/Versions/Current/bin/python3.5" DESTINATION "Pineapple.app/Contents/bin")
-#    install (PROGRAMS "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/Python.framework/Versions/Current/bin/python${PYTHON_VERSION}"
-#        DESTINATION "${APP_RES}/python${PYTHON_VERSION}/bin")
-#    install (FILES "scripts/pineapple-server"
-#        DESTINATION "${APP_RES}")
+    set (APP_FRAMEWORKS "Pineapple.app/Contents/Frameworks")
+    set (PYTHON_FRAMEWORK "${APP_FRAMEWORKS}/Python.framework/")
+    install (DIRECTORY "${PYTHON_DIR}/Python.framework/Versions" DESTINATION "${PYTHON_FRAMEWORK}" PATTERN bin/* EXCLUDE)
   endif()
+
 endif()
 
 # Clean up to make final size smaller
-install (CODE "
+if (LINUX)
+    install (CODE "
         execute_process(COMMAND ${PROJECT_SOURCE_DIR}/scripts/clean-python.sh \"${CMAKE_INSTALL_PREFIX}/${APP_RES}/python${PYTHON_VERSION}\")
     ")
-if(APPLE)
-    install (CODE "
-            execute_process(COMMAND ${PROJECT_SOURCE_DIR}/scripts/clean-python.sh \"${CMAKE_INSTALL_PREFIX}/${APP_RES}/python${PYTHON_VERSION}/Python.framework/Versions/Current/\")
-        ")
-    set (APP "${CMAKE_INSTALL_PREFIX}/Pineapple.app")
-#    set (APP_PY "${CMAKE_INSTALL_PREFIX}/Pineapple.app/Contents/python${PYTHON_VERSION}")
-    set (APP_PY "${CMAKE_INSTALL_PREFIX}/Pineapple.app/Contents/Frameworks/Python.framework/Versions/Current/Resources/Python.app")
+endif()
 
-# "@executable_path/../Frameworks/Python.framework/Versions/3.5/Python\"
+# Post-install rpath fixups for Mac
+# (also installs framework since cmake had problems)
+if(APPLE)
+    set (APP "${CMAKE_INSTALL_PREFIX}/Pineapple.app")
+    set (PYTHON_DEST "Pineapple.app/Contents/bin/python${PYTHON_VERSION}")
+    set (PY_FRAMEWORK "Python.framework/Versions/${PYTHON_VERSION}")
+    set (PY_APP "Contents/Frameworks/${PY_FRAMEWORK}/Resources/Python.app/Contents/MacOS/Python")
+    install (CODE "
+            execute_process(COMMAND ${PROJECT_SOURCE_DIR}/scripts/clean-python.sh \"${APP}/Contents/Frameworks/${PY_FRAMEWORK}\")
+        ")
     install (CODE "
         include(BundleUtilities)
-#        fixup_bundle(\"${APP_PY}\"    \"\"    \"../../..\")
         fixup_bundle(\"${APP}\"    \"\"    \"\")
         execute_process(COMMAND mkdir -p Pineapple.app/Contents/bin)
-        execute_process(COMMAND cp ${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/Python.framework/Versions/Current/bin/python${PYTHON_VERSION} Pineapple.app/Contents/bin/python${PYTHON_VERSION})
-        execute_process(COMMAND chmod a+x Pineapple.app/Contents/Frameworks/Python.framework/Versions/3.5/Resources/Python.app/Contents/MacOS/Python)
-        execute_process(COMMAND install_name_tool -change \"/Users/nwhitehead/pineapple/build/python3.5/Python.framework/Versions/3.5/Python\" \"@executable_path/../Frameworks/Python.framework/Versions/3.5/Python\" \"Pineapple.app/Contents/bin/python3.5\" )
-        execute_process(COMMAND install_name_tool -change \"/Users/nwhitehead/pineapple/build/python3.5/Python.framework/Versions/3.5/Python\" \"@executable_path/../../../../Python\" \"Pineapple.app/Contents/Frameworks/Python.framework/Versions/3.5/Resources/Python.app/Contents/MacOS/Python\" )
-#        execute_process(COMMAND codesign --force -s \"Nathan Whitehead\" \"${CMAKE_INSTALL_PREFIX}/Pineapple.app/Contents/MacOS/libwx_osx_cocoau-3.1.dylib\")
-#        execute_process(COMMAND codesign --force -s \"Nathan Whitehead\" \"${CMAKE_INSTALL_PREFIX}/Pineapple.app/Contents/Frameworks/Python.framework\")
-#        execute_process(COMMAND codesign --force -s \"Nathan Whitehead\" \"${CMAKE_INSTALL_PREFIX}/Pineapple.app\")
+        execute_process(COMMAND cp ${PYTHON} ${PYTHON_DEST})
+        execute_process(COMMAND chmod a+x Pineapple.app/${PY_APP})
+        execute_process(COMMAND install_name_tool -change \"${PYTHON_DIR}/${PY_FRAMEWORK}/Python\" \"@executable_path/../Frameworks/${PY_FRAMEWORK}/Python\" \"${PYTHON_DEST}\" )
+        execute_process(COMMAND install_name_tool -change \"${PYTHON_DIR}/${PY_FRAMEWORK}/Python\" \"@executable_path/../../../../Python\" \"Pineapple.app/${PY_APP}\" )
+        execute_process(COMMAND codesign --force -s \"Nathan Whitehead\" \"${CMAKE_INSTALL_PREFIX}/Pineapple.app/Contents/MacOS/libwx_osx_cocoau-3.1.dylib\")
+        execute_process(COMMAND codesign --force -s \"Nathan Whitehead\" \"${CMAKE_INSTALL_PREFIX}/Pineapple.app/Contents/Frameworks/Python.framework\")
+        execute_process(COMMAND codesign --force -s \"Nathan Whitehead\" \"${CMAKE_INSTALL_PREFIX}/Pineapple.app\")
     ")
 endif()
 

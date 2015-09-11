@@ -48,3 +48,4 @@ find $base -name "*.py[co]" -exec rm -rf {} \;
 # Go deeper for more savings
 rm -fr $base/lib/python*.*/site-packages/matplotlib/tests
 rm -fr $base/lib/python*.*/site-packages/mpl_toolkits/tests
+rm -fr $base/lib/python*.*/test
