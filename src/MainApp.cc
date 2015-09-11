@@ -91,7 +91,6 @@ bool MainApp::OnInit()
     int64_t ms = 
         std::chrono::duration_cast<std::chrono::milliseconds>
             (std::chrono::system_clock::now().time_since_epoch()).count();
-    std::cout << "Time since epoch is: " << ms << std::endl;
 
     hostname = "localhost";
     port_number = static_cast<uint16_t>(config::min_port +

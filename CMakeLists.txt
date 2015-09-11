@@ -164,7 +164,13 @@ add_custom_target(requirements-install
 )
 # Server resources
 set(LESSC "lessc")
-set(CUSTOM_DIR "${PYTHON_DIR}/lib/python${PYTHON_VERSION}/site-packages/notebook/static/custom/")
+if (LINUX)
+    set(CUSTOM_DIR "${PYTHON_DIR}/lib/python${PYTHON_VERSION}/site-packages/notebook/static/custom/")
+else()
+    if (APPLE)
+        set(CUSTOM_DIR "${PYTHON_DIR}/Python.framework/Versions/${PYTHON_VERSION}/lib/python${PYTHON_VERSION}/site-packages/notebook/static/custom/")
+    endif()
+endif()
 add_custom_target(compile-less
     COMMAND ${LESSC} ${PROJECT_SOURCE_DIR}/custom/theme-light.less ${CUSTOM_DIR}/theme-light.css
     COMMAND ${LESSC} ${PROJECT_SOURCE_DIR}/custom/theme-dark.less ${CUSTOM_DIR}/theme-dark.css
