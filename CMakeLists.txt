@@ -72,11 +72,12 @@ set(PYTHON_DIR "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}")
 set(PYTHON_SOURCE "${PYTHON_PREFIX}/src/python${PYTHON_VERSION}-external")
 set(PYTHON "${PYTHON_DIR}/bin/python${PYTHON_VERSION}")
 
-set(PYTHON_CONFIGURE_OPTIONS --enable-ipv6 --with-system-ffi --with-threads --with-fpectl)
+set(PYTHON_CONFIGURE_OPTIONS --enable-ipv6 --with-system-ffi --with-threads)
 
 set(PYTHON_OPENSSL "")
 if(LINUX)
     set(PYTHON_OPENSSL "CPPFLAGS=-I${OPENSSL_DIR}" "LDFLAGS=-L${OPENSSL_DIR}/lib -L/usr/lib/x86_64-linux-gnu")
+    set(PYTHON_CONFIGURE_OPTIONS ${PYTHON_CONFIGURE_OPTIONS} --with-fpectl)
 endif()
 if(APPLE)
     if(EXISTS /usr/local/include/libintl.h)
