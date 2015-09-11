@@ -62,15 +62,17 @@ if(LINUX)
         INSTALL_COMMAND make install
     )
     add_custom_target(openssl DEPENDS openssl-external)
-## Python
 endif()
+
+
+## Python
 
 set(PYTHON_PREFIX "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}-prefix")
 set(PYTHON_DIR "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}")
 set(PYTHON_SOURCE "${PYTHON_PREFIX}/src/python${PYTHON_VERSION}-external")
 set(PYTHON "${PYTHON_DIR}/bin/python${PYTHON_VERSION}")
 
-set(PYTHON_CONFIGURE_OPTIONS "")
+set(PYTHON_CONFIGURE_OPTIONS --enable-ipv6 --with-system-ffi --with-threads --with-fpectl)
 
 set(PYTHON_OPENSSL "")
 if(LINUX)
