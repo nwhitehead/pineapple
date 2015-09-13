@@ -106,16 +106,17 @@ set(PYTHON "${PYTHON_DIR}/bin/python${PYTHON_VERSION}")
 set(PYTHON_OPENSSL "")
 
 # Base options
-set(PYTHON_CONFIGURE_OPTIONS --enable-ipv6 --with-system-ffi --with-threads)
+set(PYTHON_CONFIGURE_OPTIONS --enable-ipv6 --with-threads --with-fpectl)
 
 ## Linux specific options
 if(LINUX)
     set(PYTHON_OPENSSL "CPPFLAGS=-I${OPENSSL_DIR}" "LDFLAGS=-L${OPENSSL_DIR}/lib -L/usr/lib/x86_64-linux-gnu")
-    set(PYTHON_CONFIGURE_OPTIONS ${PYTHON_CONFIGURE_OPTIONS} --with-fpectl)
+    set(PYTHON_CONFIGURE_OPTIONS ${PYTHON_CONFIGURE_OPTIONS})
 endif()
 
 ## Apple specific options
 if(APPLE)
+    set(PYTHON_CONFIGURE_OPTIONS ${PYTHON_CONFIGURE_OPTIONS})
     if(EXISTS /usr/local/include/libintl.h)
         message(FATAL_ERROR "You need to move /usr/local/include/libintl.h somewhere else")
     endif()
