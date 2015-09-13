@@ -30,7 +30,7 @@ set(VERSION_MINOR 7)
 
 if (USE_PYTHON3)
     set(PYTHON_VERSION "3.5")
-    set(PYTHON_FULL_VERSION "3.5.0rc3")
+    set(PYTHON_FULL_VERSION "3.5.0")
 else()
     set(PYTHON_VERSION "2.7")
     set(PYTHON_FULL_VERSION "2.7.10")
