@@ -1,6 +1,16 @@
-set (CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}") # install locally
+### Options
 
-option(INCLUDE_EXTRA_PACKAGES "Include extra python packages for PRO version (such as SciPy, ggplot, etc.)" OFF)
+option(INCLUDE_EXTRA_PACKAGES "Include extra python packages for PRO version (SciPy, ggplot, etc.)" OFF)
+
+option(USE_PYTHON3 "Use latest Python3 version (instead of Python2.7)" ON)
+
+set (SIGNING_IDENTITY "Nathan Whitehead")
+
+# always install locally
+set (CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}")
+
+
+### Name to use
 
 if (INCLUDE_EXTRA_PACKAGES)
     project(Pineapple-Pro)
@@ -18,16 +28,28 @@ set(UPPERCASE_VERSION_NAME "PINEAPPLE")
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 7)
 
-set(PYTHON_VERSION "3.5")
-set(PYTHON_FULL_VERSION "3.5.0rc3")
+if (USE_PYTHON3)
+    set(PYTHON_VERSION "3.5")
+    set(PYTHON_FULL_VERSION "3.5.0rc3")
+else()
+    set(PYTHON_VERSION "2.7")
+    set(PYTHON_FULL_VERSION "2.7.10")
+endif()
 set(OPENSSL_VERSION "1.0.2d")
 set(CURL_VERSION "7.44.0")
 set(PYCURL_VERSION "7.19.5")
+
+if (USE_PYTHON3)
+    set (PYTHON_FRAMEWORK_BUILD ON)
+else()
+    set (PYTHON_FRAMEWORK_BUILD OFF)
+endif()
 
 # Expect targets: APPLE LINUX WINDOWS
 if(NOT APPLE)
     set(LINUX 1)
 endif()
+
 
 ### General compilation options
 # Use C++14 for everything
@@ -35,6 +57,7 @@ set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++1y")
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANG)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-long-long -pedantic -Wconversion -Wsign-conversion -Werror")
 endif()
+
 
 #### Prerequisites section
 
@@ -49,6 +72,7 @@ include(ExternalProject)
 
 # External libraries location
 set(EXTERNAL "${PROJECT_SOURCE_DIR}/external")
+
 
 ## OpenSSL
 
@@ -79,18 +103,36 @@ set(PYTHON_DIR "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}")
 set(PYTHON_SOURCE "${PYTHON_PREFIX}/src/python${PYTHON_VERSION}-external")
 set(PYTHON "${PYTHON_DIR}/bin/python${PYTHON_VERSION}")
 
+set(PYTHON_OPENSSL "")
+
+# Base options
 set(PYTHON_CONFIGURE_OPTIONS --enable-ipv6 --with-system-ffi --with-threads)
 
-set(PYTHON_OPENSSL "")
+## Linux specific options
 if(LINUX)
     set(PYTHON_OPENSSL "CPPFLAGS=-I${OPENSSL_DIR}" "LDFLAGS=-L${OPENSSL_DIR}/lib -L/usr/lib/x86_64-linux-gnu")
     set(PYTHON_CONFIGURE_OPTIONS ${PYTHON_CONFIGURE_OPTIONS} --with-fpectl)
 endif()
+
+## Apple specific options
 if(APPLE)
     if(EXISTS /usr/local/include/libintl.h)
         message(FATAL_ERROR "You need to move /usr/local/include/libintl.h somewhere else")
     endif()
-    set(PYTHON_CONFIGURE_OPTIONS ${PYTHON_CONFIGURE_OPTIONS} --enable-framework=${PYTHON_DIR})
+    if (PYTHON_FRAMEWORK_BUILD)
+        set(PYTHON_CONFIGURE_OPTIONS ${PYTHON_CONFIGURE_OPTIONS} --enable-framework=${PYTHON_DIR})
+    else()
+        set(PYTHON_CONFIGURE_OPTIONS ${PYTHON_CONFIGURE_OPTIONS} darwin64-x86_64-cc)
+    endif()
+endif()
+
+if (USE_PYTHON3)
+    # python3 specific
+else()
+    # python2.7 specific
+    if(LINUX)
+        set(PYTHON_CONFIGURE_OPTIONS ${PYTHON_CONFIGURE_OPTIONS} --enable-unicode=ucs4)
+    endif()
 endif()
 
 ExternalProject_Add(
@@ -196,22 +238,20 @@ add_custom_target(requirements-clean
 
 # Server resources
 set(LESSC "lessc")
-if (LINUX)
-    set(CUSTOM_DIR "${PYTHON_DIR}/lib/python${PYTHON_VERSION}/site-packages/notebook/static/custom/")
+if (PYTHON_FRAMEWORK_BUILD)
+    set(CUSTOM_DIR "${PYTHON_DIR}/Python.framework/Versions/${PYTHON_VERSION}/lib/python${PYTHON_VERSION}/site-packages/notebook/static/custom/")
 else()
-    if (APPLE)
-        set(CUSTOM_DIR "${PYTHON_DIR}/Python.framework/Versions/${PYTHON_VERSION}/lib/python${PYTHON_VERSION}/site-packages/notebook/static/custom/")
-    endif()
+    set(CUSTOM_DIR "${PYTHON_DIR}/lib/python${PYTHON_VERSION}/site-packages/notebook/static/custom/")
 endif()
+add_custom_target(custom-reinstall-first
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/custom" "${CUSTOM_DIR}"
+)
 add_custom_target(compile-less
+    DEPENDS custom-reinstall-first
     COMMAND ${LESSC} ${PROJECT_SOURCE_DIR}/custom/theme-light.less ${CUSTOM_DIR}/theme-light.css
     COMMAND ${LESSC} ${PROJECT_SOURCE_DIR}/custom/theme-dark.less ${CUSTOM_DIR}/theme-dark.css
     COMMAND ${LESSC} ${PROJECT_SOURCE_DIR}/custom/theme-borlandia.less ${CUSTOM_DIR}/theme-borlandia.css
     COMMAND ${LESSC} ${PROJECT_SOURCE_DIR}/custom/theme-red.less ${CUSTOM_DIR}/theme-red.css
-    DEPENDS custom-reinstall-first
-)
-add_custom_target(custom-reinstall-first
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/custom" "${CUSTOM_DIR}"
 )
 add_custom_target(custom-reinstall
     DEPENDS compile-less)
@@ -273,10 +313,10 @@ set(SRC_LIST
     ${DATAFILES}
 )
 
-if (LINUX)
-    set (CPP_PYTHON_DIR "python${PYTHON_VERSION}")
-else()
+if (PYTHON_FRAMEWORK_BUILD)
     set (CPP_PYTHON_DIR "..")
+else()
+    set (CPP_PYTHON_DIR "python${PYTHON_VERSION}")
 endif()
 set (CPP_PYTHON_NAME "python${PYTHON_VERSION}")
 configure_file("${PROJECT_SOURCE_DIR}/src/config.hh.in" "${PROJECT_BINARY_DIR}/include/config.hh")
@@ -325,6 +365,12 @@ set_target_properties(local-retest PROPERTIES EXCLUDE_FROM_ALL 1)
 
 ### Install
 
+# HACK dependecy of "make install" on "make custom-install"
+install(CODE "
+    execute_process(COMMAND ${CMAKE_BUILD_TOOL} custom-install
+                    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}\")"
+)
+
 if(APPLE)
     set (APP_BIN ".")
     set (APP_RES "${PROJECT_NAME}.app/Contents/Resources")
@@ -337,39 +383,20 @@ install (TARGETS ${PROJECT_NAME}
     DESTINATION ${APP_BIN})
 install (FILES ${DATAFILES}
     DESTINATION "${APP_RES}")
+install (FILES "scripts/pineapple-server"
+    DESTINATION "${APP_RES}")
 
-if(LINUX)
-    file (GLOB binprogs "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/bin/*")
-    install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/include" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
-    install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/lib" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
-    install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/share" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
-    install (PROGRAMS ${binprogs}
-        DESTINATION "${APP_RES}/python${PYTHON_VERSION}/bin")
-    install (FILES "scripts/pineapple-server"
-        DESTINATION "${APP_RES}")
-else()
 
-  if(APPLE)
+if(APPLE AND PYTHON_FRAMEWORK_BUILD)
+
     set (APP_FRAMEWORKS "${PROJECT_NAME}.app/Contents/Frameworks")
     set (PYTHON_FRAMEWORK "${APP_FRAMEWORKS}/Python.framework/")
     install (DIRECTORY "${PYTHON_DIR}/Python.framework/Versions" DESTINATION "${PYTHON_FRAMEWORK}" PATTERN bin/* EXCLUDE)
-    install (FILES "scripts/pineapple-server"
-        DESTINATION "${APP_RES}")
-  endif()
 
-endif()
+    # Post-install rpath fixups for Mac
+    # (also installs framework since cmake had problems)
+    # NOTE: extra backslash for cmake_install_prefix to delay evaluation for CPACK
 
-# Clean up to make final size smaller
-if (LINUX)
-    install (CODE "
-        execute_process(COMMAND ${PROJECT_SOURCE_DIR}/scripts/clean-python.sh \"\${CMAKE_INSTALL_PREFIX}/${APP_RES}/python${PYTHON_VERSION}\")
-    ")
-endif()
-
-# Post-install rpath fixups for Mac
-# (also installs framework since cmake had problems)
-# NOTE: extra backslash for cmake_install_prefix to delay evaluation for CPACK
-if(APPLE)
     set (APP "\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app")
     set (PYTHON_DEST "${PROJECT_NAME}.app/Contents/bin/python${PYTHON_VERSION}")
     set (PY_FRAMEWORK "Python.framework/Versions/${PYTHON_VERSION}")
@@ -385,14 +412,43 @@ if(APPLE)
         execute_process(COMMAND chmod a+x \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/${PY_APP}\")
         execute_process(COMMAND install_name_tool -change \"${PYTHON_DIR}/${PY_FRAMEWORK}/Python\" \"@executable_path/../Frameworks/${PY_FRAMEWORK}/Python\" \"\${CMAKE_INSTALL_PREFIX}/${PYTHON_DEST}\" )
         execute_process(COMMAND install_name_tool -change \"${PYTHON_DIR}/${PY_FRAMEWORK}/Python\" \"@executable_path/../../../../Python\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/${PY_APP}\" )
-        execute_process(COMMAND codesign --force -s \"Nathan Whitehead\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/MacOS/libwx_osx_cocoau-3.1.dylib\")
-        execute_process(COMMAND codesign --force -s \"Nathan Whitehead\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/Frameworks/Python.framework\")
-        execute_process(COMMAND codesign --force -s \"Nathan Whitehead\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app\")
+        execute_process(COMMAND codesign --force -s \"${SIGNING_IDENTITY}\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/MacOS/libwx_osx_cocoau-3.1.dylib\")
+        execute_process(COMMAND codesign --force -s \"${SIGNING_IDENTITY}\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/Frameworks/Python.framework\")
+        execute_process(COMMAND codesign --force -s \"${SIGNING_IDENTITY}\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app\")
     ")
+
+else()
+
+    file (GLOB binprogs "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/bin/*")
+    install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/include" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
+    install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/lib" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
+    install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/share" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
+    install (PROGRAMS ${binprogs}
+        DESTINATION "${APP_RES}/python${PYTHON_VERSION}/bin")
+
+    # Clean up to make final size smaller
+    install (CODE "
+        execute_process(COMMAND ${PROJECT_SOURCE_DIR}/scripts/clean-python.sh \"\${CMAKE_INSTALL_PREFIX}/${APP_RES}/python${PYTHON_VERSION}\")
+    ")
+
+    # rpath fixups (simpler for non framework builds)
+    if(APPLE)
+        set (APPS "${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app")
+        install (CODE "
+            include(BundleUtilities)
+            fixup_bundle(\"${APPS}\"    \"\"    \"\")
+            execute_process(COMMAND codesign --force -s \"${SIGNING_IDENTITY}\" \"${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/MacOS/libwx_osx_cocoau-3.1.dylib\")
+            execute_process(COMMAND codesign --force -s \"${SIGNING_IDENTITY}\" \"${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app\")
+        ")
+    endif()
 endif()
 
 ### HACK for dev work inside install to avoid "make install"
-set(CUSTOM_INSTALL_LOCATION "${CMAKE_INSTALL_PREFIX}/${APP_RES}/python${PYTHON_VERSION}/lib/python${PYTHON_VERSION}/site-packages/notebook/static/custom")
+if (PYTHON_FRAMEWORK_BUILD)
+    set(CUSTOM_INSTALL_LOCATION "${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib/python${PYTHON_VERSION}/site-packages/notebook/static/custom")
+else()
+    set(CUSTOM_INSTALL_LOCATION "${CMAKE_INSTALL_PREFIX}/${APP_RES}/python${PYTHON_VERSION}/lib/python${PYTHON_VERSION}/site-packages/notebook/static/custom")
+endif()
 add_custom_target(custom-install-dev
     COMMAND ${CMAKE_COMMAND} -E make_directory "${CUSTOM_INSTALL_LOCATION}"
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${CUSTOM_DIR}" "${CUSTOM_INSTALL_LOCATION}"
@@ -403,12 +459,12 @@ add_custom_target(custom-install-dev
 ### CPACK
 
 include (InstallRequiredSystemLibraries)
-set (CPACK_PACKAGE_VENDOR "Nathan Whitehead")
+set (CPACK_PACKAGE_VENDOR "${SIGNING_IDENTITY}")
 set (CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
 set (CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/README.md")
 set (CPACK_PACKAGE_VERSION_MAJOR "${VERSION_MAJOR}")
 set (CPACK_PACKAGE_VERSION_MINOR "${VERSION_MINOR}")
-set (CPACK_PACKAGE_EXECUTABLES "Pineapple" "Pineapple")
+set (CPACK_PACKAGE_EXECUTABLES "${PROJECT_NAME}" "${PROJECT_NAME}")
 
 if(APPLE)
     set (CPACK_GENERATOR "DragNDrop")
