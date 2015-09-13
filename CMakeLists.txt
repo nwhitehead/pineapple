@@ -1,12 +1,19 @@
 set (CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}") # install locally
 
-project(Pineapple)
+option(INCLUDE_EXTRA_PACKAGES "Include extra python packages for PRO version (such as SciPy, ggplot, etc.)" OFF)
+
+if (INCLUDE_EXTRA_PACKAGES)
+    project(Pineapple-Pro)
+else()
+    project(Pineapple)
+endif()
+
 cmake_minimum_required(VERSION 2.8)
 
 
 ### Version info
 
-set(VERSION_NAME "Pineapple")
+set(VERSION_NAME ${PROJECT_NAME})
 set(UPPERCASE_VERSION_NAME "PINEAPPLE")
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 7)
@@ -160,11 +167,29 @@ include(${wxWidgets_USE_FILE})
 
 ## PIP prerequisites
 
-add_custom_target(requirements-install
+add_custom_target(requirements-install-extra
+    DEPENDS python${PYTHON_VERSION} python${PYTHON_VERSION}-postinstall openssl libcurl pycurl
+    COMMAND ${CMAKE_COMMAND} -E env LD_LIBRARY_PATH=${SSL_DIR}/lib:${CURL_DIR}/lib ${PIP} install -r ${PROJECT_SOURCE_DIR}/requirements-extra.txt
+)
+
+add_custom_target(requirements-install-base
     DEPENDS python${PYTHON_VERSION} python${PYTHON_VERSION}-postinstall openssl libcurl pycurl
     COMMAND ${CMAKE_COMMAND} -E env LD_LIBRARY_PATH=${SSL_DIR}/lib:${CURL_DIR}/lib ${PIP} install -r ${PROJECT_SOURCE_DIR}/requirements.txt
     COMMAND ${PROJECT_SOURCE_DIR}/scripts/clean-python.sh ${PYTHON_DIR}
 )
+
+if (INCLUDE_EXTRA_PACKAGES)
+    add_custom_target(requirements-install
+        DEPENDS requirements-install-base requirements-install-extra
+    )
+else()
+    add_custom_target(requirements-install DEPENDS requirements-install-base)
+endif()
+
+add_custom_target(requirements-clean
+    COMMAND ${CMAKE_COMMAND} -E env LD_LIBRARY_PATH=${SSL_DIR}/lib:${CURL_DIR}/lib ${PIP} freeze | ${CMAKE_COMMAND} -E env LD_LIBRARY_PATH=${SSL_DIR}/lib:${CURL_DIR}/lib xargs ${PIP} uninstall -y
+)
+
 # Server resources
 set(LESSC "lessc")
 if (LINUX)
@@ -281,7 +306,7 @@ file(COPY ${DATAFILES} DESTINATION "${PROJECT_BINARY_DIR}")
 ### Testing targets
 
 if (APPLE)
-    set (TESTNAME "Pineapple.app/Contents/MacOS/Pineapple")
+    set (TESTNAME "${PROJECT_NAME}.app/Contents/MacOS/Pineapple")
 else()
     set (TESTNAME "${PROJECT_BINARY_DIR}/${PROJECT_NAME}")
 endif()
@@ -298,7 +323,7 @@ set_target_properties(local-retest PROPERTIES EXCLUDE_FROM_ALL 1)
 
 if(APPLE)
     set (APP_BIN ".")
-    set (APP_RES "Pineapple.app/Contents/Resources")
+    set (APP_RES "${PROJECT_NAME}.app/Contents/Resources")
 else()
     set (APP_BIN "bin")
     set (APP_RES "share/${VERSION_NAME}")
@@ -321,7 +346,7 @@ if(LINUX)
 else()
 
   if(APPLE)
-    set (APP_FRAMEWORKS "Pineapple.app/Contents/Frameworks")
+    set (APP_FRAMEWORKS "${PROJECT_NAME}.app/Contents/Frameworks")
     set (PYTHON_FRAMEWORK "${APP_FRAMEWORKS}/Python.framework/")
     install (DIRECTORY "${PYTHON_DIR}/Python.framework/Versions" DESTINATION "${PYTHON_FRAMEWORK}" PATTERN bin/* EXCLUDE)
     install (FILES "scripts/pineapple-server"
@@ -341,8 +366,8 @@ endif()
 # (also installs framework since cmake had problems)
 # NOTE: extra backslash for cmake_install_prefix to delay evaluation for CPACK
 if(APPLE)
-    set (APP "\${CMAKE_INSTALL_PREFIX}/Pineapple.app")
-    set (PYTHON_DEST "Pineapple.app/Contents/bin/python${PYTHON_VERSION}")
+    set (APP "\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app")
+    set (PYTHON_DEST "${PROJECT_NAME}.app/Contents/bin/python${PYTHON_VERSION}")
     set (PY_FRAMEWORK "Python.framework/Versions/${PYTHON_VERSION}")
     set (PY_APP "Contents/Frameworks/${PY_FRAMEWORK}/Resources/Python.app/Contents/MacOS/Python")
     install (CODE "
@@ -351,14 +376,14 @@ if(APPLE)
     install (CODE "
         include(BundleUtilities)
         fixup_bundle(\"${APP}\"    \"\"    \"\")
-        execute_process(COMMAND mkdir -p \"\${CMAKE_INSTALL_PREFIX}/Pineapple.app/Contents/bin\")
+        execute_process(COMMAND mkdir -p \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/bin\")
         execute_process(COMMAND cp ${PYTHON} \"\${CMAKE_INSTALL_PREFIX}/${PYTHON_DEST}\")
-        execute_process(COMMAND chmod a+x \"\${CMAKE_INSTALL_PREFIX}/Pineapple.app/${PY_APP}\")
+        execute_process(COMMAND chmod a+x \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/${PY_APP}\")
         execute_process(COMMAND install_name_tool -change \"${PYTHON_DIR}/${PY_FRAMEWORK}/Python\" \"@executable_path/../Frameworks/${PY_FRAMEWORK}/Python\" \"\${CMAKE_INSTALL_PREFIX}/${PYTHON_DEST}\" )
-        execute_process(COMMAND install_name_tool -change \"${PYTHON_DIR}/${PY_FRAMEWORK}/Python\" \"@executable_path/../../../../Python\" \"\${CMAKE_INSTALL_PREFIX}/Pineapple.app/${PY_APP}\" )
-        execute_process(COMMAND codesign --force -s \"Nathan Whitehead\" \"\${CMAKE_INSTALL_PREFIX}/Pineapple.app/Contents/MacOS/libwx_osx_cocoau-3.1.dylib\")
-        execute_process(COMMAND codesign --force -s \"Nathan Whitehead\" \"\${CMAKE_INSTALL_PREFIX}/Pineapple.app/Contents/Frameworks/Python.framework\")
-        execute_process(COMMAND codesign --force -s \"Nathan Whitehead\" \"\${CMAKE_INSTALL_PREFIX}/Pineapple.app\")
+        execute_process(COMMAND install_name_tool -change \"${PYTHON_DIR}/${PY_FRAMEWORK}/Python\" \"@executable_path/../../../../Python\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/${PY_APP}\" )
+        execute_process(COMMAND codesign --force -s \"Nathan Whitehead\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/MacOS/libwx_osx_cocoau-3.1.dylib\")
+        execute_process(COMMAND codesign --force -s \"Nathan Whitehead\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/Frameworks/Python.framework\")
+        execute_process(COMMAND codesign --force -s \"Nathan Whitehead\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app\")
     ")
 endif()
 

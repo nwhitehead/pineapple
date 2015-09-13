@@ -3,8 +3,8 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleDevelopmentRegion</key>        <string>English</string>
-    <key>CFBundleExecutable</key>               <string>Pineapple</string>
-    <key>CFBundleName</key>                     <string>Pineapple</string>
+    <key>CFBundleExecutable</key>               <string>${PROJECT_NAME}</string>
+    <key>CFBundleName</key>                     <string>${PROJECT_NAME}</string>
     <key>CFBundleIconFile</key>                 <string>Pineapple.icns</string>
     <key>CFBundleInfoDictionaryVersion</key>    <string>6.0</string>
     <key>CFBundlePackageType</key>              <string>APPL</string>
