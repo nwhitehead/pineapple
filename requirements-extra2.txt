@@ -1,0 +1,8 @@
+ggplot
+pandas
+prettyplotlib
+scikit-learn
+scikit-image
+bokeh
+glumpy
+plotly

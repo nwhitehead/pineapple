@@ -2,7 +2,3 @@ notebook
 ipykernel
 Cython
 git+git://github.com/numpy/numpy.git@cee68d1e764711be671003e8d6e57c8049cee5ad#egg=numpy
-matplotlib
-IVisual-alt
-pineapple
-pytest
