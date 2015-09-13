@@ -49,6 +49,7 @@ using tree_type = std::vector<tree_category_type>;
 
 tree_type tree_data {
     { "Topics", {
+            std::make_tuple("Welcome", "Welcome.ipynb"),
             std::make_tuple("Basics", "Basics.ipynb"),
             std::make_tuple("Editing", "Editing.ipynb"),
             std::make_tuple("Markdown", "Markdown.ipynb"),
@@ -90,28 +91,34 @@ void ExamplesFrame::OnClose(wxCloseEvent &/* event */)
     Destroy();
 }
 
-
-void SpawnExample(wxFrame */* parent */, wxTreeItemId id)
+void ExamplesFrame::SpawnExample(std::string name, std::string original_filename, bool indirect_load)
 {
     // Copy resource .ipynb file to user area
     // (Cannot change files in digitally signed resource area)
-    auto tuple = tree_map[id];
-    std::string prefix(std::get<0>(tuple));
-    std::string example_file(std::get<1>(tuple));
-    wxLogDebug("SpawnExample Item selected [%s]", example_file);
-    std::string original_filename(resource_filename(example_file));
     wxLogDebug("SpawnExample Filename [%s]", original_filename);
     wxFileName wxs_new_filename;
-    if (FindNewFileName(wxs_new_filename, prefix, config::example_suffix,
+    if (FindNewFileName(wxs_new_filename, name, config::example_suffix,
                         config::example_max_num, true)) {
         std::string new_filename(wxs_new_filename.GetFullPath());
         // Output filename doesn't exist, write it
         write_file(new_filename, read_all_file(original_filename));
         wxLogDebug("SpawnExample Loading file [%s]", new_filename);
-        MainFrame::Spawn(wxGetApp().UrlFromFilename(new_filename), new_filename, false);
+        // Remember it as recently used
+        wxGetApp().recently_used.Add(new_filename);
+        MainFrame::Spawn(wxGetApp().UrlFromFilename(new_filename), new_filename, indirect_load);
     } else {
         wxLogError("Could not create temporary example file");
     }
+}
+
+void ExamplesFrame::SpawnExampleId(wxTreeItemId id)
+{
+    auto tuple = tree_map[id];
+    std::string name(std::get<0>(tuple));
+    std::string example_file(std::get<1>(tuple));
+    wxLogDebug("SpawnExampleId Item selected [%s]", example_file);
+    std::string original_filename(resource_filename(example_file));
+    SpawnExample(name, original_filename, false);
 }
 
 void ExamplesFrame::SetupTree()
@@ -130,7 +137,7 @@ void ExamplesFrame::SetupTree()
     Bind(wxEVT_TREE_ITEM_ACTIVATED, [this](wxTreeEvent &event) {
         wxTreeItemId id(event.GetItem());
         if (tree_map.find(id) != tree_map.end()) {
-            SpawnExample(this, id);
+            SpawnExampleId(id);
         }
     }, tree->GetId());
     tree->ExpandAll();

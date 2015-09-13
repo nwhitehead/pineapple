@@ -36,6 +36,7 @@
 #include "config.hh"
 #include "gui_util.hh"
 #include "util.hh"
+#include "ExamplesFrame.hh"
 #include "MainFrame.hh"
 #include "PreferencesManager.hh"
 
@@ -121,8 +122,7 @@ bool MainApp::OnInit()
         std::string filename(recently_used.Get());
 
         if (filename.empty()) {
-            // If no recently used, create fresh new file
-            MainFrame::CreateNew(true);
+            ExamplesFrame::SpawnExample(std::string("Welcome"), resource_filename("Welcome.ipynb"));
         } else {
             // Open most recently used
             MainFrame::SafeSpawn(filename, true);

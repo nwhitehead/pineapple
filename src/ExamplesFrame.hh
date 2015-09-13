@@ -24,6 +24,7 @@
 #include <wx/filename.h>
 #include <wx/frame.h>
 #include <wx/menu.h>
+#include <wx/treectrl.h>
 
 class ExamplesFrame: public wxFrame
 {
@@ -31,4 +32,6 @@ public:
     ExamplesFrame(wxWindow *parent);
     void SetupTree();
     void OnClose(wxCloseEvent &event);
+    static void SpawnExample(std::string name, std::string original_filename, bool indirect_load=true);
+    static void SpawnExampleId(wxTreeItemId id);
 };
