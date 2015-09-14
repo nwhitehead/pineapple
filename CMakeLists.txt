@@ -394,8 +394,11 @@ install (FILES ${DATAFILES}
 install (FILES "scripts/pineapple-server"
     DESTINATION "${APP_RES}")
 
-
 if(APPLE AND PYTHON_FRAMEWORK_BUILD)
+
+    configure_file("${PROJECT_SOURCE_DIR}/scripts/pip" "${PROJECT_BINARY_DIR}/scripts/pip${PYTHON_VERSION}" @ONLY)
+    install (PROGRAMS ${PROJECT_BINARY_DIR}/scripts/pip${PYTHON_VERSION}
+        DESTINATION "${PROJECT_NAME}.app/Contents/bin/")
 
     set (APP_FRAMEWORKS "${PROJECT_NAME}.app/Contents/Frameworks")
     set (PYTHON_FRAMEWORK "${APP_FRAMEWORKS}/Python.framework/")
@@ -433,6 +436,8 @@ else()
     install (DIRECTORY "${PROJECT_BINARY_DIR}/python${PYTHON_VERSION}/share" DESTINATION "${APP_RES}/python${PYTHON_VERSION}")
     install (PROGRAMS ${binprogs}
         DESTINATION "${APP_RES}/python${PYTHON_VERSION}/bin")
+#    install (PROGRAMS ${PROJECT_SOURCE_DIR}
+#        DESTINATION "${APP_RES}/python${PYTHON_VERSION}/bin")
 
     # Clean up to make final size smaller
     install (CODE "
