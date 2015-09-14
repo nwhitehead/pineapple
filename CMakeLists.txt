@@ -242,7 +242,7 @@ add_custom_target(requirements-clean
 )
 
 # Server resources
-set(LESSC "lessc")
+set(LESSC "/usr/local/bin/lessc")
 if (PYTHON_FRAMEWORK_BUILD)
     set(CUSTOM_DIR "${PYTHON_DIR}/Python.framework/Versions/${PYTHON_VERSION}/lib/python${PYTHON_VERSION}/site-packages/notebook/static/custom/")
 else()
