@@ -27,8 +27,9 @@ constexpr char app_name [] = "${VERSION_NAME}";
 constexpr char version_name [] = "${VERSION_NAME}";
 constexpr char version_major [] = "${VERSION_MAJOR}";
 constexpr char version_minor [] = "${VERSION_MINOR}";
-constexpr char version [] = "${VERSION_MAJOR}" "." "${VERSION_MINOR}" ;
-constexpr char version_full [] = "${VERSION_NAME}-${VERSION_MAJOR}" "." "${VERSION_MINOR}" ;
+constexpr char version_patch [] = "${VERSION_PATCH}";
+constexpr char version [] = "${VERSION_MAJOR}" "." "${VERSION_MINOR}" "." "${VERSION_PATCH}";
+constexpr char version_full [] = "${VERSION_NAME}-${VERSION_MAJOR}" "." "${VERSION_MINOR}" "." "${VERSION_PATCH}";
 
 /// Environment variable to pass python path
 constexpr char python_path_env[] = "${UPPERCASE_VERSION_NAME}_PYTHON";
