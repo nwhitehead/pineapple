@@ -147,7 +147,7 @@ ExternalProject_Add(
     CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env ${PYTHON_OPENSSL} ./configure --prefix=${PYTHON_DIR} ${PYTHON_CONFIGURE_OPTIONS}
     BUILD_COMMAND make
     BUILD_IN_SOURCE 1
-    INSTALL_COMMAND make install
+    INSTALL_COMMAND make install PYTHONAPPSDIR=${PYTHON_DIR}
 )
 add_custom_target(python${PYTHON_VERSION} DEPENDS python${PYTHON_VERSION}-external openssl)
 add_custom_target(python${PYTHON_VERSION}-postinstall
