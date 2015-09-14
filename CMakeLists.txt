@@ -4,6 +4,8 @@ option(INCLUDE_EXTRA_PACKAGES "Include extra python packages for PRO version (Sc
 
 option(USE_PYTHON3 "Use latest Python3 version (instead of Python2.7)" ON)
 
+option(USE_CCACHE "Try to speed up compiles with CCACHE" ON)
+
 set (SIGNING_IDENTITY "Nathan Whitehead")
 
 # always install locally
@@ -62,11 +64,13 @@ endif()
 #### Prerequisites section
 
 # Turn on CCACHE
-find_program(CCACHE_FOUND ccache)
-if(CCACHE_FOUND)
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
-endif(CCACHE_FOUND)
+if(USE_CCACHE)
+    find_program(CCACHE_FOUND ccache)
+    if(CCACHE_FOUND)
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+    endif(CCACHE_FOUND)
+endif()
 
 include(ExternalProject)
 
