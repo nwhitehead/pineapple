@@ -406,6 +406,10 @@ if(APPLE AND PYTHON_FRAMEWORK_BUILD)
     set (PYTHON_FRAMEWORK "${APP_FRAMEWORKS}/Python.framework/")
     install (DIRECTORY "${PYTHON_DIR}/Python.framework/Versions" DESTINATION "${PYTHON_FRAMEWORK}" PATTERN bin/* EXCLUDE)
 
+    # Install Freetype from build computer
+    install (PROGRAMS "/opt/X11/lib/libfreetype.6.dylib"
+        DESTINATION ${APP_FRAMEWORKS})
+
     # Post-install rpath fixups for Mac
     # (also installs framework since cmake had problems)
     # NOTE: extra backslash for cmake_install_prefix to delay evaluation for CPACK
@@ -420,11 +424,24 @@ if(APPLE AND PYTHON_FRAMEWORK_BUILD)
     install (CODE "
         include(BundleUtilities)
         fixup_bundle(\"${APP}\"    \"\"    \"\")
+    ")
+    install (CODE "
         execute_process(COMMAND mkdir -p \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/bin\")
         execute_process(COMMAND cp ${PYTHON} \"\${CMAKE_INSTALL_PREFIX}/${PYTHON_DEST}\")
         execute_process(COMMAND chmod a+x \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/${PY_APP}\")
+    ")
+    install (CODE "
         execute_process(COMMAND install_name_tool -change \"${PYTHON_DIR}/${PY_FRAMEWORK}/Python\" \"@executable_path/../Frameworks/${PY_FRAMEWORK}/Python\" \"\${CMAKE_INSTALL_PREFIX}/${PYTHON_DEST}\" )
         execute_process(COMMAND install_name_tool -change \"${PYTHON_DIR}/${PY_FRAMEWORK}/Python\" \"@executable_path/../../../../Python\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/${PY_APP}\" )
+    ")
+    if (USE_PYTHON3)
+        # fixup freetype, dangling dylib reference
+        install (CODE "
+            execute_process(COMMAND install_name_tool -change \"/opt/X11/lib/libfreetype.6.dylib\" \"@executable_path/../../../../../../../libfreetype.6.dylib\" 
+          \"${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/Frameworks/${PY_FRAMEWORK}/lib/python${PYTHON_VERSION}/site-packages/matplotlib/ft2font.cpython-35m-darwin.so\" )
+        ")
+    endif()
+    install (CODE "
         execute_process(COMMAND codesign --force -s \"${SIGNING_IDENTITY}\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/MacOS/libwx_osx_cocoau-3.1.dylib\")
         execute_process(COMMAND codesign --force -s \"${SIGNING_IDENTITY}\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/Frameworks/Python.framework\")
         execute_process(COMMAND codesign --force -s \"${SIGNING_IDENTITY}\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app\")
