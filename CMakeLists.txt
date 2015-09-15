@@ -44,7 +44,7 @@ set(OPENSSL_VERSION "1.0.2d")
 set(CURL_VERSION "7.44.0")
 set(PYCURL_VERSION "7.19.5")
 
-if (USE_PYTHON3)
+if (USE_PYTHON3 AND APPLE)
     set (PYTHON_FRAMEWORK_BUILD ON)
 else()
     set (PYTHON_FRAMEWORK_BUILD OFF)
@@ -118,7 +118,6 @@ set(PYTHON_CONFIGURE_OPTIONS --enable-ipv6 --with-threads --with-fpectl)
 ## Linux specific options
 if(LINUX)
     set(PYTHON_OPENSSL "CPPFLAGS=-I${OPENSSL_DIR}" "LDFLAGS=-L${OPENSSL_DIR}/lib -L/usr/lib/x86_64-linux-gnu")
-    set(PYTHON_CONFIGURE_OPTIONS ${PYTHON_CONFIGURE_OPTIONS})
 endif()
 
 ## Apple specific options
@@ -134,12 +133,14 @@ if(APPLE)
     endif()
 endif()
 
+set (PYTHON_PATCH_COMMAND "")
 if (USE_PYTHON3)
     # python3 specific
 else()
     # python2.7 specific
     if(LINUX)
         set(PYTHON_CONFIGURE_OPTIONS ${PYTHON_CONFIGURE_OPTIONS} --enable-unicode=ucs4)
+        set (PYTHON_PATCH_COMMAND ${CMAKE_COMMAND} -E copy ${EXTERNAL}/python-${PYTHON_VERSION}/Setup.local ${PYTHON_SOURCE}/Modules/)
     endif()
 endif()
 
@@ -147,6 +148,7 @@ ExternalProject_Add(
     python${PYTHON_VERSION}-external
     URL "${EXTERNAL}/python-${PYTHON_VERSION}/Python-${PYTHON_FULL_VERSION}.tgz"
     PREFIX "${PYTHON_PREFIX}"
+    PATCH_COMMAND ${PYTHON_PATCH_COMMAND}
     CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env ${PYTHON_OPENSSL} ./configure --prefix=${PYTHON_DIR} ${PYTHON_CONFIGURE_OPTIONS}
     BUILD_COMMAND make
     BUILD_IN_SOURCE 1
@@ -172,9 +174,9 @@ if(LINUX)
         URL "${EXTERNAL}/curl/curl-${CURL_VERSION}.zip"
         PREFIX "${CURL_PREFIX}"
         CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env "CPPFLAGS=-I${OPENSSL_DIR}" "LDFLAGS=-L${OPENSSL_DIR}/lib" ./configure --with-ssl=${OPENSSL_DIR} --prefix=${CURL_DIR}
-                BUILD_COMMAND make
-                BUILD_IN_SOURCE 1
-                INSTALL_COMMAND make install
+        BUILD_COMMAND make
+        BUILD_IN_SOURCE 1
+        INSTALL_COMMAND make install
     )
     add_custom_target(libcurl DEPENDS libcurl-external)
 
@@ -245,7 +247,7 @@ add_custom_target(requirements-clean
 )
 
 # Server resources
-set(LESSC "/usr/local/bin/lessc")
+set(LESSC "lessc")
 if (PYTHON_FRAMEWORK_BUILD)
     set(CUSTOM_DIR "${PYTHON_DIR}/Python.framework/Versions/${PYTHON_VERSION}/lib/python${PYTHON_VERSION}/site-packages/notebook/static/custom/")
 else()
@@ -296,17 +298,17 @@ set(DATAFILES
     data/images/Stop.png
     data/images/Synchronize.png
     data/images/Up.png
-    data/examples/Basics.ipynb
-    data/examples/Editing.ipynb
-    data/examples/Execution.ipynb
-    data/examples/Markdown.ipynb
-    data/examples/Packages.ipynb
-    data/examples/Plotting.ipynb
-    data/examples/ReadOnly.ipynb
-    data/examples/RichOutput.ipynb
-    data/examples/Timing.ipynb
-    data/examples/Video.ipynb
-    data/examples/Welcome.ipynb
+    data/examples/python${PYTHON_VERSION}/Basics.ipynb
+    data/examples/python${PYTHON_VERSION}/Editing.ipynb
+    data/examples/python${PYTHON_VERSION}/Execution.ipynb
+    data/examples/python${PYTHON_VERSION}/Markdown.ipynb
+    data/examples/python${PYTHON_VERSION}/Packages.ipynb
+    data/examples/python${PYTHON_VERSION}/Plotting.ipynb
+    data/examples/python${PYTHON_VERSION}/ReadOnly.ipynb
+    data/examples/python${PYTHON_VERSION}/RichOutput.ipynb
+    data/examples/python${PYTHON_VERSION}/Timing.ipynb
+    data/examples/python${PYTHON_VERSION}/Video.ipynb
+    data/examples/python${PYTHON_VERSION}/Welcome.ipynb
 )
 
 set(SRC_LIST
