@@ -438,7 +438,7 @@ if(APPLE AND PYTHON_FRAMEWORK_BUILD)
         # fixup freetype, dangling dylib reference
         install (CODE "
             execute_process(COMMAND install_name_tool -change \"/opt/X11/lib/libfreetype.6.dylib\" \"@executable_path/../../../../../../../libfreetype.6.dylib\" 
-          \"${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/Frameworks/${PY_FRAMEWORK}/lib/python${PYTHON_VERSION}/site-packages/matplotlib/ft2font.cpython-35m-darwin.so\" )
+          \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/Frameworks/${PY_FRAMEWORK}/lib/python${PYTHON_VERSION}/site-packages/matplotlib/ft2font.cpython-35m-darwin.so\" )
         ")
     endif()
     install (CODE "
