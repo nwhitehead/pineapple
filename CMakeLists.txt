@@ -407,8 +407,12 @@ if(APPLE AND PYTHON_FRAMEWORK_BUILD)
     install (DIRECTORY "${PYTHON_DIR}/Python.framework/Versions" DESTINATION "${PYTHON_FRAMEWORK}" PATTERN bin/* EXCLUDE)
 
     # Install Freetype from build computer
-    install (PROGRAMS "/opt/X11/lib/libfreetype.6.dylib"
-        DESTINATION ${APP_FRAMEWORKS})
+    if (USE_PYTHON3)
+        install (PROGRAMS "/opt/X11/lib/libfreetype.6.dylib"
+            DESTINATION ${APP_FRAMEWORKS})
+        install (PROGRAMS "/opt/X11/lib/libpng15.15.dylib"
+            DESTINATION ${APP_FRAMEWORKS})
+    endif()
 
     # Post-install rpath fixups for Mac
     # (also installs framework since cmake had problems)
@@ -439,6 +443,15 @@ if(APPLE AND PYTHON_FRAMEWORK_BUILD)
         install (CODE "
             execute_process(COMMAND install_name_tool -change \"/opt/X11/lib/libfreetype.6.dylib\" \"@executable_path/../../../../../../../libfreetype.6.dylib\" 
           \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/Frameworks/${PY_FRAMEWORK}/lib/python${PYTHON_VERSION}/site-packages/matplotlib/ft2font.cpython-35m-darwin.so\" )
+        ")
+        install (CODE "
+            execute_process(COMMAND install_name_tool -change \"/opt/X11/lib/libfreetype.6.dylib\" \"@executable_path/../../../../../../../libfreetype.6.dylib\" 
+          \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/Frameworks/${PY_FRAMEWORK}/lib/python${PYTHON_VERSION}/site-packages/matplotlib/backends/_backend_agg.cpython-35m-darwin.so\" )
+        ")
+        # fixup libpng
+        install (CODE "
+            execute_process(COMMAND install_name_tool -change \"/opt/X11/lib/libpng15.15.dylib\" \"@executable_path/../../../../../../../libpng15.15.dylib\" 
+          \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/Frameworks/${PY_FRAMEWORK}/lib/python${PYTHON_VERSION}/site-packages/matplotlib/_png.cpython-35m-darwin.so\" )
         ")
     endif()
     install (CODE "
