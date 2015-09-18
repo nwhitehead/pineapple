@@ -6,6 +6,4 @@ scikit-image
 bokeh
 glumpy
 plotly
-psycopg2
 seaborn
-
