@@ -1,15 +1,30 @@
 import sys
+import os
 
-from ipykernel import kernelapp
-from notebook.notebookapp import NotebookApp
+def get_home_dir():
+    homedir = os.path.expanduser('~')
+    homedir = os.path.realpath(homedir)
+    return homedir
+
+def get_config_dir():
+    homedir = get_home_dir()
+    return os.path.join(homedir, '.pineapple', 'Jupyter')
+
+def get_data_dir():
+    homedir = get_home_dir()
+    return os.path.join(homedir, 'Library', 'Pineapple', 'Jupyter')
 
 if __name__ == '__main__':
     if len(sys.argv) > 2 and sys.argv[1] == '-m' and sys.argv[2] == 'ipykernel':
+        from ipykernel import kernelapp
         kernelapp.launch_new_instance()
         exit(0)
     # Always serve from root
     port = sys.argv[-1]
     sys.argv = [sys.executable, '--port={}'.format(port), '/']
+    os.environ['JUPYTER_CONFIG_DIR'] = get_config_dir()
+    os.environ['JUPYTER_DATA_DIR'] = get_data_dir()
+    from notebook.notebookapp import NotebookApp
     app = NotebookApp()
     app.open_browser = False
     app.initialize()
