@@ -205,6 +205,10 @@ void MainFrame::SetupMenu()
 
 void MainFrame::SetupToolbar()
 {
+    PreferencesManager prefs = wxGetApp().preferences;
+    std::string show_toolbar(prefs.Get("show_toolbar", std::string("yes")));
+    if (show_toolbar == std::string("no")) return;
+
     toolbar = CreateToolBar(config::toolbar_style);
 
     toolbar->AddTool(wxID_SAVE, "Save", toolbar_icon("Save.png"), "Save");
@@ -296,7 +300,7 @@ void MainFrame::SetupBindings()
             }, id);
 
     };
-    
+
     auto bind_theme = [this](int id, std::string theme) -> void {
         
         Bind(wxEVT_COMMAND_MENU_SELECTED,
