@@ -194,6 +194,12 @@ void MainFrame::SetupMenu()
     menu_theme->Append(wxID_THEME_RED, "Red");
     menubar->Append(menu_theme, "Theme");
 
+    wxMenu *menu_view = new wxMenu();
+    menu_view->Append(wxID_VIEW_TOOLBAR_NONE, "No toolbar");
+    menu_view->Append(wxID_VIEW_TOOLBAR_SMALL, "Small toolbar");
+    menu_view->Append(wxID_VIEW_TOOLBAR_LARGE, "Big toolbar");
+    menubar->Append(menu_view, "View");
+
     wxMenu *menu_help = new wxMenu();
     menu_help->Append(wxID_HELP_KEYBOARD, "Keyboard shortcuts");
     menu_help->AppendSeparator();
@@ -211,7 +217,7 @@ void MainFrame::SetupToolbar()
 {
     PreferencesManager &prefs(wxGetApp().preferences);
     long style = wxTB_TEXT;
-    if (!prefs.GetBool("toolbar_text", config::default_toolbar_text)) {
+    if (!prefs.GetBool("toolbar_text", config::toolbar_text_default)) {
         style = wxTB_HORIZONTAL;
     }
 
@@ -257,7 +263,7 @@ void MainFrame::SetupToolbar()
 
     toolbar->Realize();
 
-    if (prefs.GetBool("show_toolbar", config::default_show_toolbar)) {
+    if (prefs.GetBool("toolbar_show", config::toolbar_show_default)) {
         toolbar->Show(true);
     } else {
         toolbar->Show(false);
@@ -280,6 +286,7 @@ void MainFrame::UpdateToolbar()
     }
     SetupToolbar();
     frame_sizer->Prepend(toolbar, 0, wxEXPAND, 0);
+    Layout();
 }
 
 void MainFrame::SetupLayout(const wxPoint &/* pos */, const wxSize &size)
@@ -423,6 +430,27 @@ void MainFrame::SetupBindings()
             webview->RunScript(std::string("require('base/js/namespace').notebook.clear_output();"));
         }, wxID_CLEAR_OUTPUT);
 
+    Bind(wxEVT_COMMAND_MENU_SELECTED,
+        [this](wxCommandEvent &/* event */) -> void {
+            wxGetApp().preferences.SetBool("toolbar_show", false);
+            UpdateToolbar();
+        }, wxID_VIEW_TOOLBAR_NONE);
+
+    Bind(wxEVT_COMMAND_MENU_SELECTED,
+        [this](wxCommandEvent &/* event */) -> void {
+            wxGetApp().preferences.SetBool("toolbar_show", true);
+            wxGetApp().preferences.SetBool("toolbar_text", config::toolbar_text_small);
+            wxGetApp().preferences.SetInt("toolbar_size", config::toolbar_size_small);
+            UpdateToolbar();
+        }, wxID_VIEW_TOOLBAR_SMALL);
+
+    Bind(wxEVT_COMMAND_MENU_SELECTED,
+        [this](wxCommandEvent &/* event */) -> void {
+            wxGetApp().preferences.SetBool("toolbar_show", true);
+            wxGetApp().preferences.SetBool("toolbar_text", config::toolbar_text_large);
+            wxGetApp().preferences.SetInt("toolbar_size", config::toolbar_size_large);
+            UpdateToolbar();
+        }, wxID_VIEW_TOOLBAR_LARGE);
 
     /// Setup permanent handler for kernel busy/idle updates
     handler.register_callback(config::token_kernel_busy, AsyncResult::Success,

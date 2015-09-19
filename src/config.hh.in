@@ -91,14 +91,18 @@ constexpr char blank_notebook_filename[] = "blank.ipynb";
 constexpr int token_kernel_busy = -1;
 constexpr int token_final_save = -2;
 
+constexpr bool toolbar_show_default = true;
+constexpr int toolbar_size_small = 25;
+constexpr int toolbar_size_large = 32;
+constexpr bool toolbar_text_small = false;
 #if defined(__APPLE__)
-    constexpr bool default_show_toolbar = true;
-    constexpr bool default_toolbar_text = true;
-    constexpr int default_toolbar_size = 32;
+    constexpr bool toolbar_text_large = true;
+    constexpr int toolbar_size_default = toolbar_size_large;
+    constexpr bool toolbar_text_default = true;
 #else
-    constexpr bool default_show_toolbar = true;
-    constexpr bool default_toolbar_text = false;
-    constexpr int default_toolbar_size = 25;
+    constexpr bool toolbar_text_large = false;
+    constexpr int toolbar_size_default = toolbar_size_small;
+    constexpr bool toolbar_text_default = false;
 #endif
 
 /// How long to wait for save on close (ms)

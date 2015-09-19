@@ -88,7 +88,7 @@ wxBitmap toolbar_icon(std::string filename)
     if (fname.empty()) {
         return wxArtProvider::GetBitmap(wxART_QUESTION);
     }
-    int size = wxGetApp().preferences.GetInt("toolbar_size", config::default_toolbar_size);
+    int size = wxGetApp().preferences.GetInt("toolbar_size", config::toolbar_size_default);
     return wxBitmap(wxImage(fname).Rescale(size, size, wxIMAGE_QUALITY_BICUBIC));
 }
 
