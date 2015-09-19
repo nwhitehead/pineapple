@@ -94,7 +94,7 @@ constexpr int token_final_save = -2;
 #if defined(__APPLE__)
     constexpr bool default_show_toolbar = true;
     constexpr bool default_toolbar_text = true;
-    constexpr int default_toolbar_size = 48;
+    constexpr int default_toolbar_size = 32;
 #else
     constexpr bool default_show_toolbar = true;
     constexpr bool default_toolbar_text = false;
