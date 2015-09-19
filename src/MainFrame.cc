@@ -420,7 +420,9 @@ void MainFrame::LoadDocument(bool indirect_load)
         // Do template replacement for url
         std::string contents{wxGetApp().load_page};
         replace_one(contents, "{{url}}", url);
-        webview->SetPage(wxString(contents), "");
+        std::string source(wxGetApp().base_url + std::string("/loading.html"));
+        // Explicitly set source for cross-origin checks
+        webview->SetPage(wxString(contents), source);
     } else {
         webview->LoadURL(url);
     }
