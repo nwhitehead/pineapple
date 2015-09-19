@@ -68,6 +68,10 @@ MainFrame::MainFrame(std::string url0, std::string filename,
 {
     wxLogDebug("MainFrame::MainFrame");
 
+    webview = nullptr;
+    menubar = nullptr;
+    toolbar = nullptr;
+
     SetupMenu();
     SetupToolbar();
     SetupWebView();
@@ -205,11 +209,13 @@ void MainFrame::SetupMenu()
 
 void MainFrame::SetupToolbar()
 {
-    PreferencesManager prefs = wxGetApp().preferences;
-    std::string show_toolbar(prefs.Get("show_toolbar", std::string("yes")));
-    if (show_toolbar == std::string("no")) return;
+    PreferencesManager &prefs(wxGetApp().preferences);
+    long style = wxTB_TEXT;
+    if (!prefs.GetBool("toolbar_text", config::default_toolbar_text)) {
+        style = wxTB_HORIZONTAL;
+    }
 
-    toolbar = CreateToolBar(config::toolbar_style);
+    toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style);
 
     toolbar->AddTool(wxID_SAVE, "Save", toolbar_icon("Save.png"), "Save");
 
@@ -240,7 +246,6 @@ void MainFrame::SetupToolbar()
 
     toolbar->AddTool(wxID_CELL_CODE, "Code", toolbar_icon("Pencil.png"), "Cell type code");
     toolbar->AddTool(wxID_CELL_MARKDOWN, "Markdown", toolbar_icon("Pen.png"), "Cell type markdown");
-//    toolbar->AddTool(wxID_CELL_RAW, "Raw", toolbar_icon("Fantasy-50.png"), "Cell type raw");
 
     toolbar->AddSeparator();
 
@@ -251,6 +256,12 @@ void MainFrame::SetupToolbar()
     toolbar->EnableTool(wxID_KERNEL_BUSY, false);
 
     toolbar->Realize();
+
+    if (prefs.GetBool("show_toolbar", config::default_show_toolbar)) {
+        toolbar->Show(true);
+    } else {
+        toolbar->Show(false);
+    }
 }
 
 void MainFrame::SetupWebView()
@@ -260,9 +271,22 @@ void MainFrame::SetupWebView()
     webview->EnableContextMenu(false);
 }
 
+void MainFrame::UpdateToolbar()
+{
+    wxSizer *frame_sizer = GetSizer();
+    frame_sizer->Detach(0); // remove old toolbar
+    if (toolbar) {
+        toolbar->Destroy();
+    }
+    SetupToolbar();
+    frame_sizer->Prepend(toolbar, 0, wxEXPAND, 0);
+}
+
 void MainFrame::SetupLayout(const wxPoint &/* pos */, const wxSize &size)
 {
-    wxBoxSizer* frame_sizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *frame_sizer = new wxBoxSizer(wxVERTICAL);
+
+    frame_sizer->Add(toolbar, 0, wxEXPAND, 0);
     frame_sizer->Add(webview, 1, wxEXPAND, 10);
     webview->Show();
     SetSizerAndFit(frame_sizer);
@@ -404,10 +428,14 @@ void MainFrame::SetupBindings()
     handler.register_callback(config::token_kernel_busy, AsyncResult::Success,
         [this](Callback::argument x) {
             if (x == std::string("true")) {
-                this->toolbar->EnableTool(wxID_KERNEL_BUSY, true);
+                if (this->toolbar) {
+                    this->toolbar->EnableTool(wxID_KERNEL_BUSY, true);
+                }
             }
             if (x == std::string("false")) {
-                this->toolbar->EnableTool(wxID_KERNEL_BUSY, false);
+                if (this->toolbar) {
+                    this->toolbar->EnableTool(wxID_KERNEL_BUSY, false);
+                }
             }
         },
         CallbackType::Infinite);

@@ -20,6 +20,7 @@
 
 #include <string>
 #include <map>
+#include <mutex>
 
 class PreferencesManager {
 public:
@@ -30,6 +31,12 @@ public:
     std::string Get(std::string key, std::string default_value);
     void Set(std::string key, std::string value);
 
+    bool GetBool(std::string key, bool default_value);
+    void SetBool(std::string key, bool value);
+
+    int GetInt(std::string key, int default_value);
+    void SetInt(std::string key, int value);
+
     /// Read data structure from backing file
     bool SyncRead();
 
@@ -37,6 +44,7 @@ public:
     bool SyncWrite();
 
 private:
+    std::recursive_mutex pref_mutex;
     std::string backing_file;
     std::map<std::string, std::string> state;
 };

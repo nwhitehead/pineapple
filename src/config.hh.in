@@ -91,13 +91,13 @@ constexpr int token_kernel_busy = -1;
 constexpr int token_final_save = -2;
 
 #if defined(__APPLE__)
-    constexpr long int toolbar_style = wxTB_TEXT;
-    constexpr int toolbar_width = 48;
-    constexpr int toolbar_height = 48;
+    constexpr bool default_show_toolbar = true;
+    constexpr bool default_toolbar_text = true;
+    constexpr int default_toolbar_size = 48;
 #else
-    constexpr long int toolbar_style = wxTB_DEFAULT_STYLE;
-    constexpr int toolbar_width = 25;
-    constexpr int toolbar_height = 25;
+    constexpr bool default_show_toolbar = true;
+    constexpr bool default_toolbar_text = false;
+    constexpr int default_toolbar_size = 25;
 #endif
 
 /// How long to wait for save on close (ms)

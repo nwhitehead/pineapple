@@ -19,6 +19,7 @@
 #include "PreferencesManager.hh"
 
 #include <algorithm>
+#include <cstdlib>
 #include <iostream>
 #include <string>
 #include <map>
@@ -45,6 +46,7 @@ PreferencesManager::PreferencesManager()
 
 bool PreferencesManager::SyncRead()
 {
+    std::lock_guard<std::recursive_mutex> lck(pref_mutex);
     std::vector<std::string> lines;
     try {
         lines = read_file_lines(backing_file);
@@ -60,6 +62,7 @@ bool PreferencesManager::SyncRead()
 
 bool PreferencesManager::SyncWrite()
 {
+    std::lock_guard<std::recursive_mutex> lck(pref_mutex);
     std::vector<std::string> lines;
     for (auto it = state.begin(); it != state.end(); it++) {
         std::string line = it->first + std::string("=") + it->second;
@@ -71,11 +74,13 @@ bool PreferencesManager::SyncWrite()
 
 PreferencesManager::~PreferencesManager()
 {
+    std::lock_guard<std::recursive_mutex> lck(pref_mutex);
     SyncWrite();
 }
 
 std::string PreferencesManager::Get(std::string key, std::string default_value)
 {
+    std::lock_guard<std::recursive_mutex> lck(pref_mutex);
     if (state.find(key) != state.end()) {
         return state[key];
     }
@@ -85,6 +90,41 @@ std::string PreferencesManager::Get(std::string key, std::string default_value)
 
 void PreferencesManager::Set(std::string key, std::string value)
 {
+    std::lock_guard<std::recursive_mutex> lck(pref_mutex);
     state[key] = value;
+    SyncWrite();
+}
+
+bool PreferencesManager::GetBool(std::string key, bool default_value)
+{
+    std::lock_guard<std::recursive_mutex> lck(pref_mutex);
+    if (state.find(key) != state.end()) {
+        return (state[key] == std::string("yes")); 
+    }
+    SetBool(key, default_value);
+    return default_value;
+}
+
+void PreferencesManager::SetBool(std::string key, bool value)
+{
+    std::lock_guard<std::recursive_mutex> lck(pref_mutex);
+    state[key] = value ? std::string("yes") : std::string("no");
+    SyncWrite();
+}
+
+int PreferencesManager::GetInt(std::string key, int default_value)
+{
+    std::lock_guard<std::recursive_mutex> lck(pref_mutex);
+    if (state.find(key) != state.end()) {
+        return std::atoi(state[key].c_str()); 
+    }
+    SetInt(key, default_value);
+    return default_value;
+}
+
+void PreferencesManager::SetInt(std::string key, int value)
+{
+    std::lock_guard<std::recursive_mutex> lck(pref_mutex);
+    state[key] = std::to_string(value);
     SyncWrite();
 }

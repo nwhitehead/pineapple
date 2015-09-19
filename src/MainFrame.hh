@@ -95,6 +95,7 @@ public:
     void SetupLayout(const wxPoint &pos, const wxSize &size);
     void SetupBindings();
     void SetupIcon();
+    void UpdateToolbar();
     void LoadDocument(bool indirect_load=true);
 
     void Save();

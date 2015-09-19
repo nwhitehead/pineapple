@@ -30,6 +30,7 @@
 #include <wx/stdpaths.h>
 #include <wx/webview.h>
 
+#include "MainApp.hh"
 #include "config.hh"
 
 /// Get filename of python
@@ -87,7 +88,8 @@ wxBitmap toolbar_icon(std::string filename)
     if (fname.empty()) {
         return wxArtProvider::GetBitmap(wxART_QUESTION);
     }
-    return wxBitmap(wxImage(fname).Rescale(config::toolbar_width, config::toolbar_height, wxIMAGE_QUALITY_BICUBIC));
+    int size = wxGetApp().preferences.GetInt("toolbar_size", config::default_toolbar_size);
+    return wxBitmap(wxImage(fname).Rescale(size, size, wxIMAGE_QUALITY_BICUBIC));
 }
 
 /// Click a menu item by name (hidden in our webview)
