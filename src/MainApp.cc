@@ -201,7 +201,8 @@ void MainApp::OnSubprocessTerminate(wxProcessEvent &/* event */)
 void MainApp::OnAbout(wxCommandEvent &/* event */)
 {
     std::stringstream ss;
-    ss << config::version_full << "\n\n";
+    ss << config::version_full << "\n";
+    ss << "(" << config::version_date << ")\n\n";
     ss << "Copyright (c) 2015 Nathan Whitehead\n\n";
     ss << wxGetLibraryVersionInfo().ToString() << "\n";
     wxMessageBox(ss.str(), "About", wxOK | wxICON_INFORMATION);
