@@ -132,6 +132,11 @@ bool MainApp::OnInit()
     server = nullptr;
     Bind(wxEVT_END_PROCESS, &MainApp::OnSubprocessTerminate, this, wxID_ANY);
 
+    /// Unset environment variables that might affect Python
+    wxUnsetEnv("PYTHONSTARTUP");
+    wxUnsetEnv("PYTHONPATH");
+    wxUnsetEnv("PYTHONHOME");
+
     /// Setup arguments to start server
     std::string python_path(python_fullpath());
     std::string script_path(server_fullpath());
