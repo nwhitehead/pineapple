@@ -19,6 +19,7 @@
 #include "MainApp.hh"
 
 #include <cstdint>
+#include <cstdlib>
 #include <chrono>
 #include <fstream>
 #include <iostream>
@@ -88,14 +89,19 @@ bool MainApp::OnInit()
 #endif
 
     /// Setup server connection info
-    // Get random offset for port
-    int64_t ms = 
-        std::chrono::duration_cast<std::chrono::milliseconds>
-            (std::chrono::system_clock::now().time_since_epoch()).count();
 
     hostname = "localhost";
-    port_number = static_cast<uint16_t>(config::min_port +
-        (static_cast<int>(ms) % (config::max_port - config::min_port)));
+    std::string port_config(preferences.Get("port", "dynamic"));
+    if (port_config == std::string("dynamic")) {
+        // Get random offset for port (based on time)
+        int64_t ms = 
+            std::chrono::duration_cast<std::chrono::milliseconds>
+                (std::chrono::system_clock::now().time_since_epoch()).count();
+        port_number = static_cast<uint16_t>(config::min_port +
+            (static_cast<int>(ms) % (config::max_port - config::min_port)));
+    } else {
+        port_number = static_cast<uint16_t>(std::atoi(port_config.c_str()));
+    }
     host_port = std::string(hostname) + std::string(":") + std::to_string(port_number);
     protocol = "http";
     base_url = protocol + std::string("://") + host_port;
