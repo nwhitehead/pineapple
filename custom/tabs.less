@@ -1,13 +1,16 @@
-@tab-width: 50px;
+@tab-width: 40px;
 @tab-margin: 10px;
-@tab-height: @tab-width;
-@tab-bg: #ffa;
-@tab-bg-active: #faa;
-@tab-fg: #333;
+@tab-height: 100px;
+@tab-fg-active: #fff;
+@tab-fg: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.1));
+@tab-bg: rgba(0, 0, 0, 0.1);
+@tab-radius: 15px;
+@tab-shadow: rgba(0, 0, 0, 0.5);
+@tab-line: rgba(0, 0, 0, 0.3);
 
 div#notebook {
     float: left;
-    margin-right: -(@tab-width + @tab-margin);
+    margin-right: -@tab-width;
     width: 100%;
 }
 
@@ -17,19 +20,33 @@ div#notebook-container {
 }
 
 div.tab-selector {
+    background: @tab-bg;
     position: relative;
     width: @tab-width;
     float: right;
 }
 
 div.tab {
-    width: @tab-width;
+    width: @tab-width - @tab-margin;
     height: @tab-height;
-    background-color: @tab-bg;
+    background: @tab-fg;
     color: @tab-fg;
-    margin: 3px;
+    margin-right: @tab-margin;
+    margin-left: 0;
+    border: 1px solid @tab-line;
+    border-radius: 0 @tab-radius @tab-radius 0;
+    box-shadow: 5px 0px 5px @tab-shadow;
+    border-left: 1px solid @tab-line;
+}
+
+div.tab-space {
+    width: @tab-width - @tab-margin;
+    height: 20px;
+    border-left: 1px solid @tab-line;
 }
 
 div.tab.active {
-    background-color: @tab-bg-active;
+    background: @tab-fg-active;
+    border-color: @tab-line;
+    border-left: 0;
 }

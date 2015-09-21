@@ -108,9 +108,10 @@ define([
                 if (cell) {
                     var num = getSheetNum(cell);
                     if (num === sheet) {
-                        cell.element.show();
+                        // Use animation to ensure codemirror is drawn
+                        cell.element.show(1);
                     } else {
-                        cell.element.hide();
+                        cell.element.hide(1);
                     }
                 }
             }
@@ -127,8 +128,10 @@ define([
         if (num <= 1) {
             return;
         }
+        var $space = $('<div class="tab-space"></div>');
+        elem.append($space);
         for (var i = 0; i < num; i++) {
-            var $link = $('<div class="tab">' + i + '</div>');
+            var $link = $('<div class="tab"></div>');
             if (i === sheet) {
                 $link.addClass('active');
             }
@@ -139,6 +142,8 @@ define([
             })(i));
             elem.append($link);
         }
+        var $space = $('<div class="tab-space"></div>');
+        elem.append($space);
     }
 
     // Make sure selection is within bounds
