@@ -128,7 +128,7 @@ define([
         if (num <= 1) {
             return;
         }
-        var $space = $('<div class="tab-space"></div>');
+        var $space = $('<div class="tab-space tab-space-top"></div>');
         elem.append($space);
         for (var i = 0; i < num; i++) {
             var $link = $('<div class="tab"></div>');
@@ -142,7 +142,7 @@ define([
             })(i));
             elem.append($link);
         }
-        var $space = $('<div class="tab-space"></div>');
+        var $space = $('<div class="tab-space tab-space-bottom"></div>');
         elem.append($space);
     }
 
