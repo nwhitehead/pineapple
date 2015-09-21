@@ -7,7 +7,7 @@ define([
     'base/js/namespace',
     'base/js/events',
     'notebook/js/notebook',
-    'notebook/js/cell',
+    'notebook/js/cell'
 ], function(IPython, events, notebook, cell) {
 
     /// Theming support

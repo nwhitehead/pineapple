@@ -8,7 +8,7 @@ define([
     'base/js/namespace',
     'base/js/events',
     'notebook/js/notebook',
-    'notebook/js/cell',
+    'notebook/js/cell'
 ], function(IPython, events, notebook, cell) {
 
     /**
@@ -78,7 +78,7 @@ define([
         if (this.is_valid_cell_index(i)) {
             var cell = this.get_cell(i);
             if (!getReadOnly(cell)) {
-                return old_move_cell_up.apply(this, index);
+                return old_move_cell_up.apply(this, [index]);
             }
         }
         return this;
@@ -90,7 +90,7 @@ define([
         if (this.is_valid_cell_index(i)) {
             var cell = this.get_cell(i);
             if (!getReadOnly(cell)) {
-                return old_move_cell_down.apply(this, index);
+                return old_move_cell_down.apply(this, [index]);
             }
         }
         return this;

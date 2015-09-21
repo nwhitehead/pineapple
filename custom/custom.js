@@ -10,8 +10,10 @@ define([
     'notebook/js/cell',
     'custom/nbextensions/theme',
     'custom/nbextensions/readonly',
-    'custom/nbextensions/button'
-], function(IPython, events, notebook, cell, theme, readOnly, button) {
+    'custom/nbextensions/button',
+    'custom/nbextensions/tabs',
+], function(IPython, events, notebook, cell, theme, readOnly, button, tabs) {
+
     /// Register permanent events
     var flash = function(txt) {
         var old = document.title;
@@ -28,6 +30,7 @@ define([
     return {
         set_theme: theme.set_theme,
         toggleReadOnly: readOnly.toggleReadOnly,
-        setSelectionButton: button.setSelectionButton
+        setSelectionButton: button.setSelectionButton,
+        toggleSheetNew: tabs.toggleSheetNew
     };
 });

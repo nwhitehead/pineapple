@@ -176,6 +176,7 @@ void MainFrame::SetupMenu()
     }
     menu_tools->AppendSeparator();
     menu_tools->Append(wxID_TOGGLE_READONLY, "Toggle read-only");
+    menu_tools->Append(wxID_TOGGLE_SHEET_NEW, "Toggle new sheet");
     menubar->Append(menu_tools, "Tools");
 
     wxMenu *menu_kernel = new wxMenu();
@@ -404,6 +405,11 @@ void MainFrame::SetupBindings()
         [this](wxCommandEvent &/* event */) -> void {
             webview->RunScript(std::string("require('custom/custom').toggleReadOnly();"));
         }, wxID_TOGGLE_READONLY);
+
+    Bind(wxEVT_COMMAND_MENU_SELECTED,
+        [this](wxCommandEvent &/* event */) -> void {
+            webview->RunScript(std::string("require('custom/custom').toggleSheetNew();"));
+        }, wxID_TOGGLE_SHEET_NEW);
 
     Bind(wxEVT_COMMAND_MENU_SELECTED,
         [this](wxCommandEvent &/* event */) -> void {

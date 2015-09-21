@@ -1,0 +1,35 @@
+@tab-width: 50px;
+@tab-margin: 10px;
+@tab-height: @tab-width;
+@tab-bg: #ffa;
+@tab-bg-active: #faa;
+@tab-fg: #333;
+
+div#notebook {
+    float: left;
+    margin-right: -(@tab-width + @tab-margin);
+    width: 100%;
+}
+
+div#notebook-container {
+    margin-right: @tab-width;
+    width: auto;
+}
+
+div.tab-selector {
+    position: relative;
+    width: @tab-width;
+    float: right;
+}
+
+div.tab {
+    width: @tab-width;
+    height: @tab-height;
+    background-color: @tab-bg;
+    color: @tab-fg;
+    margin: 3px;
+}
+
+div.tab.active {
+    background-color: @tab-bg-active;
+}
