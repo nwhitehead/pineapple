@@ -322,11 +322,12 @@ set(SRC_LIST
 )
 
 if (PYTHON_FRAMEWORK_BUILD)
-    set (CPP_PYTHON_DIR "..")
+    set (CPP_PYTHON_DIR "../Frameworks/Python.framework/Versions/${PYTHON_VERSION}/Resources/Python.app/Contents/MacOS")
+    set (CPP_PYTHON_NAME "Python")
 else()
-    set (CPP_PYTHON_DIR "python${PYTHON_VERSION}")
+    set (CPP_PYTHON_DIR "python${PYTHON_VERSION}/bin")
+    set (CPP_PYTHON_NAME "python${PYTHON_VERSION}")
 endif()
-set (CPP_PYTHON_NAME "python${PYTHON_VERSION}")
 configure_file("${PROJECT_SOURCE_DIR}/src/config.hh.in" "${PROJECT_BINARY_DIR}/include/config.hh")
 include_directories("${PROJECT_BINARY_DIR}/include")
 add_executable(${PROJECT_NAME} ${SRC_LIST})
@@ -401,16 +402,8 @@ if(APPLE AND PYTHON_FRAMEWORK_BUILD)
         DESTINATION "${PROJECT_NAME}.app/Contents/bin/")
 
     set (APP_FRAMEWORKS "${PROJECT_NAME}.app/Contents/Frameworks")
-    set (PYTHON_FRAMEWORK "${APP_FRAMEWORKS}/Python.framework/")
-    install (DIRECTORY "${PYTHON_DIR}/Python.framework/Versions" DESTINATION "${PYTHON_FRAMEWORK}" PATTERN bin/* EXCLUDE)
-
-    # Install Freetype from build computer
-    if (USE_PYTHON3)
-        install (PROGRAMS "/opt/X11/lib/libfreetype.6.dylib"
-            DESTINATION ${APP_FRAMEWORKS})
-        install (PROGRAMS "/opt/X11/lib/libpng15.15.dylib"
-            DESTINATION ${APP_FRAMEWORKS})
-    endif()
+    set (PYTHON_FRAMEWORK "${APP_FRAMEWORKS}/Python.framework")
+    install (DIRECTORY "${PYTHON_DIR}/Python.framework/Versions" DESTINATION "${PYTHON_FRAMEWORK}/" PATTERN bin/* EXCLUDE)
 
     # Post-install rpath fixups for Mac
     # (also installs framework since cmake had problems)
@@ -420,41 +413,28 @@ if(APPLE AND PYTHON_FRAMEWORK_BUILD)
     set (PYTHON_DEST "${PROJECT_NAME}.app/Contents/bin/python${PYTHON_VERSION}")
     set (PY_FRAMEWORK "Python.framework/Versions/${PYTHON_VERSION}")
     set (PY_APP "Contents/Frameworks/${PY_FRAMEWORK}/Resources/Python.app/Contents/MacOS/Python")
+    set (FRAMEWORK_DEST "${APP}/Contents/Frameworks")
+    set (PY_LIBS "${APP}/Contents/Frameworks/${PY_FRAMEWORK}/lib/python${PYTHON_VERSION}/site-packages")
     install (CODE "
-            execute_process(COMMAND ${PROJECT_SOURCE_DIR}/scripts/clean-python.sh \"${APP}/Contents/Frameworks/${PY_FRAMEWORK}\")
-        ")
-    install (CODE "
-        include(BundleUtilities)
-        fixup_bundle(\"${APP}\"    \"\"    \"\")
+        execute_process(COMMAND ${PROJECT_SOURCE_DIR}/scripts/clean-python.sh \"${APP}/Contents/Frameworks/${PY_FRAMEWORK}\")
     ")
+        
+    # rpath fixup stuff here
+    # First pineapple
     install (CODE "
-        execute_process(COMMAND mkdir -p \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/bin\")
-        execute_process(COMMAND cp ${PYTHON} \"\${CMAKE_INSTALL_PREFIX}/${PYTHON_DEST}\")
-        execute_process(COMMAND chmod a+x \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/${PY_APP}\")
+        execute_process(COMMAND python ../scripts/bundle_fixer.py \"${APP}/Contents/MacOS/Pineapple\" \"${FRAMEWORK_DEST}\" )
     ")
+    # now python binary
     install (CODE "
-        execute_process(COMMAND install_name_tool -change \"${PYTHON_DIR}/${PY_FRAMEWORK}/Python\" \"@executable_path/../Frameworks/${PY_FRAMEWORK}/Python\" \"\${CMAKE_INSTALL_PREFIX}/${PYTHON_DEST}\" )
-        execute_process(COMMAND install_name_tool -change \"${PYTHON_DIR}/${PY_FRAMEWORK}/Python\" \"@executable_path/../../../../Python\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/${PY_APP}\" )
+        execute_process(COMMAND python ../scripts/bundle_fixer.py \"${APP}/${PY_APP}\" \"${FRAMEWORK_DEST}/${PY_FRAMEWORK}\" )
+        execute_process(COMMAND chmod a+x \"${APP}/${PY_APP}\" )
     ")
-    if (USE_PYTHON3)
-        # fixup freetype, dangling dylib reference
-        install (CODE "
-            execute_process(COMMAND install_name_tool -change \"/opt/X11/lib/libfreetype.6.dylib\" \"@executable_path/../../../../../../../libfreetype.6.dylib\" 
-          \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/Frameworks/${PY_FRAMEWORK}/lib/python${PYTHON_VERSION}/site-packages/matplotlib/ft2font.cpython-35m-darwin.so\" )
-        ")
-        install (CODE "
-            execute_process(COMMAND install_name_tool -change \"/opt/X11/lib/libfreetype.6.dylib\" \"@executable_path/../../../../../../../libfreetype.6.dylib\" 
-          \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/Frameworks/${PY_FRAMEWORK}/lib/python${PYTHON_VERSION}/site-packages/matplotlib/backends/_backend_agg.cpython-35m-darwin.so\" )
-        ")
-        # fixup libpng
-        install (CODE "
-            execute_process(COMMAND install_name_tool -change \"/opt/X11/lib/libpng15.15.dylib\" \"@executable_path/../../../../../../../libpng15.15.dylib\" 
-          \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/Frameworks/${PY_FRAMEWORK}/lib/python${PYTHON_VERSION}/site-packages/matplotlib/_png.cpython-35m-darwin.so\" )
-        ")
-    endif()
+    # now plugins
+#    install (CODE "
+#        execute_process(COMMAND python ../scripts/bundle_fixer.py \"${PY_LIBS}\" \"${FRAMEWORK_DEST}\" )
+#    ")
+
     install (CODE "
-        execute_process(COMMAND codesign --force -s \"${SIGNING_IDENTITY}\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/MacOS/libwx_osx_cocoau-3.1.dylib\")
-        execute_process(COMMAND codesign --force -s \"${SIGNING_IDENTITY}\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/Frameworks/Python.framework\")
         execute_process(COMMAND codesign --force -s \"${SIGNING_IDENTITY}\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app\")
     ")
 

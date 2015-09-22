@@ -43,11 +43,8 @@ std::string python_fullpath()
     }
     // Look for python in resource location
     wxString respath(wxStandardPaths::Get().GetResourcesDir());
-    wxFileName wfname(respath, "");
-    wfname.AppendDir(config::python_dir);
-    wfname.AppendDir("bin");
-    wfname.SetFullName(config::python_name);
-    return std::string(wfname.GetFullPath());
+    std::string sep("/");
+    return std::string(respath) + sep + config::python_dir + sep + config::python_name;
 }
 
 /// Get filename of server
