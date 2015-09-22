@@ -29,6 +29,12 @@ def get_linked(file):
     lines = [strip_compat(line) for line in lines]
     return lines
 
+def is_lib(lib):
+    '''Determine if a file is a dynamic library (heuristic)'''
+    if lib.endswith('.so'): return True
+    if lib.endswith('.dylib'): return True
+    return False
+
 def should_copy_lib(lib):
     '''Determine if a library should be copied (heuristic)'''
     if lib.startswith('@'): return False
@@ -83,6 +89,18 @@ def relocate(thing, libloc):
                 shutil.copy(lib, libloc)
             install_name_tool(thing, lib, '@loader_path/' + compute_relative(destname, thing))
 
+def relocate_dir(root, libloc):
+    '''Relocate all libraries inside root dir'''
+    for subdir, dirs, files in os.walk(root):
+        for file in files:
+            fname = os.path.join(subdir, file)
+            if is_lib(fname):
+                #print('### NOT IMPLEMENTED file = {}'.format(fname))
+                relocate(fname, libloc)
+        # Recurse into subdirectories
+        for dir in dirs:
+            relocate_dir(os.path.join(root, dir), libloc)
+
 if __name__ == '__main__':
     print("Welcome to the bundle fixer")
     print("---------------------------")
@@ -90,6 +108,8 @@ if __name__ == '__main__':
     print("### Thing to fixup: {}".format(thing))
     libloc = sys.argv[2]
     print("### Where to put dylibs: {}".format(libloc))
-    #execloc = sys.argv[3]
-    #print("### Assume that @executable_path is from: {}".format(execloc))
-    relocate(thing, libloc)
+    if os.path.isfile(thing):
+        relocate(thing, libloc)
+    else:
+        print("### DIRECTORY")
+        relocate_dir(thing, libloc)

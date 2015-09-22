@@ -418,23 +418,25 @@ if(APPLE AND PYTHON_FRAMEWORK_BUILD)
     install (CODE "
         execute_process(COMMAND ${PROJECT_SOURCE_DIR}/scripts/clean-python.sh \"${APP}/Contents/Frameworks/${PY_FRAMEWORK}\")
     ")
-        
+
     # rpath fixup stuff here
-    # First pineapple
+    # Fixup Pineapple
     install (CODE "
         execute_process(COMMAND python ../scripts/bundle_fixer.py \"${APP}/Contents/MacOS/Pineapple\" \"${FRAMEWORK_DEST}\" )
     ")
-    # now python binary
+    # Fixup Python app itself
     install (CODE "
         execute_process(COMMAND python ../scripts/bundle_fixer.py \"${APP}/${PY_APP}\" \"${FRAMEWORK_DEST}/${PY_FRAMEWORK}\" )
         execute_process(COMMAND chmod a+x \"${APP}/${PY_APP}\" )
     ")
-    # now plugins
-#    install (CODE "
-#        execute_process(COMMAND python ../scripts/bundle_fixer.py \"${PY_LIBS}\" \"${FRAMEWORK_DEST}\" )
-#    ")
-
+    # Fixup all dylibs in python site-packages
     install (CODE "
+        execute_process(COMMAND python ../scripts/bundle_fixer.py \"${PY_LIBS}\" \"${FRAMEWORK_DEST}\" )
+    ")
+    # Digitally sign
+    install (CODE "
+        execute_process(COMMAND codesign --force -s \"${SIGNING_IDENTITY}\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/Frameworks/libwx_osx_cocoau-3.1.dylib\")
+        execute_process(COMMAND codesign --force -s \"${SIGNING_IDENTITY}\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/Frameworks/Python.framework\")
         execute_process(COMMAND codesign --force -s \"${SIGNING_IDENTITY}\" \"\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app\")
     ")
 
