@@ -1,3 +1,3 @@
 #!/bin/bash
 
-${BASH_SOURCE%/*}/../Frameworks/Python.framework/Versions/@PYTHON_VERSION@/bin/python@PYTHON_VERSION@ -m pip "$@"
+${BASH_SOURCE%/*}/../Frameworks/Python.framework/Versions/@PYTHON_VERSION@/Resources/Python.app/Contents/MacOS/Python -m pip "$@"

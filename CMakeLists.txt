@@ -403,7 +403,7 @@ if(APPLE AND PYTHON_FRAMEWORK_BUILD)
 
     set (APP_FRAMEWORKS "${PROJECT_NAME}.app/Contents/Frameworks")
     set (PYTHON_FRAMEWORK "${APP_FRAMEWORKS}/Python.framework")
-    install (DIRECTORY "${PYTHON_DIR}/Python.framework/Versions" DESTINATION "${PYTHON_FRAMEWORK}/" PATTERN bin/* EXCLUDE)
+    install (DIRECTORY "${PYTHON_DIR}/Python.framework/Versions" DESTINATION "${PYTHON_FRAMEWORK}/")
 
     # Post-install rpath fixups for Mac
     # (also installs framework since cmake had problems)
