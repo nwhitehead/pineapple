@@ -1,9 +1,9 @@
 {
-	'argv': ['/usr/local/bin/python3.4',
-		'-e', 'ipykernel',
-		'-f', '{connection_file}'],
-	'display_name': 'Custom Python',
-	'language': 'python'
+	"argv": ["/usr/local/bin/python3.4",
+		"-m", "ipykernel",
+		"-f", "{connection_file}"],
+	"display_name": "Custom Python",
+	"language": "python"
 }
 
 
