@@ -30,6 +30,7 @@
 #include <wx/webview.h>
 
 #include "callback.hh"
+#include "json/json.h"
 
 class MainFrame: public wxFrame
 {
@@ -56,7 +57,8 @@ public:
         wxID_THEME_NONE, wxID_THEME_LIGHT, wxID_THEME_DARK, wxID_THEME_BORLANDIA, wxID_THEME_RED,
         wxID_VIEW_TOOLBAR_NONE, wxID_VIEW_TOOLBAR_SMALL, wxID_VIEW_TOOLBAR_LARGE, 
         wxID_TOGGLE_SHEET_NEW,
-        wxID_TIMER
+        wxID_TIMER,
+        wxID_KERNEL_CHOOSER // Last one since it is dynamic
     };
 
     MainFrame(std::string url0, std::string filename, const wxString &title, const wxPoint &pos, const wxSize &size, bool indirect_load);
@@ -73,6 +75,7 @@ public:
     std::string local_filename;
     CallbackHandler handler;
     bool jupyter_ready;
+    Json::Value kernels;
 
     void OnClose(wxCloseEvent &event);
     void OnPageLoad(wxWebViewEvent &event);
@@ -98,6 +101,7 @@ public:
     void SetupBindings();
     void SetupIcon();
     void UpdateToolbar();
+    void UpdateKernels();
     void LoadDocument(bool indirect_load=true);
 
     void Save();

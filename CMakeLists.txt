@@ -57,7 +57,7 @@ endif()
 # Use C++14 for everything
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++1y")
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANG)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-long-long -pedantic -Wconversion -Wsign-conversion -Werror")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-long-long -pedantic -Wconversion -Werror")
 endif()
 
 
@@ -318,6 +318,7 @@ set(SRC_LIST
     src/MainApp.cc
     src/RecentManager.cc
     src/PreferencesManager.cc
+    src/jsoncpp.cpp
     ${DATAFILES}
 )
 

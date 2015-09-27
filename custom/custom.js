@@ -27,6 +27,20 @@ define([
         flash('$$$$-1|false');
     });
 
+    // When notebook is loaded and kernel_selector filled, respond
+    events.on('notebook_loaded.Notebook', function() {
+        var selector = IPython.notebook.kernel_selector;
+        var response = function() {
+            flash('$$$$-3|' + JSON.stringify(selector.kernelspecs));
+        };
+        if (selector._loaded) {
+            response();
+        } else {
+            selector.loaded.then(response);
+        }
+    });
+
+
     return {
         set_theme: theme.set_theme,
         toggleReadOnly: readOnly.toggleReadOnly,

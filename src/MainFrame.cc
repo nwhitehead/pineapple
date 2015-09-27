@@ -53,7 +53,7 @@
 #include "util.hh"
 #include "ExamplesFrame.hh"
 #include "MainApp.hh"
-
+#include "json/json.h"
 
 /**
  * MainFrame constructor and associated helpers
@@ -185,6 +185,16 @@ void MainFrame::SetupMenu()
     menu_kernel->Append(wxID_KERNEL_RESTART, "Restart\tCtrl-0");
     menu_kernel->AppendSeparator();
     menu_kernel->Append(wxID_KERNEL_RECONNECT, "Reconnect");
+    menu_kernel->AppendSeparator();
+    {
+        wxMenu *menu_choose_kernel = new wxMenu();
+        int i = 0;
+        for (auto kernel: kernels) {
+            menu_choose_kernel->Append(wxID_KERNEL_CHOOSER + i, kernel.get("name", "ERROR").asString());
+            i++;
+        }
+        menu_kernel->AppendSubMenu(menu_choose_kernel, "Change");
+    }
     menubar->Append(menu_kernel, "Kernel");
 
     wxMenu *menu_theme = new wxMenu();
@@ -288,6 +298,20 @@ void MainFrame::UpdateToolbar()
     SetupToolbar();
     frame_sizer->Prepend(toolbar, 0, wxEXPAND, 0);
     Layout();
+}
+
+void MainFrame::UpdateKernels()
+{
+    SetupMenu();
+    int i = 0;
+    for (auto kernel: kernels) {
+        Bind(wxEVT_COMMAND_MENU_SELECTED,
+            [this, kernel](wxCommandEvent &/* event */) -> void {
+                std::string name(kernel.get("name", "ERROR").asString());
+                webview->RunScript("Jupyter.notebook.kernel_selector.set_kernel('" + name + "');");
+            }, wxID_KERNEL_CHOOSER + i);
+        i++;
+    }
 }
 
 void MainFrame::SetupLayout(const wxPoint &/* pos */, const wxSize &size)
@@ -457,6 +481,18 @@ void MainFrame::SetupBindings()
             wxGetApp().preferences.SetInt("toolbar_size", config::toolbar_size_large);
             UpdateToolbar();
         }, wxID_VIEW_TOOLBAR_LARGE);
+
+    /// Respond to kernel list
+    handler.register_callback(config::token_kernel_selector, AsyncResult::Success,
+        [this](Callback::argument x) {
+            Json::Reader reader;
+            if (reader.parse(x, kernels)) {
+                UpdateKernels();
+            } else {
+                wxLogError("Problem with kernel specifications", "JSON Parse Problem");
+            }
+        },
+        CallbackType::Single);
 
     /// Setup permanent handler for kernel busy/idle updates
     handler.register_callback(config::token_kernel_busy, AsyncResult::Success,

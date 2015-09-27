@@ -90,6 +90,7 @@ constexpr char blank_notebook_filename[] = "blank.ipynb";
 /// Special tokens for permanent handlers
 constexpr int token_kernel_busy = -1;
 constexpr int token_final_save = -2;
+constexpr int token_kernel_selector = -3;
 
 constexpr bool toolbar_show_default = true;
 constexpr int toolbar_size_small = 25;
