@@ -190,7 +190,7 @@ void MainFrame::SetupMenu()
         wxMenu *menu_choose_kernel = new wxMenu();
         int i = 0;
         for (auto kernel: kernels) {
-            menu_choose_kernel->Append(wxID_KERNEL_CHOOSER + i, kernel.get("name", "ERROR").asString());
+            menu_choose_kernel->Append(wxID_KERNEL_CHOOSER + i, kernel["spec"]["display_name"].asString());
             i++;
         }
         menu_kernel->AppendSubMenu(menu_choose_kernel, "Change");

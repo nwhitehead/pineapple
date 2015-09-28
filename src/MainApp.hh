@@ -44,6 +44,7 @@ public:
     void OnQuit(wxCommandEvent &event);
     void OnSubprocessTerminate(wxProcessEvent &event);
     static void OnAbout(wxCommandEvent &event);
+    void RegisterPython();
     std::string UrlFromFilename(std::string filename);
     std::string ExportUrlFromFilename(std::string filename, std::string format);
 
