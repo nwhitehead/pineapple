@@ -45,6 +45,12 @@
 
 wxIMPLEMENT_APP(MainApp);
 
+std::string protected_env_vars[] = {
+    "PYTHONPATH",
+    "PYTHONSTARTUP",
+    "PYTHONHOME",
+};
+
 static void signal_handler(int /* signum */)
 {
     // Do nothing except exit cleanly on Ctrl-C signal
@@ -144,9 +150,9 @@ bool MainApp::OnInit()
     Bind(wxEVT_END_PROCESS, &MainApp::OnSubprocessTerminate, this, wxID_ANY);
 
     /// Unset environment variables that might affect Python
-    wxUnsetEnv("PYTHONSTARTUP");
-    wxUnsetEnv("PYTHONPATH");
-    wxUnsetEnv("PYTHONHOME");
+    for (std::string v : protected_env_vars) {
+        wxUnsetEnv(v);
+    }
 
     /// Setup arguments to start server
     std::string python_path(python_fullpath());
@@ -211,6 +217,7 @@ void MainApp::CloseAll()
 
 void MainApp::RegisterPython()
 {
+    // This function grabs environment, should be called before unsetting python env vars
     std::string sep("/");
     std::vector<std::string> path {
         std::string(wxGetHomeDir()),
@@ -230,7 +237,7 @@ void MainApp::RegisterPython()
         return;
     }
 
-    /// Do "which python"
+    // Do "which python"
     wxProcess *which(new wxProcess(this));
     which->Redirect();
     long res;
@@ -252,6 +259,14 @@ void MainApp::RegisterPython()
     kernel_config["argv"].append("ipykernel");
     kernel_config["argv"].append("-f");
     kernel_config["argv"].append("{connection_file}");
+    kernel_config["env"] = Json::objectValue;
+    for (std::string key : protected_env_vars) {
+        wxString val;
+        if (wxGetEnv(key, &val)) {
+            kernel_config["env"][key] = std::string(val);
+        }
+    }
+
     // Make it styled since the point is to be editable
     Json::StyledWriter writer;
     std::string kernelspec(writer.write(kernel_config));
