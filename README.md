@@ -72,7 +72,7 @@ make custom-install
 ```
 This installs pip requirements and then copies custom
 files into the notebook static directory. Now you can
-try the local application with `make localtest`.
+try the local application with `make local-test`.
 
 ## Distribution
 
