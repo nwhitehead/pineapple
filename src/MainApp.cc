@@ -241,7 +241,7 @@ void MainApp::RegisterPython()
     wxProcess *which(new wxProcess(this));
     which->Redirect();
     long res;
-    res = wxExecute("which python", wxEXEC_SYNC | wxEXEC_HIDE_CONSOLE, which);
+    res = wxExecute("which python3", wxEXEC_SYNC | wxEXEC_HIDE_CONSOLE, which);
     if (res) {
         // Could not do "which python", done trying to register
         return;

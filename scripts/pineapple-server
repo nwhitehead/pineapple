@@ -27,5 +27,6 @@ if __name__ == '__main__':
     from notebook.notebookapp import NotebookApp
     app = NotebookApp()
     app.open_browser = False
+    app.token = ''
     app.initialize()
     app.start()
