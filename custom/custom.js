@@ -28,7 +28,7 @@ define([
     });
 
     // When notebook is loaded and kernel_selector filled, respond
-    events.on('notebook_loaded.Notebook', function() {
+    events.on('command_mode.Notebook', function(evt) {
         var selector = IPython.notebook.kernel_selector;
         var response = function() {
             flash('$$$$-3|' + JSON.stringify(selector.kernelspecs));

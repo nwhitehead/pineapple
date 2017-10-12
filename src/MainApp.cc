@@ -221,8 +221,7 @@ void MainApp::RegisterPython()
     std::string sep("/");
     std::vector<std::string> path {
         std::string(wxGetHomeDir()),
-        "Library",
-        "Pineapple",
+        ".Pineapple",
         "Jupyter",
         "kernels",
         "local"
@@ -241,7 +240,7 @@ void MainApp::RegisterPython()
     wxProcess *which(new wxProcess(this));
     which->Redirect();
     long res;
-    res = wxExecute("which python", wxEXEC_SYNC | wxEXEC_HIDE_CONSOLE, which);
+    res = wxExecute("which python3", wxEXEC_SYNC | wxEXEC_HIDE_CONSOLE, which);
     if (res) {
         // Could not do "which python", done trying to register
         return;
@@ -321,6 +320,6 @@ std::string MainApp::UrlFromFilename(std::string filename)
 
 std::string MainApp::ExportUrlFromFilename(std::string filename, std::string format)
 {
-    std::string uri(filename);
+    std::string uri(urlencode(filename));
     return std::string(config::nbconvert_url) + std::string("/") + format + uri;
 }
