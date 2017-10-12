@@ -92,7 +92,7 @@ Linux, DMG images for Mac.
 ### OS X
 
 If you want to change the icon images, you'll need to regenerate the icns files.
-I did this using [https://iconverticons.com] because the command-line tools
+I did this using [iconverticons](https://iconverticons.com) because the command-line tools
 I found were out of date and I didn't want to hassle with automating it.
 
 ## Contact
