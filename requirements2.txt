@@ -9,7 +9,7 @@ ipykernel==4.0.3
 ipython==4.0.0
 ipython-genutils==0.1.0
 IVisual-alt==0.2.3
-Jinja2==2.8
+Jinja2==2.11.3
 jsonschema==2.5.1
 jupyter-client==4.0.0
 jupyter-core==4.0.4
