@@ -1,4 +1,4 @@
-notebook==4.0.5
+notebook==6.4.1
 ipykernel==4.0.3
 Cython==0.23.1
 git+git://github.com/numpy/numpy.git@cee68d1e764711be671003e8d6e57c8049cee5ad#egg=numpy
